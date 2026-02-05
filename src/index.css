@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-primary: #15803d;
+  /* green-700 */
+  --color-primary-dark: #14532d;
+  /* green-900 */
+  --color-accent: #dcfce7;
+  /* green-100 */
+  --color-accent-text: #166534;
+  /* green-800 */
+
+  /* Sidebar - Dark & Organic */
+  --color-sidebar-bg: #114227;
+  /* Deep Forest */
+  --color-sidebar-text: #ffffff;
+  --color-sidebar-muted: #86efac;
+  /* Green-300 */
+  --color-sidebar-active: #ffffff;
+
+  /* Neutrals */
+  --color-bg-app: #fafaf9;
+  /* stone-50 */
+  --color-bg-surface: #ffffff;
+  --color-border: #e7e5e4;
+  /* stone-200 */
+
+  --color-text-main: #1c1917;
+  /* stone-900 */
+  --color-text-muted: #78716c;
+  /* stone-500 */
+
+  /* Spacing */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-app);
+    color: var(--color-text-main);
+    font-family: 'Rubik', 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+
+  /* 
+     Structured Flat Card 
+     Using standard CSS to avoid @apply issues with v4 alpha/beta quirks 
+  */
+  .flat-card {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* Input Fields */
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: white;
+    outline: none;
+    transition: all 0.2s;
+    min-height: 48px;
+  }
+
+  .input-field:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    min-height: 44px;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-dark);
+  }
+
+  .btn-secondary {
+    background-color: white;
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-bg-app);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.diagonal-stripes {
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.03) 10px,
+      rgba(0, 0, 0, 0.03) 20px);
+}
