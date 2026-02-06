@@ -5,8 +5,8 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
 
-// Get Turnstile site key from env (fallback to test key for dev)
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key
+// Turnstile site key - hardcoded for production, env for local dev
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAACYYsn_UV1PvI8el';
 
 export function WelcomePage() {
     const [searchParams] = useSearchParams();
