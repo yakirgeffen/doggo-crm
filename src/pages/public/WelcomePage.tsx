@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Dog, Send, Check, Heart } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
 
+// Get Turnstile site key from env (fallback to test key for dev)
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key
+
 export function WelcomePage() {
+    const [searchParams] = useSearchParams();
+    const trainerId = searchParams.get('t'); // Trainer ID from URL: /welcome?t=uuid
+
     const [formData, setFormData] = useState({
         full_name: '',
         phone: '',
@@ -11,16 +20,36 @@ export function WelcomePage() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+    const [captchaError, setCaptchaError] = useState(false);
+    const turnstileRef = useRef<TurnstileInstance>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        const { error } = await supabase.from('intake_submissions').insert([formData]);
+        // Validate CAPTCHA
+        if (!captchaToken) {
+            setCaptchaError(true);
+            return;
+        }
+
+        setIsSubmitting(true);
+        setCaptchaError(false);
+
+        const payload = {
+            ...formData,
+            trainer_id: trainerId || null, // Associate with trainer if provided
+            captcha_token: captchaToken // Store for potential server-side verification
+        };
+
+        const { error } = await supabase.from('intake_submissions').insert([payload]);
 
         if (error) {
             console.error('Submission error:', error);
             alert('אופס, משהו השתבש. נסה שוב.');
+            // Reset CAPTCHA on error
+            turnstileRef.current?.reset();
+            setCaptchaToken(null);
         } else {
             setIsSuccess(true);
         }
@@ -113,6 +142,23 @@ export function WelcomePage() {
                             value={formData.notes}
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                         />
+                    </div>
+
+                    {/* CAPTCHA */}
+                    <div className="flex flex-col items-center">
+                        <Turnstile
+                            ref={turnstileRef}
+                            siteKey={TURNSTILE_SITE_KEY}
+                            onSuccess={(token) => {
+                                setCaptchaToken(token);
+                                setCaptchaError(false);
+                            }}
+                            onError={() => setCaptchaError(true)}
+                            onExpire={() => setCaptchaToken(null)}
+                        />
+                        {captchaError && (
+                            <p className="text-red-500 text-sm mt-2">אנא אשר שאתה לא רובוט</p>
+                        )}
                     </div>
 
                     <button
