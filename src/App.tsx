@@ -17,6 +17,8 @@ import { SettingsPage } from './pages/SettingsPage';
 import { RequireAuth } from './components/RequireAuth';
 import { ToastProvider } from './context/ToastContext';
 import { WelcomePage } from './pages/public/WelcomePage';
+import { PrivacyPolicyPage } from './pages/public/PrivacyPolicyPage';
+import { TermsOfServicePage } from './pages/public/TermsOfServicePage';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route
               path="/"
