@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 export function LoginPage() {
@@ -131,6 +131,19 @@ export function LoginPage() {
                         </button>
                     </form>
                 )}
+
+                {/* Legal Links - Required for Google OAuth */}
+                <div className="mt-8 pt-4 border-t border-border/50 text-center">
+                    <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
+                        <Link to="/privacy" className="hover:text-primary hover:underline transition-colors">
+                            Privacy Policy
+                        </Link>
+                        <span>•</span>
+                        <Link to="/terms" className="hover:text-primary hover:underline transition-colors">
+                            Terms of Service
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );
