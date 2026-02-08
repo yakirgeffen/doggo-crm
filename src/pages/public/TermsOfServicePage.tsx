@@ -1,8 +1,8 @@
-import { FileText, ArrowRight } from 'lucide-react';
+import { FileText, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function TermsOfServicePage() {
-    const lastUpdated = 'February 6, 2026';
+    const lastUpdated = '6 בפברואר 2026';
     const contactEmail = 'yakirgeffen@gmail.com';
     const appName = 'DogGo CRM';
     const companyName = 'DogGo';
@@ -13,180 +13,179 @@ export function TermsOfServicePage() {
             {/* Header */}
             <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors">
-                        <ArrowRight size={20} className="rotate-180" />
-                        <span className="font-medium">Back to App</span>
-                    </Link>
                     <div className="flex items-center gap-2">
                         <FileText size={24} className="text-green-600" />
                         <span className="font-bold text-slate-800">{appName}</span>
                     </div>
+                    <Link to="/" className="flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors">
+                        <span className="font-medium">חזרה לאפליקציה</span>
+                        <ArrowLeft size={20} />
+                    </Link>
                 </div>
             </header>
 
             {/* Content */}
             <main className="max-w-4xl mx-auto px-6 py-12">
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
-                    <h1 className="text-4xl font-black text-slate-800 mb-2">Terms of Service</h1>
-                    <p className="text-slate-500 mb-8">Last updated: {lastUpdated}</p>
+                    <h1 className="text-4xl font-black text-slate-800 mb-2">תנאי שימוש</h1>
+                    <p className="text-slate-500 mb-8">עודכן לאחרונה: {lastUpdated}</p>
 
                     <div className="prose prose-slate max-w-none">
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Acceptance of Terms</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">1. קבלת התנאים</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                By accessing or using {appName} ("the Service"), you agree to be bound by these Terms of Service.
-                                If you do not agree to these terms, please do not use our Service.
+                                על ידי גישה או שימוש ב-{appName} ("השירות"), אתם מסכימים להיות מחויבים לתנאי שימוש אלה.
+                                אם אינכם מסכימים לתנאים אלה, אנא הימנעו משימוש בשירות שלנו.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">2. Description of Service</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">2. תיאור השירות</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                {appName} is a client relationship management platform designed for professional dog trainers.
-                                The Service allows you to manage clients, schedule training sessions, track programs,
-                                and communicate with your clients.
+                                {appName} היא פלטפורמת ניהול קשרי לקוחות המיועדת למאלפי כלבים מקצועיים.
+                                השירות מאפשר לכם לנהל לקוחות, לתזמן מפגשי אימון, לעקוב אחר תוכניות
+                                ולתקשר עם הלקוחות שלכם.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">3. User Accounts</h2>
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">3.1 Registration</h3>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">3. חשבונות משתמש</h2>
+                            <h3 className="text-lg font-semibold text-slate-700 mb-2">3.1 הרשמה</h3>
                             <p className="text-slate-600 leading-relaxed mb-4">
-                                To use the Service, you must sign in using your Google account. You are responsible for
-                                maintaining the security of your Google account credentials.
+                                כדי להשתמש בשירות, עליכם להתחבר באמצעות חשבון Google שלכם. אתם אחראים
+                                לשמירה על אבטחת פרטי ההתחברות לחשבון Google שלכם.
                             </p>
 
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">3.2 Account Responsibilities</h3>
+                            <h3 className="text-lg font-semibold text-slate-700 mb-2">3.2 אחריות החשבון</h3>
                             <ul className="list-disc list-inside text-slate-600 space-y-2">
-                                <li>You must provide accurate information when using the Service</li>
-                                <li>You are responsible for all activity under your account</li>
-                                <li>You must notify us immediately of any unauthorized access</li>
-                                <li>You must be at least 18 years old to use this Service</li>
+                                <li>עליכם לספק מידע מדויק בעת השימוש בשירות</li>
+                                <li>אתם אחראים לכל הפעילות תחת החשבון שלכם</li>
+                                <li>עליכם להודיע לנו מיד על כל גישה לא מורשית</li>
+                                <li>עליכם להיות בני 18 לפחות כדי להשתמש בשירות זה</li>
                             </ul>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">4. Acceptable Use</h2>
-                            <p className="text-slate-600 leading-relaxed mb-4">You agree not to:</p>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">4. שימוש מקובל</h2>
+                            <p className="text-slate-600 leading-relaxed mb-4">אתם מסכימים שלא:</p>
                             <ul className="list-disc list-inside text-slate-600 space-y-2">
-                                <li>Use the Service for any illegal purpose</li>
-                                <li>Upload malicious code, viruses, or harmful content</li>
-                                <li>Attempt to gain unauthorized access to the Service or its systems</li>
-                                <li>Interfere with or disrupt the Service</li>
-                                <li>Violate any applicable laws or regulations</li>
-                                <li>Harass, abuse, or harm others through the Service</li>
-                                <li>Use the Service to send spam or unsolicited communications</li>
+                                <li>להשתמש בשירות לכל מטרה בלתי חוקית</li>
+                                <li>להעלות קוד זדוני, וירוסים או תוכן מזיק</li>
+                                <li>לנסות לקבל גישה לא מורשית לשירות או למערכותיו</li>
+                                <li>להפריע או לשבש את השירות</li>
+                                <li>להפר כל חוק או תקנה ישימים</li>
+                                <li>להטריד, לפגוע או להזיק לאחרים דרך השירות</li>
+                                <li>להשתמש בשירות לשליחת ספאם או תקשורת לא רצויה</li>
                             </ul>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">5. Your Data</h2>
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.1 Ownership</h3>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">5. הנתונים שלכם</h2>
+                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.1 בעלות</h3>
                             <p className="text-slate-600 leading-relaxed mb-4">
-                                You retain ownership of all data you enter into the Service, including client information,
-                                training records, and notes. We do not claim ownership of your content.
+                                אתם שומרים על הבעלות על כל הנתונים שאתם מזינים לשירות, כולל מידע על לקוחות,
+                                רשומות אימון והערות. אנחנו לא טוענים לבעלות על התוכן שלכם.
                             </p>
 
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.2 License to Use</h3>
+                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.2 רישיון שימוש</h3>
                             <p className="text-slate-600 leading-relaxed mb-4">
-                                By using the Service, you grant us a limited license to store, process, and display your
-                                data solely for the purpose of providing the Service to you.
+                                על ידי שימוש בשירות, אתם מעניקים לנו רישיון מוגבל לאחסן, לעבד ולהציג את
+                                הנתונים שלכם אך ורק לצורך אספקת השירות עבורכם.
                             </p>
 
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.3 Data Protection</h3>
+                            <h3 className="text-lg font-semibold text-slate-700 mb-2">5.3 הגנת נתונים</h3>
                             <p className="text-slate-600 leading-relaxed">
-                                We handle your data in accordance with our{' '}
-                                <Link to="/privacy" className="text-green-600 hover:underline">Privacy Policy</Link>.
-                                You are responsible for ensuring you have appropriate consent from your clients
-                                to store their information in the Service.
+                                אנו מטפלים בנתונים שלכם בהתאם ל
+                                <Link to="/privacy" className="text-green-600 hover:underline">מדיניות הפרטיות</Link> שלנו.
+                                אתם אחראים לוודא שיש לכם הסכמה מתאימה מהלקוחות שלכם
+                                לאחסון המידע שלהם בשירות.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">6. Third-Party Services</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">6. שירותי צד שלישי</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                The Service integrates with Google services (Gmail, Calendar) with your explicit consent.
-                                Your use of these integrations is subject to Google's Terms of Service.
-                                We are not responsible for the availability or functionality of third-party services.
+                                השירות משתלב עם שירותי Google (Gmail, יומן) באישורכם המפורש.
+                                השימוש שלכם באינטגרציות אלה כפוף לתנאי השירות של Google.
+                                אנחנו לא אחראים לזמינות או לפונקציונליות של שירותי צד שלישי.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">7. Service Availability</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">7. זמינות השירות</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                We strive to maintain high availability of the Service, but we do not guarantee
-                                uninterrupted access. We may temporarily suspend the Service for maintenance,
-                                updates, or due to circumstances beyond our control.
+                                אנו שואפים לשמור על זמינות גבוהה של השירות, אך איננו מתחייבים
+                                לגישה רציפה. אנו עשויים להשעות את השירות זמנית לתחזוקה,
+                                עדכונים או עקב נסיבות שמעבר לשליטתנו.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">8. Intellectual Property</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">8. קניין רוחני</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                The Service, including its design, features, and code, is owned by {companyName}.
-                                You may not copy, modify, distribute, or reverse engineer any part of the Service
-                                without our written permission.
+                                השירות, כולל העיצוב, התכונות והקוד שלו, שייך ל-{companyName}.
+                                אינכם רשאים להעתיק, לשנות, להפיץ או לבצע הנדסה לאחור של כל חלק מהשירות
+                                ללא אישורנו בכתב.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">9. Limitation of Liability</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">9. הגבלת אחריות</h2>
                             <p className="text-slate-600 leading-relaxed p-4 bg-amber-50 rounded-lg border border-amber-200">
-                                THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
-                                TO THE MAXIMUM EXTENT PERMITTED BY LAW, {companyName.toUpperCase()} SHALL NOT BE LIABLE FOR
-                                ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR
-                                USE OF THE SERVICE.
+                                השירות מסופק "כמות שהוא" ללא אחריות מכל סוג שהוא, מפורשת או משתמעת.
+                                במידה המרבית המותרת על פי חוק, {companyName.toUpperCase()} לא יישא באחריות
+                                לכל נזק עקיף, מקרי, מיוחד, תוצאתי או עונשי הנובע משימושכם בשירות.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">10. Indemnification</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">10. שיפוי</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                You agree to indemnify and hold harmless {companyName} from any claims, damages,
-                                or expenses arising from your use of the Service, your violation of these Terms,
-                                or your violation of any rights of another party.
+                                אתם מסכימים לשפות ולהגן על {companyName} מכל תביעות, נזקים
+                                או הוצאות הנובעים משימושכם בשירות, הפרת תנאים אלה
+                                או הפרה של זכויות צד שלישי כלשהו.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">11. Termination</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">11. סיום</h2>
                             <p className="text-slate-600 leading-relaxed mb-4">
-                                We may suspend or terminate your access to the Service at any time, with or without cause.
-                                You may also delete your account at any time.
+                                אנו רשאים להשעות או לסיים את הגישה שלכם לשירות בכל עת, עם או בלי סיבה.
+                                אתם יכולים גם למחוק את החשבון שלכם בכל עת.
                             </p>
                             <p className="text-slate-600 leading-relaxed">
-                                Upon termination, your right to use the Service will immediately cease.
-                                You may request an export of your data before account deletion.
-                            </p>
-                        </section>
-
-                        <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">12. Changes to Terms</h2>
-                            <p className="text-slate-600 leading-relaxed">
-                                We may modify these Terms at any time. We will notify you of significant changes
-                                by posting the updated Terms on this page. Your continued use of the Service
-                                after changes constitutes acceptance of the modified Terms.
+                                עם הסיום, זכותכם להשתמש בשירות תפוג מיד.
+                                תוכלו לבקש ייצוא של הנתונים שלכם לפני מחיקת החשבון.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">13. Governing Law</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">12. שינויים בתנאים</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                These Terms shall be governed by the laws of Israel, without regard to its
-                                conflict of law principles. Any disputes shall be resolved in the courts of Israel.
+                                אנו עשויים לשנות תנאים אלה בכל עת. נודיע לכם על שינויים משמעותיים
+                                על ידי פרסום התנאים המעודכנים בדף זה. המשך השימוש שלכם בשירות
+                                לאחר השינויים מהווה הסכמה לתנאים המתוקנים.
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-800 mb-4">14. Contact Information</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">13. הדין החל</h2>
                             <p className="text-slate-600 leading-relaxed">
-                                For questions about these Terms, please contact us at:
+                                תנאים אלה יהיו כפופים לחוקי מדינת ישראל, מבלי להתחשב בכללי
+                                ברירת הדין שלה. כל מחלוקת תיפתר בבתי המשפט בישראל.
+                            </p>
+                        </section>
+
+                        <section className="mb-8">
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">14. יצירת קשר</h2>
+                            <p className="text-slate-600 leading-relaxed">
+                                לשאלות בנוגע לתנאים אלה, אנא פנו אלינו ב:
                             </p>
                             <div className="mt-4 p-4 bg-slate-50 rounded-lg">
                                 <p className="text-slate-700">
                                     <strong>{companyName}</strong><br />
-                                    Email: <a href={`mailto:${contactEmail}`} className="text-green-600 hover:underline">{contactEmail}</a><br />
-                                    Website: <a href={websiteUrl} className="text-green-600 hover:underline">{websiteUrl}</a>
+                                    אימייל: <a href={`mailto:${contactEmail}`} className="text-green-600 hover:underline">{contactEmail}</a><br />
+                                    אתר: <a href={websiteUrl} className="text-green-600 hover:underline">{websiteUrl}</a>
                                 </p>
                             </div>
                         </section>
@@ -196,7 +195,7 @@ export function TermsOfServicePage() {
                 {/* Footer Links */}
                 <div className="mt-8 text-center">
                     <Link to="/privacy" className="text-green-600 hover:text-green-700 font-medium hover:underline">
-                        View Privacy Policy →
+                        ← צפייה במדיניות הפרטיות
                     </Link>
                 </div>
             </main>

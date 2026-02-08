@@ -136,11 +136,11 @@ export function LoginPage() {
                 <div className="mt-8 pt-4 border-t border-border/50 text-center">
                     <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
                         <Link to="/privacy" className="hover:text-primary hover:underline transition-colors">
-                            Privacy Policy
+                            מדיניות פרטיות
                         </Link>
                         <span>•</span>
                         <Link to="/terms" className="hover:text-primary hover:underline transition-colors">
-                            Terms of Service
+                            תנאי שימוש
                         </Link>
                     </div>
                 </div>
