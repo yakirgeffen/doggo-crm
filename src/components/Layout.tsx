@@ -42,7 +42,7 @@ export function Layout() {
                 <div className="h-[72px] flex items-center justify-center border-b border-border-light px-6">
                     <h1 className="text-xl font-bold flex items-center gap-2 text-text-primary">
                         <span className="text-2xl">🐾</span>
-                        <span>Paw & Order</span>
+                        <span>Doggo CRM</span>
                     </h1>
                 </div>
 
@@ -88,7 +88,7 @@ export function Layout() {
                         התנתק
                     </button>
                     <div className="text-[11px] text-center text-text-muted/60 pt-2 pb-1 font-medium">
-                        גרסה 2.0 • Paw & Order
+                        גרסה 2.0 • Doggo CRM
                     </div>
                 </div>
             </aside>
@@ -97,7 +97,7 @@ export function Layout() {
             <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-surface/95 backdrop-blur-sm z-40 flex items-center justify-between px-5 border-b border-border">
                 <h1 className="text-lg font-bold flex items-center gap-2 text-text-primary">
                     <span className="text-xl">🐾</span>
-                    <span>Paw & Order</span>
+                    <span>Doggo CRM</span>
                 </h1>
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -123,7 +123,7 @@ export function Layout() {
             >
                 <div className="p-4 flex justify-between items-center border-b border-border-light">
                     <h2 className="font-bold text-text-primary flex items-center gap-2">
-                        <span>🐾</span> Paw & Order
+                        <span>🐾</span> Doggo CRM
                     </h2>
                     <button onClick={closeMenu} className="p-2 text-text-muted hover:bg-background rounded-lg">
                         <X size={20} />
