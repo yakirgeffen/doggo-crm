@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
@@ -34,21 +34,22 @@ export function NewClientPage() {
 
     return (
         <div className="max-w-2xl mx-auto animate-fade-in">
-            <Link to="/clients" className="flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] mb-6 transition-colors font-bold text-sm group w-fit">
-                <ArrowLeft size={18} className="ml-2 rotate-180 group-hover:translate-x-1 transition-transform rtl:-scale-x-100" />
+            <Link to="/clients" className="flex items-center text-text-muted hover:text-text-primary mb-6 transition-colors font-medium text-sm group w-fit">
+                <ArrowRight size={18} className="me-2 group-hover:-translate-x-1 transition-transform" />
                 חזרה ללקוחות
             </Link>
 
-            <div className="card p-8 border-t-4 border-t-[var(--coffee-bean)] shadow-[var(--shadow-float)]">
-                <h1 className="text-3xl font-black text-[var(--color-text-main)] mb-2">לקוח חדש</h1>
-                <p className="text-[var(--color-text-muted)] mb-8 text-sm">הזן את פרטי הלקוח החדש והכלב שלו.</p>
+            <div className="flat-card p-8 border-t-4 border-t-primary shadow-card">
+                <h1 className="text-[28px] font-bold text-text-primary mb-2">לקוח חדש</h1>
+                <p className="text-text-muted mb-8 text-sm">הזן את פרטי הלקוח החדש והכלב שלו.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
-                            שם מלא <span className="text-red-400">*</span>
+                        <label htmlFor="nc-full-name" className="block text-sm font-medium text-text-primary">
+                            שם מלא <span className="text-error">*</span>
                         </label>
                         <input
+                            id="nc-full-name"
                             type="text"
                             required
                             placeholder="לדוגמה: ישראל ישראלי"
@@ -60,10 +61,11 @@ export function NewClientPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                            <label htmlFor="nc-email" className="block text-sm font-medium text-text-primary">
                                 אימייל
                             </label>
                             <input
+                                id="nc-email"
                                 type="email"
                                 placeholder="example@mail.com"
                                 className="input-field"
@@ -72,10 +74,11 @@ export function NewClientPage() {
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                            <label htmlFor="nc-phone" className="block text-sm font-medium text-text-primary">
                                 טלפון
                             </label>
                             <input
+                                id="nc-phone"
                                 type="tel"
                                 placeholder="050-0000000"
                                 className="input-field"
@@ -86,10 +89,11 @@ export function NewClientPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label htmlFor="nc-dog-name" className="block text-sm font-medium text-text-primary">
                             שם הכלב
                         </label>
                         <input
+                            id="nc-dog-name"
                             type="text"
                             placeholder="לדוגמה: רקסי"
                             className="input-field"
@@ -99,10 +103,11 @@ export function NewClientPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label htmlFor="nc-notes" className="block text-sm font-medium text-text-primary">
                             הערות ראשוניות
                         </label>
                         <textarea
+                            id="nc-notes"
                             placeholder="פרטים חשובים על הכלב, התנהגות, מטרות..."
                             className="input-field min-h-[120px]"
                             value={formData.notes}
@@ -110,7 +115,7 @@ export function NewClientPage() {
                         />
                     </div>
 
-                    <div className="flex justify-end gap-4 pt-6 border-t border-[var(--color-border)]">
+                    <div className="flex justify-end gap-4 pt-6 border-t border-border">
                         <button
                             type="button"
                             onClick={() => navigate('/clients')}
@@ -121,7 +126,7 @@ export function NewClientPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary px-10 shadow-lg shadow-[var(--coffee-bean)]/20"
+                            className="btn btn-primary px-10 shadow-card"
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">

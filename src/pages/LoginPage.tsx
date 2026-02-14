@@ -46,22 +46,22 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-bg-app px-4 relative overflow-hidden">
+        <div className="flex min-h-screen items-center justify-center bg-background px-4 relative overflow-hidden">
             {/* Background Decor */}
             <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div className="flat-card w-full max-w-md p-10 bg-white/80 backdrop-blur-sm shadow-2xl relative z-10 border-white/50">
+            <div className="flat-card w-full max-w-md p-10 bg-surface/80 backdrop-blur-sm shadow-elevated relative z-10">
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4 text-4xl">
-                        🐕
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 text-4xl">
+                        🐾
                     </div>
-                    <h1 className="text-3xl font-black text-text-main mb-2">DoggoCRM</h1>
-                    <p className="text-text-muted">מרכז השליטה שלך לאילוף</p>
+                    <h1 className="text-[28px] font-bold text-text-primary mb-2">Paw & Order</h1>
+                    <p className="text-text-secondary">מרכז השליטה שלך לאילוף</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6 border border-red-100 flex items-start gap-2">
+                    <div className="bg-error/10 text-error p-4 rounded-xl text-sm mb-6 border border-error/20 flex items-start gap-2">
                         <span>⚠️</span>
                         <span>{error}</span>
                     </div>
@@ -71,10 +71,10 @@ export function LoginPage() {
                     <button
                         onClick={handleGoogleLogin}
                         disabled={loading}
-                        className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3.5 px-4 rounded-xl transition-all shadow-sm group"
+                        className="w-full flex items-center justify-center gap-3 bg-surface border border-border hover:bg-surface-warm text-text-primary font-medium py-3.5 px-4 rounded-xl transition-all shadow-soft group"
                     >
                         {loading ? (
-                            <span className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></span>
+                            <span className="w-5 h-5 border-2 border-border border-t-text-secondary rounded-full animate-spin"></span>
                         ) : (
                             <>
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@ export function LoginPage() {
 
                     <button
                         disabled={true}
-                        className="w-full flex items-center justify-center gap-3 bg-gray-50 border border-dashed border-gray-300 text-gray-400 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed opacity-70"
+                        className="w-full flex items-center justify-center gap-3 bg-surface-warm border border-dashed border-border text-text-muted font-medium py-3.5 px-4 rounded-xl cursor-not-allowed opacity-70"
                     >
                         <span>Windows / Outlook (בקרוב)</span>
                     </button>
@@ -106,9 +106,9 @@ export function LoginPage() {
                 </div>
 
                 {showDev && (
-                    <form onSubmit={handleDevLogin} className="mt-6 space-y-4 animate-fade-in bg-gray-50 p-4 rounded-xl border border-border">
+                    <form onSubmit={handleDevLogin} className="mt-6 space-y-4 animate-fade-in bg-surface-warm p-4 rounded-xl border border-border">
                         <div>
-                            <label className="block text-xs font-bold text-text-muted mb-1">Username</label>
+                            <label className="block text-xs font-medium text-text-muted mb-1">Username</label>
                             <input
                                 type="text"
                                 className="input-field py-2 text-sm"
@@ -118,7 +118,7 @@ export function LoginPage() {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-text-muted mb-1">Password</label>
+                            <label className="block text-xs font-medium text-text-muted mb-1">Password</label>
                             <input
                                 type="password"
                                 className="input-field py-2 text-sm"
@@ -132,8 +132,8 @@ export function LoginPage() {
                     </form>
                 )}
 
-                {/* Legal Links - Required for Google OAuth */}
-                <div className="mt-8 pt-4 border-t border-border/50 text-center">
+                {/* Legal Links */}
+                <div className="mt-8 pt-4 border-t border-border-light text-center">
                     <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
                         <Link to="/privacy" className="hover:text-primary hover:underline transition-colors">
                             מדיניות פרטיות

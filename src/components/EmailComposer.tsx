@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Mail, Send, X, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react'; // Added icons
+import { Mail, Send, X, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react';
 import { logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { sendGmail } from '../lib/gmail';
@@ -98,7 +98,6 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         setError(null);
 
         try {
-            // 1. Send via Gmail API
             await sendGmail({
                 to: clientEmail,
                 subject,
@@ -106,13 +105,12 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                 token: providerToken
             });
 
-            // 2. Log internally
             await logActivity(entityType, entityId, 'email_sent', `Email sent via Gmail API: ${subject}`);
 
             setSuccess(true);
             setTimeout(() => {
                 onClose();
-                window.location.reload(); // Refresh to show log
+                window.location.reload();
             }, 1500);
 
         } catch (err: any) {
@@ -130,17 +128,45 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         window.location.reload();
     };
 
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus trap + Escape key — IS 5568
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') { onClose(); return; }
+            if (e.key !== 'Tab' || !dialogRef.current) return;
+            const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+            } else {
+                if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
     return createPortal(
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-[var(--radius-lg)] shadow-2xl w-full max-w-lg overflow-hidden scale-100 animate-in zoom-in-95 duration-200 border border-[var(--color-border)]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-fade-in">
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="email-composer-title"
+                className="bg-surface rounded-xl shadow-elevated w-full max-w-lg overflow-hidden border border-border"
+            >
 
                 {/* Header */}
-                <div className="p-5 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--tea-green-light)]">
-                    <h3 className="font-bold text-[var(--color-text-main)] flex items-center gap-2 text-lg">
-                        <Mail size={20} className="text-[var(--coffee-bean)]" />
+                <div className="p-5 border-b border-border flex justify-between items-center bg-primary/5">
+                    <h3 id="email-composer-title" className="font-bold text-text-primary flex items-center gap-2 text-lg">
+                        <Mail size={20} className="text-primary" />
                         כתיבת אימייל
                     </h3>
-                    <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors p-1 hover:bg-black/5 rounded-full">
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-colors p-1 hover:bg-black/5 rounded-lg" aria-label="סגור">
                         <X size={20} />
                     </button>
                 </div>
@@ -150,29 +176,29 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
                     {/* Success Message */}
                     {success ? (
-                        <div className="flex flex-col items-center justify-center py-10 text-center animate-in zoom-in-95">
-                            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                        <div className="flex flex-col items-center justify-center py-10 text-center animate-fade-in">
+                            <div className="w-16 h-16 bg-success/10 text-success rounded-lg flex items-center justify-center mb-4">
                                 <CheckCircle size={32} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-800">האימייל נשלח בהצלחה!</h3>
-                            <p className="text-gray-500">ההודעה תועדה בתיק הלקוח.</p>
+                            <h3 className="text-xl font-bold text-text-primary">האימייל נשלח בהצלחה!</h3>
+                            <p className="text-text-muted">ההודעה תועדה בתיק הלקוח.</p>
                         </div>
                     ) : (
                         <>
                             {/* Error Banner */}
                             {error && (
-                                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm flex items-start gap-2">
+                                <div className="bg-error/10 text-error p-3 rounded-lg text-sm flex items-start gap-2">
                                     <AlertCircle size={16} className="mt-0.5 shrink-0" />
                                     <span>{error}</span>
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-sm font-bold text-[var(--color-text-main)] mb-1.5">
+                                <label className="block text-sm font-medium text-text-primary mb-1.5">
                                     תבנית
                                 </label>
                                 <select
-                                    className="w-full px-4 py-2.5 border border-[var(--color-border)] rounded-[var(--radius-md)] bg-white focus:ring-2 focus:ring-[var(--light-blue)] focus:border-transparent transition-all outline-none appearance-none"
+                                    className="input-field"
                                     value={selectedTemplate}
                                     onChange={handleTemplateChange}
                                 >
@@ -184,12 +210,12 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-[var(--color-text-main)] mb-1.5">
+                                <label className="block text-sm font-medium text-text-primary mb-1.5">
                                     נושא
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full px-4 py-2.5 border border-[var(--color-border)] rounded-[var(--radius-md)] focus:ring-2 focus:ring-[var(--light-blue)] focus:border-transparent transition-all outline-none"
+                                    className="input-field"
                                     value={subject}
                                     onChange={(e) => setSubject(e.target.value)}
                                     placeholder="נושא האימייל..."
@@ -197,11 +223,11 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-[var(--color-text-main)] mb-1.5">
+                                <label className="block text-sm font-medium text-text-primary mb-1.5">
                                     תוכן ההודעה
                                 </label>
                                 <textarea
-                                    className="w-full px-4 py-3 border border-[var(--color-border)] rounded-[var(--radius-md)] min-h-[200px] focus:ring-2 focus:ring-[var(--light-blue)] focus:border-transparent transition-all outline-none resize-none"
+                                    className="input-field min-h-[200px] resize-none"
                                     value={body}
                                     onChange={(e) => setBody(e.target.value)}
                                     placeholder="כתוב את ההודעה כאן..."
@@ -209,7 +235,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                             </div>
 
                             {!providerToken && (
-                                <div className="bg-yellow-50 text-yellow-800 p-3 rounded-md text-xs flex gap-2">
+                                <div className="bg-warning/10 text-warning p-3 rounded-lg text-xs flex gap-2">
                                     <AlertCircle size={16} />
                                     <p>שים לב: אינך מחובר דרך Google. השליחה תתבצע דרך תוכנת המייל במחשב שלך ולא תתועד אוטומטית.</p>
                                 </div>
@@ -220,13 +246,13 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
                 {/* Footer */}
                 {!success && (
-                    <div className="p-5 border-t border-[var(--color-border)] flex justify-between gap-3 bg-[var(--color-bg-app)]/50">
-                        <button onClick={handleFallbackMailto} className="btn text-[var(--color-text-muted)] text-sm underline hover:text-primary">
+                    <div className="p-5 border-t border-border flex justify-between gap-3 bg-background">
+                        <button onClick={handleFallbackMailto} className="btn text-text-muted text-sm underline hover:text-primary">
                             שימוש בתוכנת מייל חיצונית
                         </button>
 
                         <div className="flex gap-3">
-                            <button onClick={onClose} className="btn bg-white border border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-app)]">
+                            <button onClick={onClose} className="btn btn-secondary">
                                 ביטול
                             </button>
 

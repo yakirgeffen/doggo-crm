@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
 
@@ -9,17 +9,17 @@ export function NewSessionPage() {
     const { programId } = useParams<{ programId: string }>();
     const [loading, setLoading] = useState(false);
     const [programName, setProgramName] = useState('');
-    const [programType, setProgramType] = useState<string>('fixed_sessions'); // Track type
+    const [programType, setProgramType] = useState<string>('fixed_sessions');
 
-    const { services } = useServices(); // Fetch active services
+    const { services } = useServices();
 
     const [formData, setFormData] = useState({
         session_date: new Date().toISOString().split('T')[0],
         session_notes: '',
         homework: '',
         next_session_date: '',
-        service_id: '', // For open ended
-        price: '', // For open ended
+        service_id: '',
+        price: '',
     });
 
     useEffect(() => {
@@ -38,7 +38,6 @@ export function NewSessionPage() {
         }
     }, [programId]);
 
-    // Auto-fill price when service selected
     useEffect(() => {
         if (formData.service_id) {
             const service = services.find(s => s.id === formData.service_id);
@@ -59,7 +58,6 @@ export function NewSessionPage() {
             session_notes: formData.session_notes,
             homework: formData.homework,
             next_session_date: formData.next_session_date || null,
-            // Only save price/service if open ended (or if user populated them)
             price: formData.price ? parseFloat(formData.price) : null,
             currency: 'ILS',
             service_id: formData.service_id || null,
@@ -80,28 +78,29 @@ export function NewSessionPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto">
-            <Link to={`/programs/${programId}`} className="flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] mb-6 transition-colors font-medium text-sm">
-                <ArrowLeft size={16} className="ml-2 rotate-180" /> {/* Flip arrow for RTL */}
+        <div className="max-w-2xl mx-auto animate-fade-in">
+            <Link to={`/programs/${programId}`} className="flex items-center text-text-muted hover:text-text-primary mb-6 transition-colors font-medium text-sm group w-fit">
+                <ArrowRight size={16} className="me-2 group-hover:-translate-x-1 transition-transform" />
                 חזרה לתוכנית
             </Link>
 
-            <div className="card p-8">
+            <div className="flat-card p-8">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-[var(--color-text-main)]">תיעוד מפגש</h1>
-                    {programName && <p className="text-[var(--color-text-muted)] mt-1">עבור {programName}</p>}
+                    <h1 className="text-2xl font-bold text-text-primary">תיעוד מפגש</h1>
+                    {programName && <p className="text-text-muted mt-1">עבור {programName}</p>}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-main)] mb-1">
+                        <label htmlFor="ns-date" className="block text-sm font-medium text-text-primary mb-1">
                             תאריך המפגש *
                         </label>
                         <input
+                            id="ns-date"
                             type="date"
                             required
-                            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                            className="input-field"
                             value={formData.session_date}
                             onChange={(e) => setFormData({ ...formData, session_date: e.target.value })}
                         />
@@ -109,14 +108,15 @@ export function NewSessionPage() {
 
                     {/* Service Selector (Only for Open Ended) */}
                     {programType === 'open_ended' && (
-                        <div className="p-4 bg-[var(--tea-green-light)]/30 rounded-lg border border-[var(--color-primary)]/20 space-y-4 animate-fade-in">
-                            <h3 className="text-sm font-bold text-[var(--color-primary)] flex items-center gap-2">
+                        <div className="p-4 bg-primary/5 rounded-xl border border-primary/15 space-y-4 animate-fade-in">
+                            <h3 className="text-sm font-bold text-primary flex items-center gap-2">
                                 💰 חיוב עבור מפגש חד פעמי
                             </h3>
 
                             <div>
-                                <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1">סוג שירות</label>
+                                <label htmlFor="ns-service" className="block text-xs font-medium text-text-muted mb-1">סוג שירות</label>
                                 <select
+                                    id="ns-service"
                                     className="input-field text-sm"
                                     value={formData.service_id}
                                     onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
@@ -130,8 +130,9 @@ export function NewSessionPage() {
 
                             {formData.service_id && (
                                 <div>
-                                    <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1">מחיר לתשלום (₪)</label>
+                                    <label htmlFor="ns-price" className="block text-xs font-medium text-text-muted mb-1">מחיר לתשלום (₪)</label>
                                     <input
+                                        id="ns-price"
                                         type="number"
                                         className="input-field text-sm"
                                         value={formData.price}
@@ -143,12 +144,13 @@ export function NewSessionPage() {
                     )}
 
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-main)] mb-1">
+                        <label htmlFor="ns-notes" className="block text-sm font-medium text-text-primary mb-1">
                             סיכום מפגש
                         </label>
                         <textarea
+                            id="ns-notes"
                             required
-                            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] min-h-[150px]"
+                            className="input-field min-h-[150px]"
                             placeholder="על מה עבדנו היום?"
                             value={formData.session_notes}
                             onChange={(e) => setFormData({ ...formData, session_notes: e.target.value })}
@@ -156,28 +158,30 @@ export function NewSessionPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-[var(--color-text-main)] mb-1">
+                        <label htmlFor="ns-homework" className="block text-sm font-medium text-text-primary mb-1">
                             שיעורי בית / דגשים להמשך
                         </label>
                         <textarea
-                            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] min-h-[80px]"
+                            id="ns-homework"
+                            className="input-field min-h-[80px]"
                             placeholder="הנחיות לתרגול בבית..."
                             value={formData.homework}
                             onChange={(e) => setFormData({ ...formData, homework: e.target.value })}
                         />
                     </div>
 
-                    <div className="pt-4 border-t border-[var(--color-border)]">
-                        <label className="block text-sm font-medium text-[var(--color-text-main)] mb-1">
+                    <div className="pt-4 border-t border-border">
+                        <label htmlFor="ns-next-date" className="block text-sm font-medium text-text-primary mb-1">
                             תאריך המפגש הבא (אופציונלי)
                         </label>
                         <input
+                            id="ns-next-date"
                             type="date"
-                            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                            className="input-field"
                             value={formData.next_session_date}
                             onChange={(e) => setFormData({ ...formData, next_session_date: e.target.value })}
                         />
-                        <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                        <p className="text-xs text-text-muted mt-1">
                             משמש לתיאום ציפיות. לא קובע אירוע ביומן באופן אוטומטי (עדיין).
                         </p>
                     </div>

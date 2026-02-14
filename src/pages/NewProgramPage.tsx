@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { Link } from 'react-router-dom';
-import { useServices } from '../hooks/useServices'; // Import hook
+import { useServices } from '../hooks/useServices';
 
 export function NewProgramPage() {
     const navigate = useNavigate();
@@ -13,18 +13,17 @@ export function NewProgramPage() {
     const [loading, setLoading] = useState(false);
     const [clients, setClients] = useState<any[]>([]);
 
-    const { services } = useServices(); // Fetch services
+    const { services } = useServices();
 
     const [formData, setFormData] = useState({
         client_id: preselectedClientId || '',
         program_name: '',
-        program_type: 'fixed_sessions', // or 'open_ended'
+        program_type: 'fixed_sessions',
         sessions_included: 5,
         status: 'active',
-        price: '', // New field
+        price: '',
     });
 
-    // Auto-fill from Service Template
     const handleServiceSelect = (serviceId: string) => {
         const service = services.find(s => s.id === serviceId);
         if (service) {
@@ -32,14 +31,13 @@ export function NewProgramPage() {
                 ...prev,
                 program_name: service.name,
                 price: service.price.toString(),
-                program_type: 'fixed_sessions', // Default to fixed?
-                sessions_included: 5 // Default?
+                program_type: 'fixed_sessions',
+                sessions_included: 5
             }));
         }
     };
 
     useEffect(() => {
-        // Fetch active clients for the dropdown
         supabase
             .from('clients')
             .select('id, full_name, primary_dog_name')
@@ -77,22 +75,23 @@ export function NewProgramPage() {
 
     return (
         <div className="max-w-2xl mx-auto animate-fade-in">
-            <Link to="/programs" className="flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] mb-6 transition-colors font-bold text-sm group w-fit">
-                <ArrowLeft size={18} className="ml-2 rotate-180 group-hover:translate-x-1 transition-transform rtl:-scale-x-100" />
+            <Link to="/programs" className="flex items-center text-text-muted hover:text-text-primary mb-6 transition-colors font-medium text-sm group w-fit">
+                <ArrowRight size={18} className="me-2 group-hover:-translate-x-1 transition-transform" />
                 חזרה לתוכניות
             </Link>
 
-            <div className="card p-8 border-t-4 border-t-[var(--coffee-bean)] shadow-[var(--shadow-float)]">
-                <h1 className="text-3xl font-black text-[var(--color-text-main)] mb-2">תוכנית חדשה</h1>
-                <p className="text-[var(--color-text-muted)] mb-8 text-sm">הגדר תוכנית אילוף חדשה ללקוח.</p>
+            <div className="flat-card p-8 border-t-4 border-t-primary shadow-card">
+                <h1 className="text-[28px] font-bold text-text-primary mb-2">תוכנית חדשה</h1>
+                <p className="text-text-muted mb-8 text-sm">הגדר תוכנית אילוף חדשה ללקוח.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
-                            לקוח <span className="text-red-400">*</span>
+                        <label htmlFor="np-client" className="block text-sm font-medium text-text-primary">
+                            לקוח <span className="text-error">*</span>
                         </label>
                         <select
+                            id="np-client"
                             required
                             className="input-field cursor-pointer"
                             value={formData.client_id}
@@ -109,8 +108,8 @@ export function NewProgramPage() {
 
                     {/* Service Template Selector */}
                     {services.length > 0 && (
-                        <div className="bg-gray-50 p-4 rounded-lg border border-dashed border-[var(--color-border)]">
-                            <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-2 uppercase tracking-wide">
+                        <div className="bg-surface-warm p-4 rounded-xl border border-dashed border-border">
+                            <label className="block text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
                                 השתמש בתבנית שירות (אופציונלי)
                             </label>
                             <div className="flex flex-wrap gap-2">
@@ -119,7 +118,7 @@ export function NewProgramPage() {
                                         key={s.id}
                                         type="button"
                                         onClick={() => handleServiceSelect(s.id)}
-                                        className="text-xs font-bold px-3 py-1.5 bg-white border border-[var(--color-border)] rounded-full hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"
+                                        className="text-xs font-medium px-3 py-1.5 bg-surface border border-border rounded-lg hover:border-primary hover:text-primary transition-all ltr-nums"
                                     >
                                         {s.name} (₪{s.price})
                                     </button>
@@ -129,10 +128,11 @@ export function NewProgramPage() {
                     )}
 
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
-                            שם התוכנית <span className="text-red-400">*</span>
+                        <label htmlFor="np-name" className="block text-sm font-medium text-text-primary">
+                            שם התוכנית <span className="text-error">*</span>
                         </label>
                         <input
+                            id="np-name"
                             type="text"
                             required
                             placeholder="לדוגמה: אילוף גורים, שיקום ריאקטיביות"
@@ -143,15 +143,16 @@ export function NewProgramPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label htmlFor="np-price" className="block text-sm font-medium text-text-primary">
                             מחיר התוכנית
                         </label>
                         <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₪</span>
+                            <span className="absolute start-3 top-2.5 text-text-muted text-sm">₪</span>
                             <input
+                                id="np-price"
                                 type="number"
                                 placeholder="0.00"
-                                className="input-field pl-8"
+                                className="input-field ps-8"
                                 value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             />
@@ -159,41 +160,42 @@ export function NewProgramPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label className="block text-sm font-medium text-text-primary">
                             סוג תוכנית
                         </label>
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <label className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all flex-1 ${formData.program_type === 'fixed_sessions' ? 'bg-[var(--tea-green-light)] border-[var(--color-primary)] shadow-sm' : 'bg-white border-[var(--color-border)] hover:bg-gray-50'}`}>
+                            <label className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all flex-1 ${formData.program_type === 'fixed_sessions' ? 'bg-primary/5 border-primary shadow-soft' : 'bg-surface border-border hover:bg-surface-warm'}`}>
                                 <input
                                     type="radio"
                                     name="type"
                                     value="fixed_sessions"
-                                    className="scale-125 accent-[var(--color-primary)]"
+                                    className="scale-125 accent-primary"
                                     checked={formData.program_type === 'fixed_sessions'}
                                     onChange={() => setFormData({ ...formData, program_type: 'fixed_sessions' })}
                                 />
-                                <span className="font-bold">חבילה קבועה</span>
+                                <span className="font-medium">חבילה קבועה</span>
                             </label>
-                            <label className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all flex-1 ${formData.program_type === 'open_ended' ? 'bg-[var(--tea-green-light)] border-[var(--color-primary)] shadow-sm' : 'bg-white border-[var(--color-border)] hover:bg-[var(--color-bg-app)]'}`}>
+                            <label className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all flex-1 ${formData.program_type === 'open_ended' ? 'bg-primary/5 border-primary shadow-soft' : 'bg-surface border-border hover:bg-surface-warm'}`}>
                                 <input
                                     type="radio"
                                     name="type"
                                     value="open_ended"
-                                    className="scale-125 accent-[var(--color-primary)]"
+                                    className="scale-125 accent-primary"
                                     checked={formData.program_type === 'open_ended'}
                                     onChange={() => setFormData({ ...formData, program_type: 'open_ended' })}
                                 />
-                                <span className="font-bold">מתמשך / תשלום פר מפגש</span>
+                                <span className="font-medium">מתמשך / תשלום פר מפגש</span>
                             </label>
                         </div>
                     </div>
 
                     {formData.program_type === 'fixed_sessions' && (
                         <div className="space-y-1.5 animate-fade-in">
-                            <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                            <label htmlFor="np-sessions" className="block text-sm font-medium text-text-primary">
                                 מספר מפגשים
                             </label>
                             <input
+                                id="np-sessions"
                                 type="number"
                                 min="1"
                                 required
@@ -204,7 +206,7 @@ export function NewProgramPage() {
                         </div>
                     )}
 
-                    <div className="flex justify-end gap-4 pt-6 border-t border-[var(--color-border)]">
+                    <div className="flex justify-end gap-4 pt-6 border-t border-border">
                         <button
                             type="button"
                             onClick={() => navigate('/programs')}
@@ -215,7 +217,7 @@ export function NewProgramPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary px-10 shadow-lg shadow-[var(--coffee-bean)]/20"
+                            className="btn btn-primary px-10 shadow-card"
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">

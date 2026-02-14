@@ -8,40 +8,39 @@ interface EmptyStateProps {
     actionLabel?: string;
     actionTo?: string;
     onAction?: () => void;
-    color?: 'blue' | 'green' | 'orange' | 'purple'; // Theme colors
+    color?: 'primary' | 'success' | 'warning' | 'accent';
 }
 
-export function EmptyState({ icon: Icon, title, description, actionLabel, actionTo, onAction, color = 'blue' }: EmptyStateProps) {
-    const colorStyles = {
-        blue: 'bg-blue-50 text-blue-500 border-blue-100',
-        green: 'bg-[#E8F5E9] text-[#2E7D32] border-[#C8E6C9]', // Tea Green-ish
-        orange: 'bg-orange-50 text-orange-500 border-orange-100',
-        purple: 'bg-purple-50 text-purple-500 border-purple-100',
-    };
+const colorStyles: Record<string, string> = {
+    primary: 'bg-primary/10 text-primary border-primary/20',
+    success: 'bg-success/10 text-success border-success/20',
+    warning: 'bg-warning/10 text-warning border-warning/20',
+    accent: 'bg-accent/10 text-accent border-accent/20',
+};
 
+export function EmptyState({ icon: Icon, title, description, actionLabel, actionTo, onAction, color = 'primary' }: EmptyStateProps) {
     return (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in">
-            {/* Illustrated Icon Bubble */}
-            <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-sm ${colorStyles[color]}`}>
-                <Icon size={32} strokeWidth={2.5} />
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in" role="status">
+            {/* Rounded square icon — NOT circle per design system */}
+            <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 border ${colorStyles[color]}`}>
+                <Icon size={28} strokeWidth={2} />
             </div>
 
-            <h3 className="text-xl font-black text-[var(--color-text-main)] mb-2">
+            <h3 className="text-xl font-bold text-text-primary mb-2">
                 {title}
             </h3>
 
-            <p className="text-[var(--color-text-muted)] max-w-sm mx-auto mb-8 text-sm leading-relaxed">
+            <p className="text-text-muted max-w-sm mx-auto mb-8 text-sm leading-relaxed">
                 {description}
             </p>
 
-            {/* Action */}
             {actionLabel && (
                 actionTo ? (
-                    <Link to={actionTo} className="btn btn-primary shadow-lg hover:-translate-y-0.5 transition-transform">
+                    <Link to={actionTo} className="btn btn-primary">
                         {actionLabel}
                     </Link>
                 ) : onAction ? (
-                    <button onClick={onAction} className="btn btn-primary shadow-lg hover:-translate-y-0.5 transition-transform">
+                    <button onClick={onAction} className="btn btn-primary">
                         {actionLabel}
                     </button>
                 ) : null

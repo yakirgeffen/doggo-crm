@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Upload, FileSpreadsheet, Check, AlertTriangle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { X, Upload, FileSpreadsheet, Check, AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
 import { supabase } from '../lib/supabase';
 
@@ -17,17 +17,14 @@ interface ParsedRow {
 
 export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClientsModalProps) {
     const [step, setStep] = useState<Step>('upload');
-    // const [file, setFile] = useState<File | null>(null);
     const [parsedData, setParsedData] = useState<ParsedRow[]>([]);
     const [headers, setHeaders] = useState<string[]>([]);
 
-    // Mapping State
-    const [nameColumns, setNameColumns] = useState<string[]>([]); // Allow multi-select
+    const [nameColumns, setNameColumns] = useState<string[]>([]);
     const [dogColumn, setDogColumn] = useState<string>('');
     const [phoneColumn, setPhoneColumn] = useState<string>('');
     const [emailColumn, setEmailColumn] = useState<string>('');
 
-    // Processed Data
     const [previewData, setPreviewData] = useState<any[]>([]);
     const [importStats, setImportStats] = useState({ total: 0, success: 0, failed: 0 });
 
@@ -36,7 +33,6 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        // setFile(file); // Unused
 
         Papa.parse(file, {
             header: true,
@@ -58,9 +54,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
     };
 
     const generatePreview = () => {
-        // Transform data based on mapping
         const transformed = parsedData.map((row, index) => {
-            // Smart Concatenation for Name
             const fullName = nameColumns.map(col => row[col]).filter(Boolean).join(' ').trim();
             const dogName = dogColumn ? row[dogColumn] : 'Dog';
             const phone = phoneColumn ? row[phoneColumn] : '';
@@ -75,7 +69,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                 id: index,
                 raw: row,
                 full_name: fullName,
-                primary_dog_name: dogName || 'Dog', // Fallback
+                primary_dog_name: dogName || 'Dog',
                 phone,
                 email,
                 isValid,
@@ -90,12 +84,6 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
     const executeImport = async () => {
         setStep('importing');
         const validRows = previewData.filter(r => r.isValid);
-
-
-
-        // Batch insert could be faster, but let's do loop for progress feedback or error handling per row if validRows is small enough (<1000)
-        // For 'Import Current Clients' usually < 500.
-        // Actually Supabase bulk insert is safer.
 
         const dbRows = validRows.map(r => ({
             full_name: r.full_name,
@@ -115,21 +103,50 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
         } else {
             setImportStats({
                 total: validRows.length,
-                success: validRows.length, // Assuming all succeed if batch succeeds
+                success: validRows.length,
                 failed: 0
             });
             setStep('done');
         }
     };
 
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus trap + Escape key — IS 5568
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') { onClose(); return; }
+        if (e.key !== 'Tab' || !dialogRef.current) return;
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        } else {
+            if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        }
+    }, [onClose]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
     return (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-2xl h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="import-clients-title"
+                className="bg-surface rounded-xl w-full max-w-2xl h-[90vh] flex flex-col shadow-elevated overflow-hidden"
+            >
                 {/* Header */}
-                <div className="p-4 border-b border-[var(--color-border)] flex justify-between items-center bg-gray-50">
+                <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
                     <div>
-                        <h3 className="font-bold text-lg text-[var(--color-text-main)]">ייבוא לקוחות</h3>
-                        <p className="text-xs text-[var(--color-text-muted)]">
+                        <h3 id="import-clients-title" className="font-bold text-lg text-text-primary">ייבוא לקוחות</h3>
+                        <p className="text-xs text-text-muted">
                             {step === 'upload' && 'שלב 1/4: בחירת קובץ'}
                             {step === 'map' && 'שלב 2/4: מיפוי עמודות'}
                             {step === 'preview' && 'שלב 3/4: בדיקת נתונים'}
@@ -137,7 +154,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                             {step === 'done' && 'הייבוא הושלם!'}
                         </p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full">
+                    <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-lg" aria-label="סגור">
                         <X size={20} />
                     </button>
                 </div>
@@ -148,23 +165,23 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                     {/* STEP 1: UPLOAD */}
                     {step === 'upload' && (
                         <div className="flex flex-col items-center justify-center h-full space-y-6">
-                            <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center">
-                                <FileSpreadsheet size={48} className="text-green-600" />
+                            <div className="w-24 h-24 bg-success/10 rounded-xl flex items-center justify-center">
+                                <FileSpreadsheet size={48} className="text-success" />
                             </div>
                             <div className="text-center max-w-md">
-                                <h4 className="text-xl font-bold mb-2">ייבוא מאקסל או CSV</h4>
-                                <p className="text-[var(--color-text-muted)]">
+                                <h4 className="text-xl font-bold mb-2 text-text-primary">ייבוא מאקסל או CSV</h4>
+                                <p className="text-text-muted">
                                     העלה קובץ עם רשימת הלקוחות שלך. המערכת תזהה את העמודות באופן אוטומטי.
                                 </p>
                             </div>
 
-                            <label className="btn btn-primary cursor-pointer shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
-                                <Upload size={20} className="ml-2" />
+                            <label className="btn btn-primary cursor-pointer shadow-card hover:shadow-elevated transition-all hover:-translate-y-1">
+                                <Upload size={20} className="ms-2" />
                                 בחר קובץ CSV
                                 <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
                             </label>
 
-                            <p className="text-xs text-center text-gray-400 mt-4">
+                            <p className="text-xs text-center text-text-muted mt-4">
                                 תומך בקבצי .csv בלבד כרגע.
                             </p>
                         </div>
@@ -173,23 +190,23 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                     {/* STEP 2: MAP */}
                     {step === 'map' && (
                         <div className="space-y-6">
-                            <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg text-sm text-blue-800">
+                            <div className="bg-accent/10 border border-accent/15 p-4 rounded-xl text-sm text-accent">
                                 <p className="font-bold mb-1">💡 זיהינו {parsedData.length} שורות.</p>
                                 אנא בחר איזה עמודה בקובץ מתאימה לכל שדה.
                             </div>
 
                             {/* Name Mapping */}
                             <div className="space-y-2">
-                                <label className="block text-sm font-bold">שם הלקוח (חובה)</label>
-                                <p className="text-xs text-gray-500 mb-2">ניתן לבחור מספר עמודות (למשל: שם פרטי + שם משפחה). הם יחוברו אוטומטית.</p>
+                                <label className="block text-sm font-medium text-text-primary">שם הלקוח (חובה)</label>
+                                <p className="text-xs text-text-muted mb-2">ניתן לבחור מספר עמודות (למשל: שם פרטי + שם משפחה). הם יחוברו אוטומטית.</p>
                                 <div className="flex flex-wrap gap-2">
                                     {headers.map(header => (
                                         <button
                                             key={header}
                                             onClick={() => toggleNameColumn(header)}
-                                            className={`px-3 py-1.5 rounded-md text-sm transition-all border ${nameColumns.includes(header)
-                                                ? 'bg-green-100 text-green-800 border-green-200 font-bold ring-2 ring-green-500/20'
-                                                : 'bg-white text-gray-600 border-gray-200 hover:border-green-300'
+                                            className={`px-3 py-1.5 rounded-lg text-sm transition-all border ${nameColumns.includes(header)
+                                                ? 'bg-success/10 text-success border-success/20 font-medium ring-2 ring-success/20'
+                                                : 'bg-surface text-text-secondary border-border hover:border-success/30'
                                                 }`}
                                         >
                                             {header}
@@ -198,12 +215,12 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                                 </div>
                             </div>
 
-                            <hr className="border-gray-100" />
+                            <hr className="border-border" />
 
                             {/* Dog Name */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-bold mb-2">שם הכלב</label>
+                                    <label className="block text-sm font-medium text-text-primary mb-2">שם הכלב</label>
                                     <select
                                         className="input-field"
                                         value={dogColumn}
@@ -214,7 +231,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold mb-2">טלפון</label>
+                                    <label className="block text-sm font-medium text-text-primary mb-2">טלפון</label>
                                     <select
                                         className="input-field"
                                         value={phoneColumn}
@@ -225,7 +242,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold mb-2">אימייל</label>
+                                    <label className="block text-sm font-medium text-text-primary mb-2">אימייל</label>
                                     <select
                                         className="input-field"
                                         value={emailColumn}
@@ -243,44 +260,44 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                     {step === 'preview' && (
                         <div className="space-y-4 h-full flex flex-col">
                             <div className="flex gap-4 text-sm">
-                                <div className="bg-green-50 text-green-800 px-3 py-1 rounded-md font-bold">
+                                <div className="bg-success/10 text-success px-3 py-1 rounded-lg font-medium">
                                     {previewData.filter(r => r.isValid).length} תקינים
                                 </div>
-                                <div className="bg-red-50 text-red-800 px-3 py-1 rounded-md font-bold">
+                                <div className="bg-error/10 text-error px-3 py-1 rounded-lg font-medium">
                                     {previewData.filter(r => !r.isValid).length} שגיאות (ידולגו)
                                 </div>
                             </div>
 
-                            <div className="border border-[var(--color-border)] rounded-lg overflow-hidden flex-1 relative">
+                            <div className="border border-border rounded-xl overflow-hidden flex-1 relative">
                                 <div className="overflow-auto absolute inset-0">
                                     <table className="w-full text-sm text-right">
-                                        <thead className="bg-gray-50 sticky top-0 font-bold text-gray-700">
+                                        <thead className="bg-surface-warm sticky top-0 font-medium text-text-primary">
                                             <tr>
-                                                <th className="p-3 border-b">סטטוס</th>
-                                                <th className="p-3 border-b">שם לקוח</th>
-                                                <th className="p-3 border-b">כלב</th>
-                                                <th className="p-3 border-b">טלפון</th>
-                                                <th className="p-3 border-b">אימייל</th>
+                                                <th className="p-3 border-b border-border">סטטוס</th>
+                                                <th className="p-3 border-b border-border">שם לקוח</th>
+                                                <th className="p-3 border-b border-border">כלב</th>
+                                                <th className="p-3 border-b border-border">טלפון</th>
+                                                <th className="p-3 border-b border-border">אימייל</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-100">
+                                        <tbody className="divide-y divide-border">
                                             {previewData.map((row) => (
-                                                <tr key={row.id} className={!row.isValid ? 'bg-red-50/50' : 'hover:bg-gray-50'}>
+                                                <tr key={row.id} className={!row.isValid ? 'bg-error/5' : 'hover:bg-surface-warm'}>
                                                     <td className="p-3">
                                                         {row.isValid ? (
-                                                            <Check size={16} className="text-green-600" />
+                                                            <Check size={16} className="text-success" />
                                                         ) : (
                                                             <div title={row.issues.join(', ')}>
-                                                                <AlertTriangle size={16} className="text-red-500" />
+                                                                <AlertTriangle size={16} className="text-error" />
                                                             </div>
                                                         )}
                                                     </td>
-                                                    <td className={`p-3 font-medium ${!row.full_name ? 'text-red-500 italic' : ''}`}>
+                                                    <td className={`p-3 font-medium ${!row.full_name ? 'text-error italic' : ''}`}>
                                                         {row.full_name || '(חסר)'}
                                                     </td>
-                                                    <td className="p-3 text-gray-600">{row.primary_dog_name}</td>
-                                                    <td className="p-3 text-gray-600" dir="ltr">{row.phone}</td>
-                                                    <td className="p-3 text-gray-600 truncate max-w-[150px]">{row.email}</td>
+                                                    <td className="p-3 text-text-muted">{row.primary_dog_name}</td>
+                                                    <td className="p-3 text-text-muted" dir="ltr">{row.phone}</td>
+                                                    <td className="p-3 text-text-muted truncate max-w-[150px]">{row.email}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -293,11 +310,11 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                     {/* STEP 4: DONE */}
                     {step === 'done' && (
                         <div className="flex flex-col items-center justify-center h-full space-y-6 text-center animate-fade-in">
-                            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-                                <Check size={48} className="text-green-600" />
+                            <div className="w-24 h-24 bg-success/10 rounded-xl flex items-center justify-center">
+                                <Check size={48} className="text-success" />
                             </div>
-                            <h4 className="text-2xl font-black text-[var(--color-text-main)]">הייבוא הושלם בהצלחה!</h4>
-                            <p className="text-[var(--color-text-muted)] text-lg">
+                            <h4 className="text-2xl font-bold text-text-primary">הייבוא הושלם בהצלחה!</h4>
+                            <p className="text-text-muted text-lg">
                                 נוספו {importStats.success} לקוחות חדשים למערכת.
                             </p>
                         </div>
@@ -305,20 +322,19 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="p-4 border-t border-[var(--color-border)] bg-gray-50 flex justify-between items-center">
+                <div className="p-4 border-t border-border bg-surface-warm flex justify-between items-center">
                     {step !== 'done' && step !== 'upload' && (
                         <button
                             onClick={() => setStep(step === 'preview' ? 'map' : 'upload')}
                             className="btn btn-secondary text-sm"
                         >
-                            <ArrowRight size={16} className="ml-2" />
                             חזרה
                         </button>
                     )}
 
                     <div className="flex-1"></div>
 
-                    {step === 'upload' && <span className="text-xs text-gray-400">בחר קובץ להמשך</span>}
+                    {step === 'upload' && <span className="text-xs text-text-muted">בחר קובץ להמשך</span>}
 
                     {step === 'map' && (
                         <button
@@ -327,7 +343,6 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                             className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             המשך לתצוגה מקדימה
-                            <ArrowLeft size={16} className="mr-2" />
                         </button>
                     )}
 
@@ -337,7 +352,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                             className="btn btn-primary"
                         >
                             ייבא {previewData.filter(r => r.isValid).length} לקוחות
-                            <Check size={16} className="mr-2" />
+                            <Check size={16} className="ms-2" />
                         </button>
                     )}
 

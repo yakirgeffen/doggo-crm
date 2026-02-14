@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { CalendarGrid } from '../components/CalendarGrid';
 
-// Reusing the type structure compatible with both views
 interface AgendaItem {
     id: string;
     type: 'internal' | 'external';
@@ -20,11 +19,10 @@ interface AgendaItem {
 export function CalendarPage() {
     const { providerToken } = useAuth();
     const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
-    const [currentDate, setCurrentDate] = useState(new Date()); // Represents the focused date (or start of week)
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [showInternal, setShowInternal] = useState(true);
     const [showExternal, setShowExternal] = useState(true);
 
-    // Data state
     const [items, setItems] = useState<AgendaItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -39,7 +37,6 @@ export function CalendarPage() {
         try {
             const allItems: AgendaItem[] = [];
 
-            // Calculate start of the currently viewed week for fetch range
             const d = new Date(currentDate);
             const day = d.getDay();
             const diff = d.getDate() - day;
@@ -47,9 +44,6 @@ export function CalendarPage() {
             d.setHours(0, 0, 0, 0);
             const startRange = d.toISOString();
 
-            console.log('Fetching agenda from:', startRange);
-
-            // 1. Fetch Internal Sessions (Supabase)
             const { data: sessions, error: dbError } = await supabase
                 .from('sessions')
                 .select(`
@@ -60,18 +54,16 @@ export function CalendarPage() {
                         clients (full_name, primary_dog_name)
                     )
                 `)
-                .gte('session_date', startRange) // Fetch from start of view, not "now"
+                .gte('session_date', startRange)
                 .order('session_date', { ascending: true })
-                .limit(100); // Increased limit
-
-            console.log('Fetched sessions:', sessions);
+                .limit(100);
 
             if (dbError) throw dbError;
 
             if (sessions) {
                 sessions.forEach((s: any) => {
                     const start = new Date(s.session_date);
-                    const end = new Date(start.getTime() + 60 * 60 * 1000); // Default 1 hour duration
+                    const end = new Date(start.getTime() + 60 * 60 * 1000);
 
                     allItems.push({
                         id: s.id,
@@ -85,7 +77,6 @@ export function CalendarPage() {
                 });
             }
 
-            // 2. Fetch External Events (Google Calendar)
             if (providerToken) {
                 try {
                     const googleEvents = await listUpcomingEvents(providerToken);
@@ -109,7 +100,6 @@ export function CalendarPage() {
                 }
             }
 
-            // 3. Sort
             allItems.sort((a, b) => a.start.getTime() - b.start.getTime());
             setItems(allItems);
 
@@ -121,7 +111,6 @@ export function CalendarPage() {
         }
     };
 
-    // Helper to change weeks
     const navigateWeek = (direction: 'prev' | 'next') => {
         const newDate = new Date(currentDate);
         newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
@@ -130,17 +119,15 @@ export function CalendarPage() {
 
     const jumpToday = () => setCurrentDate(new Date());
 
-    // Calculate Grid Start Date (Last Sunday)
     const getGridStartDate = () => {
         const d = new Date(currentDate);
-        const day = d.getDay(); // 0 is Sunday
-        const diff = d.getDate() - day; // adjust when day is sunday
+        const day = d.getDay();
+        const diff = d.getDate() - day;
         d.setDate(diff);
         d.setHours(0, 0, 0, 0);
         return d;
     };
 
-    // Filter items based on toggles
     const filteredItems = items.filter(item => {
         if (item.type === 'internal' && !showInternal) return false;
         if (item.type === 'external' && !showExternal) return false;
@@ -148,13 +135,9 @@ export function CalendarPage() {
     });
 
     const sortAndGroupItems = (items: AgendaItem[]) => {
-        // Sort by start time
         const sorted = [...items].sort((a, b) => a.start.getTime() - b.start.getTime());
-
-        // Group
         const grouped: Record<string, AgendaItem[]> = {};
         sorted.forEach(item => {
-            // Use stripped date string for grouping key to safely compare days
             const dateKey = new Date(item.start.getFullYear(), item.start.getMonth(), item.start.getDate()).toISOString();
             if (!grouped[dateKey]) grouped[dateKey] = [];
             grouped[dateKey].push(item);
@@ -170,20 +153,20 @@ export function CalendarPage() {
             {/* Header / Toolbar */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-[var(--color-text-main)] mb-1">לוח זמנים</h1>
+                    <h1 className="text-[28px] font-bold text-text-primary mb-1">לוח זמנים</h1>
                     <div className="flex items-center gap-4 mt-2">
-                        <button onClick={jumpToday} className="text-sm font-bold text-[var(--color-primary)] hover:underline">
+                        <button onClick={jumpToday} className="text-sm font-medium text-primary hover:underline">
                             היום
                         </button>
-                        <div className="flex items-center bg-white rounded-lg shadow-sm border border-[var(--color-border)] p-1">
-                            <button onClick={() => navigateWeek('prev')} className="p-1 hover:bg-gray-100 rounded-md text-[var(--color-text-muted)]">
+                        <div className="flex items-center bg-surface rounded-lg shadow-soft border border-border p-1">
+                            <button onClick={() => navigateWeek('prev')} className="p-1 hover:bg-background rounded-md text-text-muted">
                                 <ChevronRight size={20} />
                             </button>
-                            <span className="px-3 text-sm font-bold min-w-[100px] text-center">
+                            <span className="px-3 text-sm font-medium min-w-[100px] text-center text-text-primary">
                                 {getGridStartDate().toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })} - {' '}
                                 {new Date(new Date(getGridStartDate()).setDate(getGridStartDate().getDate() + 6)).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })}
                             </span>
-                            <button onClick={() => navigateWeek('next')} className="p-1 hover:bg-gray-100 rounded-md text-[var(--color-text-muted)]">
+                            <button onClick={() => navigateWeek('next')} className="p-1 hover:bg-background rounded-md text-text-muted">
                                 <ChevronLeft size={20} />
                             </button>
                         </div>
@@ -192,45 +175,45 @@ export function CalendarPage() {
 
                 <div className="flex items-center gap-4">
                     {/* Smart Filters */}
-                    <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-[var(--color-border)] shadow-sm">
+                    <div className="flex items-center gap-2 bg-surface p-1 rounded-lg border border-border shadow-soft">
                         <button
                             onClick={() => setShowInternal(!showInternal)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-2
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-2
                                 ${showInternal
-                                    ? 'bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200'
-                                    : 'text-[var(--color-text-muted)] hover:bg-gray-50 opacity-60'
+                                    ? 'bg-primary/10 text-primary'
+                                    : 'text-text-muted hover:bg-background opacity-60'
                                 }`}
                         >
-                            <span className={`w-2 h-2 rounded-full ${showInternal ? 'bg-emerald-500' : 'bg-gray-300'}`}></span>
+                            <span className={`w-2 h-2 rounded-full ${showInternal ? 'bg-primary' : 'bg-text-muted'}`}></span>
                             אימונים
                         </button>
-                        <div className="w-px h-4 bg-gray-200"></div>
+                        <div className="w-px h-4 bg-border"></div>
                         <button
                             onClick={() => setShowExternal(!showExternal)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-2
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-2
                                 ${showExternal
-                                    ? 'bg-gray-100 text-gray-700 shadow-sm ring-1 ring-gray-200'
-                                    : 'text-[var(--color-text-muted)] hover:bg-gray-50 opacity-60'
+                                    ? 'bg-background text-text-secondary'
+                                    : 'text-text-muted hover:bg-background opacity-60'
                                 }`}
                         >
-                            <span className={`w-2 h-2 rounded-full ${showExternal ? 'bg-gray-500' : 'bg-gray-300'}`}></span>
+                            <span className={`w-2 h-2 rounded-full ${showExternal ? 'bg-text-secondary' : 'bg-text-muted'}`}></span>
                             אישי
                         </button>
                     </div>
 
-                    <div className="h-6 w-px bg-gray-200 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
 
-                    <div className="bg-[var(--color-bg-app)] p-1 rounded-lg border border-[var(--color-border)] flex">
+                    <div className="bg-background p-1 rounded-lg border border-border flex">
                         <button
                             onClick={() => setViewMode('week')}
-                            className={`p-2 rounded-md transition-all ${viewMode === 'week' ? 'bg-white shadow text-[var(--color-primary)]' : 'text-[var(--color-text-muted)] hover:bg-white/50'}`}
+                            className={`p-2 rounded-md transition-all ${viewMode === 'week' ? 'bg-surface shadow-soft text-primary' : 'text-text-muted hover:bg-surface-warm'}`}
                             title="Week View"
                         >
                             <Grid size={18} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow text-[var(--color-primary)]' : 'text-[var(--color-text-muted)] hover:bg-white/50'}`}
+                            className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-surface shadow-soft text-primary' : 'text-text-muted hover:bg-surface-warm'}`}
                             title="List View"
                         >
                             <List size={18} />
@@ -242,17 +225,17 @@ export function CalendarPage() {
                         className="btn btn-secondary text-sm"
                         disabled={loading}
                     >
-                        <RefreshCw size={16} className={`ml-2 ${loading ? 'animate-spin' : ''}`} />
+                        <RefreshCw size={16} className={`ms-2 ${loading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
             </div>
 
             {!providerToken && (
-                <div className="flat-card bg-yellow-50 border-yellow-100 p-4 mb-8 flex items-start gap-3">
-                    <AlertCircle className="text-yellow-600 shrink-0 mt-0.5" size={20} />
+                <div className="flat-card bg-warning/10 border-warning/20 p-4 mb-8 flex items-start gap-3">
+                    <AlertCircle className="text-warning shrink-0 mt-0.5" size={20} />
                     <div>
-                        <h3 className="font-bold text-yellow-800">היומן לא מסונכרן</h3>
-                        <p className="text-sm text-yellow-700">כדי לראות את האירועים מיומן Google שלך כאן, עליך להתחבר מחדש דרך Google בדף ההתחברות.</p>
+                        <h3 className="font-bold text-text-primary">היומן לא מסונכרן</h3>
+                        <p className="text-sm text-text-secondary">כדי לראות את האירועים מיומן Google שלך כאן, עליך להתחבר מחדש דרך Google בדף ההתחברות.</p>
                     </div>
                 </div>
             )}
@@ -267,7 +250,7 @@ export function CalendarPage() {
                 /* Grouped List View */
                 <div className="space-y-8 max-w-4xl mx-auto">
                     {filteredItems.length === 0 && !loading ? (
-                        <div className="flat-card p-12 text-center text-[var(--color-text-muted)]">
+                        <div className="flat-card p-12 text-center text-text-muted">
                             <CalendarIcon size={32} className="mx-auto mb-4 opacity-50" />
                             <p>אין אירועים בטווח המוצג</p>
                         </div>
@@ -286,9 +269,9 @@ export function CalendarPage() {
                             else if (isTomorrow) label = `מחר • ${label}`;
 
                             return (
-                                <div key={dateKey} className="animate-slide-up">
-                                    <h3 className={`text-lg font-black mb-4 flex items-center gap-2 sticky top-0 bg-[var(--color-bg-app)] py-2 z-10 
-                                        ${isToday ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-main)]'}`
+                                <div key={dateKey}>
+                                    <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 sticky top-0 bg-background py-2 z-10 
+                                        ${isToday ? 'text-primary' : 'text-text-primary'}`
                                     }>
                                         {label}
                                     </h3>
@@ -299,37 +282,37 @@ export function CalendarPage() {
                                                 className={`
                                                     relative flex items-stretch gap-4 p-4 rounded-xl border transition-all group
                                                     ${item.type === 'internal'
-                                                        ? 'bg-white border-[var(--color-border)] hover:border-[var(--color-primary)] shadow-sm hover:shadow-md'
-                                                        : 'bg-white/60 border-gray-100 dashed-border hover:border-gray-200'
+                                                        ? 'bg-surface border-border hover:border-primary shadow-soft hover:shadow-card'
+                                                        : 'bg-surface/60 border-border-light border-dashed hover:border-border'
                                                     }
                                                 `}
                                             >
-                                                {/* Time Column (Simplified) */}
+                                                {/* Time Column */}
                                                 <div className="w-14 shrink-0 flex flex-col justify-center items-center text-center">
-                                                    <span className="text-lg font-black text-[var(--color-text-main)] leading-none">
+                                                    <span className="text-lg font-bold text-text-primary leading-none ltr-nums">
                                                         {item.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </span>
-                                                    <span className="text-[10px] text-[var(--color-text-muted)] mt-1">
+                                                    <span className="text-[10px] text-text-muted mt-1 ltr-nums">
                                                         {item.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </span>
                                                 </div>
 
                                                 {/* Divider */}
-                                                <div className={`w-1 rounded-full my-1 ${item.type === 'internal' ? 'bg-[var(--color-primary)]/20 group-hover:bg-[var(--color-primary)]' : 'bg-gray-200'}`}></div>
+                                                <div className={`w-1 rounded-full my-1 ${item.type === 'internal' ? 'bg-primary/20 group-hover:bg-primary' : 'bg-border'}`}></div>
 
                                                 {/* Content */}
                                                 <div className="flex-1 min-w-0 py-1 flex flex-col justify-center">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <h3 className={`font-bold text-base truncate ${item.type === 'internal' ? 'text-[var(--color-text-main)]' : 'text-gray-500'}`}>
+                                                        <h3 className={`font-bold text-base truncate ${item.type === 'internal' ? 'text-text-primary' : 'text-text-muted'}`}>
                                                             {item.title}
                                                         </h3>
                                                         {item.type === 'internal' && (
-                                                            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                                            <span className="badge badge-active text-[10px]">
                                                                 אימון
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <p className="text-sm text-[var(--color-text-muted)] truncate flex items-center gap-1.5">
+                                                    <p className="text-sm text-text-muted truncate flex items-center gap-1.5">
                                                         {item.type === 'external' ? <ExternalLink size={12} className="shrink-0 opacity-50" /> : null}
                                                         {item.subtitle}
                                                     </p>
@@ -337,8 +320,8 @@ export function CalendarPage() {
 
                                                 {/* Action */}
                                                 {item.link && (
-                                                    <div className="flex items-center pl-2">
-                                                        <Link to={item.link} className="btn-icon bg-gray-50 hover:bg-white border border-transparent hover:border-gray-200 text-gray-400 hover:text-[var(--color-primary)]">
+                                                    <div className="flex items-center ps-2">
+                                                        <Link to={item.link} className="p-2 bg-background hover:bg-surface border border-transparent hover:border-border text-text-muted hover:text-primary rounded-lg transition-all">
                                                             <ChevronLeft size={18} />
                                                         </Link>
                                                     </div>
@@ -354,7 +337,7 @@ export function CalendarPage() {
             )}
 
             {error && (
-                <div className="mt-8 text-center text-sm text-red-400">
+                <div className="mt-8 text-center text-sm text-error">
                     {error}
                 </div>
             )}

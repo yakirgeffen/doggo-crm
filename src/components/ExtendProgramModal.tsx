@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, DollarSign } from 'lucide-react';
 
 interface ExtendProgramModalProps {
@@ -24,32 +24,61 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
         onClose();
     };
 
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus trap + Escape key — IS 5568
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') { onClose(); return; }
+        if (e.key !== 'Tab' || !dialogRef.current) return;
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        } else {
+            if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        }
+    }, [onClose]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
     return (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-sm shadow-xl overflow-hidden">
-                <div className="p-4 border-b border-[var(--color-border)] flex justify-between items-center bg-gray-50">
-                    <h3 className="font-bold text-lg text-[var(--color-text-main)]">הרחבת תוכנית</h3>
-                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-full">
-                        <X size={20} className="text-[var(--color-text-muted)]" />
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="extend-program-title"
+                className="bg-surface rounded-xl w-full max-w-sm shadow-elevated overflow-hidden"
+            >
+                <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
+                    <h3 id="extend-program-title" className="font-bold text-lg text-text-primary">הרחבת תוכנית</h3>
+                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-lg" aria-label="סגור">
+                        <X size={20} className="text-text-muted" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    <div className="text-sm text-[var(--color-text-muted)] mb-4 bg-blue-50 text-blue-800 p-3 rounded-lg border border-blue-100">
+                    <div className="text-sm text-text-muted mb-4 bg-accent/10 text-accent p-3 rounded-xl border border-accent/15">
                         מוסיף מפגשים לתוכנית <strong>{programName}</strong>.
                         <br />
                         ההיסטוריה והנתונים הקיימים יישמרו.
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label className="block text-sm font-medium text-text-primary">
                             כמה מפגשים להוסיף?
                         </label>
                         <div className="flex items-center gap-2">
                             <button
                                 type="button"
                                 onClick={() => setSessionsToAdd(Math.max(1, sessionsToAdd - 1))}
-                                className="w-10 h-10 rounded-lg border border-[var(--color-border)] flex items-center justify-center hover:bg-gray-50 font-bold text-lg shadow-sm"
+                                className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:bg-surface-warm font-bold text-lg shadow-soft"
                             >
                                 -
                             </button>
@@ -63,32 +92,32 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
                             <button
                                 type="button"
                                 onClick={() => setSessionsToAdd(sessionsToAdd + 1)}
-                                className="w-10 h-10 rounded-lg border border-[var(--color-border)] flex items-center justify-center hover:bg-gray-50 font-bold text-lg shadow-sm"
+                                className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:bg-surface-warm font-bold text-lg shadow-soft"
                             >
                                 +
                             </button>
                         </div>
-                        <p className="text-xs text-[var(--color-text-muted)]">
+                        <p className="text-xs text-text-muted ltr-nums">
                             סה"כ יהיו: {currentSessions ? currentSessions + sessionsToAdd : sessionsToAdd} מפגשים
                         </p>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-bold text-[var(--color-text-main)]">
+                        <label className="block text-sm font-medium text-text-primary">
                             תוספת למחיר (אופציונלי)
                         </label>
                         <div className="relative">
-                            <DollarSign size={16} className="absolute top-1/2 -translate-y-1/2 left-3 text-[var(--color-text-muted)]" />
+                            <DollarSign size={16} className="absolute top-1/2 -translate-y-1/2 start-3 text-text-muted" />
                             <input
                                 type="number"
                                 min="0"
                                 placeholder="0"
                                 value={additionalPrice === 0 ? '' : additionalPrice}
                                 onChange={(e) => setAdditionalPrice(parseFloat(e.target.value) || 0)}
-                                className="input-field pl-10"
+                                className="input-field ps-10"
                             />
                         </div>
-                        <p className="text-xs text-[var(--color-text-muted)]">
+                        <p className="text-xs text-text-muted">
                             המחיר יתווסף לסה"כ של התוכנית
                         </p>
                     </div>
@@ -97,7 +126,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary w-full py-3 shadow-lg shadow-[var(--primary)]/20"
+                            className="btn btn-primary w-full py-3 shadow-card"
                         >
                             {loading ? 'מעדכן...' : `הוסף ${sessionsToAdd} מפגשים`}
                         </button>

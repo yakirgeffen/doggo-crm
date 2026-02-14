@@ -12,14 +12,14 @@ export function SeedPage() {
 
     return (
         <div className="p-10 flex flex-col items-center justify-center">
-            <h1 className="text-2xl font-bold mb-4">Database Seeder (Hebrew)</h1>
+            <h1 className="text-2xl font-bold mb-4 text-text-primary">Database Seeder (Hebrew)</h1>
             <button
                 onClick={handleSeed}
-                className="btn btn-primary bg-blue-600 text-white px-6 py-3 rounded-lg"
+                className="btn btn-primary px-6 py-3"
             >
                 Generate 10 Clients
             </button>
-            <p className="mt-4 text-gray-600">{status}</p>
+            <p className="mt-4 text-text-muted">{status}</p>
         </div>
     );
 }

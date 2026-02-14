@@ -29,11 +29,9 @@ export function ProgramDetailPage() {
     const [loading, setLoading] = useState(true);
     const [isEmailOpen, setIsEmailOpen] = useState(false);
 
-    // Payment State
     const { generatePaymentLink, loading: generatingLink } = useIntegrations();
     const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
-    // Extend Modal State
     const [isExtendModalOpen, setIsExtendModalOpen] = useState(false);
 
     const handleExtendProgram = async (additionalSessions: number, additionalPrice: number) => {
@@ -42,17 +40,10 @@ export function ProgramDetailPage() {
         const newSessionsIncluded = (program.sessions_included || 0) + additionalSessions;
         const newPrice = (program.price || 0) + additionalPrice;
 
-        // If we add price, we might want to reset payment status to 'pending' if it was 'paid'
-        // But simpler logic for now: just update fields. User can manually manage payment status if needed, 
-        // OR we set it to 'pending' if price increased significantly?
-        // Let's stick to "Grounded" - don't automate too much. Just update numbers.
-        // Wait, if I add price, the system needs to know it's unpaid. 
-        // Let's set payment_status to 'pending' if additionalPrice > 0.
-
         const updates: any = {
             sessions_included: newSessionsIncluded,
             price: newPrice,
-            status: 'active' // Reactivate if it was completed
+            status: 'active'
         };
 
         if (additionalPrice > 0) {
@@ -66,11 +57,7 @@ export function ProgramDetailPage() {
 
         if (error) {
             console.error('Error extending program:', error);
-            // alert('Error extending program'); // using toast would be better but simple alert for critical failure is ok for now or we rely on the modal to handle error? 
-            // The modal calls this confirm. 
-            // We should reload or update local state.
         } else {
-            // Optimistic update or reload
             window.location.reload();
         }
     };
@@ -82,7 +69,6 @@ export function ProgramDetailPage() {
     const fetchProgramData = async () => {
         setLoading(true);
         const [progRes, sessRes] = await Promise.all([
-            // Fetch client notes as well
             supabase.from('programs').select('*, clients(id, full_name, primary_dog_name, email, phone, notes)').eq('id', id!).single(),
             supabase.from('sessions').select('*').eq('program_id', id!).order('session_date', { ascending: false })
         ]);
@@ -94,7 +80,6 @@ export function ProgramDetailPage() {
         setLoading(false);
     };
 
-    // Sticky Note Logic
     const [stickyNote, setStickyNote] = useState('');
     const [isNoteDirty, setIsNoteDirty] = useState(false);
     const [savingNote, setSavingNote] = useState(false);
@@ -119,8 +104,8 @@ export function ProgramDetailPage() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-[var(--color-text-muted)]">Loading program...</div>;
-    if (!program) return <div className="p-8 text-center text-[var(--color-text-muted)]">Program not found.</div>;
+    if (loading) return <div className="p-8 text-center text-text-muted">טוען תוכנית...</div>;
+    if (!program) return <div className="p-8 text-center text-text-muted">התוכנית לא נמצאה.</div>;
 
     const progressPercentage = program.program_type === 'fixed_sessions' && program.sessions_included
         ? Math.min(100, (program.sessions_completed / program.sessions_included) * 100)
@@ -132,7 +117,7 @@ export function ProgramDetailPage() {
             <PageHeader
                 title={program.program_name}
                 subtitle={
-                    <Link to={`/clients/${program.clients.id}`} className="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors flex items-center gap-1.5 text-sm font-medium">
+                    <Link to={`/clients/${program.clients.id}`} className="text-text-muted hover:text-primary transition-colors flex items-center gap-1.5 text-sm font-medium">
                         {program.clients.full_name} • {program.clients.primary_dog_name}
                     </Link>
                 }
@@ -147,9 +132,9 @@ export function ProgramDetailPage() {
                                         window.location.reload();
                                     }
                                 }}
-                                className="btn bg-white border border-green-200 text-green-700 hover:bg-green-50 text-sm py-2"
+                                className="btn bg-surface border border-success/30 text-success hover:bg-success/5 text-sm py-2"
                             >
-                                <CheckCircle size={16} className="ml-2" />
+                                <CheckCircle size={16} className="ms-2" />
                                 סיום תוכנית
                             </button>
                             <button
@@ -159,7 +144,7 @@ export function ProgramDetailPage() {
                                         window.location.reload();
                                     }
                                 }}
-                                className="btn bg-white border border-red-200 text-red-600 hover:bg-red-50 text-sm py-2"
+                                className="btn bg-surface border border-error/30 text-error hover:bg-error/5 text-sm py-2"
                             >
                                 ביטול
                             </button>
@@ -170,16 +155,16 @@ export function ProgramDetailPage() {
 
             {/* Sticky Note (Client Context) */}
             <div className="mb-8">
-                <div className="bg-yellow-50/50 border border-yellow-100 rounded-xl p-4 shadow-sm relative group transition-all focus-within:ring-2 focus-within:ring-yellow-200/50">
+                <div className="bg-warning/5 border border-warning/15 rounded-xl p-4 shadow-soft relative group transition-all focus-within:ring-2 focus-within:ring-warning/20">
                     <div className="flex justify-between items-start mb-2">
-                        <label className="text-xs font-bold text-yellow-800 uppercase tracking-widest flex items-center gap-1.5">
+                        <label className="text-xs font-bold text-warning uppercase tracking-widest flex items-center gap-1.5">
                             📌 פתק לקוח (משותף לכל התוכניות)
                         </label>
                         {isNoteDirty && (
                             <button
                                 onClick={handleSaveNote}
                                 disabled={savingNote}
-                                className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold hover:bg-yellow-200 transition-colors animate-fade-in"
+                                className="text-xs bg-warning/10 text-warning px-3 py-1 rounded-lg font-medium hover:bg-warning/20 transition-colors animate-fade-in"
                             >
                                 {savingNote ? 'שומר...' : 'שמור שינויים'}
                             </button>
@@ -192,37 +177,37 @@ export function ProgramDetailPage() {
                             setIsNoteDirty(true);
                         }}
                         placeholder="רשום כאן דגשים קבועים ללקוח (למשל: קוד לדלת, רגישויות, שעות מועדפות...)"
-                        className="w-full bg-transparent border-none p-0 text-[var(--color-text-main)] placeholder-yellow-800/30 resize-none focus:ring-0 min-h-[60px] text-sm leading-relaxed"
+                        className="w-full bg-transparent border-none p-0 text-text-primary placeholder-warning/30 resize-none focus:ring-0 min-h-[60px] text-sm leading-relaxed"
                     />
                 </div>
             </div>
 
-            {/* Stats Grid (Flat Cards) */}
+            {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div className="flat-card p-4">
-                    <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wide block mb-1">סטטוס</span>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${program.status === 'active' ? 'bg-green-100 text-green-800' :
-                        program.status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                            'bg-yellow-100 text-yellow-800'
+                    <span className="text-xs font-medium text-text-muted uppercase tracking-wide block mb-1">סטטוס</span>
+                    <span className={`badge ${program.status === 'active' ? 'badge-active' :
+                        program.status === 'completed' ? 'badge-completed' :
+                            'badge-pending'
                         }`}>
                         {program.status === 'active' ? 'פעיל' : program.status === 'completed' ? 'הושלם' : 'מבוטל'}
                     </span>
                 </div>
                 <div className="flat-card p-4">
-                    <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wide block mb-1">סוג תוכנית</span>
-                    <span className="font-bold text-[var(--color-text-main)]">
+                    <span className="text-xs font-medium text-text-muted uppercase tracking-wide block mb-1">סוג תוכנית</span>
+                    <span className="font-bold text-text-primary">
                         {program.program_type === 'fixed_sessions' ? 'חבילה קבועה' : 'מתמשך'}
                     </span>
                 </div>
                 <div className="flat-card p-4">
-                    <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wide block mb-1">התקדמות</span>
+                    <span className="text-xs font-medium text-text-muted uppercase tracking-wide block mb-1">התקדמות</span>
                     <div className="flex items-center gap-3">
-                        <span className="font-bold text-[var(--color-text-main)] text-lg min-w-[3ch] text-right">{Math.round(progressPercentage)}%</span>
-                        <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+                        <span className="font-bold text-text-primary text-lg min-w-[3ch] text-right ltr-nums">{Math.round(progressPercentage)}%</span>
+                        <div className="flex-1 bg-background rounded-lg h-3 overflow-hidden">
                             <div
-                                className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${program.status === 'completed' ? 'bg-gradient-to-r from-green-400 to-emerald-600' :
-                                    program.status === 'paused' ? 'bg-gray-400' :
-                                        'bg-gradient-to-r from-blue-500 to-indigo-600'
+                                className={`h-full rounded-lg transition-all duration-1000 ease-out ${program.status === 'completed' ? 'bg-success' :
+                                    program.status === 'paused' ? 'bg-text-muted' :
+                                        'bg-primary'
                                     }`}
                                 style={{ width: `${Math.min(100, progressPercentage)}%` }}
                             />
@@ -230,14 +215,14 @@ export function ProgramDetailPage() {
                     </div>
                 </div>
                 <div className="flat-card p-4 relative group">
-                    <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wide block mb-1">מפגשים</span>
-                    <span className="text-xl font-bold text-[var(--color-text-main)]" dir="ltr">
-                        {program.sessions_completed} <span className="text-[var(--color-text-muted)] text-sm font-normal">/ {program.sessions_included || '∞'}</span>
+                    <span className="text-xs font-medium text-text-muted uppercase tracking-wide block mb-1">מפגשים</span>
+                    <span className="text-xl font-bold text-text-primary ltr-nums" dir="ltr">
+                        {program.sessions_completed} <span className="text-text-muted text-sm font-normal">/ {program.sessions_included || '∞'}</span>
                     </span>
                     {program.program_type === 'fixed_sessions' && (
                         <button
                             onClick={() => setIsExtendModalOpen(true)}
-                            className="absolute top-3 left-3 w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100 hover:scale-110 shadow-sm"
+                            className="absolute top-3 start-3 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary/20 hover:scale-110 shadow-soft"
                             title="הוסף מפגשים"
                         >
                             <Plus size={16} />
@@ -254,27 +239,25 @@ export function ProgramDetailPage() {
                 programName={program.program_name}
             />
 
-
-
             {/* Payment & Actions Section */}
             <div className="mb-8">
-                <div className={`flat-card p-6 flex flex-col md:flex-row items-center justify-between gap-6 border-l-4 ${program.payment_status === 'paid' ? 'border-l-green-500 bg-green-50/50' :
-                    program.payment_status === 'pending' ? 'border-l-orange-400 bg-orange-50/30' :
-                        'border-l-red-500 bg-red-50/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                <div className={`flat-card p-6 flex flex-col md:flex-row items-center justify-between gap-6 border-s-4 ${program.payment_status === 'paid' ? 'border-s-success bg-success/5' :
+                    program.payment_status === 'pending' ? 'border-s-warning bg-warning/5' :
+                        'border-s-error bg-error/5'
                     }`}>
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${program.payment_status === 'paid' ? 'bg-green-100 text-green-600' :
-                            program.payment_status === 'pending' ? 'bg-orange-100 text-orange-600' :
-                                'bg-red-100 text-red-600 animate-pulse'
+                        <div className={`p-3 rounded-lg ${program.payment_status === 'paid' ? 'bg-success/10 text-success' :
+                            program.payment_status === 'pending' ? 'bg-warning/10 text-warning' :
+                                'bg-error/10 text-error animate-pulse'
                             }`}>
                             <CreditCard size={24} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg text-[var(--color-text-main)] flex items-center gap-2">
+                            <h3 className="font-bold text-lg text-text-primary flex items-center gap-2">
                                 סטטוס תשלום: {program.payment_status === 'paid' ? 'שולם ✅' : program.payment_status === 'pending' ? 'ממתין לתשלום ⏳' : 'לא שולם'}
                             </h3>
                             {program.price && (
-                                <p className="text-[var(--color-text-muted)] font-mono text-lg font-bold">
+                                <p className="text-text-muted font-mono text-lg font-bold ltr-nums">
                                     ₪{program.price}
                                 </p>
                             )}
@@ -287,7 +270,7 @@ export function ProgramDetailPage() {
                                 href={program.invoice_pdf_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="btn bg-white border border-[var(--color-border)] text-[var(--color-text-main)] flex items-center gap-2"
+                                className="btn bg-surface border border-border text-text-primary flex items-center gap-2"
                             >
                                 <FileText size={18} />
                                 צפה בחשבונית
@@ -302,7 +285,7 @@ export function ProgramDetailPage() {
                                     )}`}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="btn bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 flex items-center gap-2"
+                                    className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 flex items-center gap-2"
                                 >
                                     <MessageCircle size={18} />
                                     <span className="hidden sm:inline">שלח תזכורת</span>
@@ -323,7 +306,6 @@ export function ProgramDetailPage() {
 
                                             if (res.success && res.url) {
                                                 setPaymentUrl(res.url);
-                                                // Optimistic update to pending
                                                 await supabase.from('programs').update({
                                                     payment_status: 'pending',
                                                     payment_link_id: res.id
@@ -335,7 +317,7 @@ export function ProgramDetailPage() {
                                             }
                                         }}
                                         disabled={generatingLink || !program.price}
-                                        className="btn btn-primary shadow-md shadow-orange-500/20 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 border-orange-600 text-white"
+                                        className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white"
                                     >
                                         {generatingLink ? 'המערכת מייצרת קישור...' : '💳 צור קישור לתשלום'}
                                     </button>
@@ -345,7 +327,7 @@ export function ProgramDetailPage() {
                                             href={`https://wa.me/?text=${encodeURIComponent(`היי ${program.clients.full_name.split(' ')[0]}, הנה הקישור לתשלום עבור ${program.program_name}: ${paymentUrl}`)}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="btn bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-sm flex items-center gap-2"
+                                            className="btn bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft flex items-center gap-2"
                                         >
                                             <Share2 size={18} />
                                             שלח בוואטסאפ
@@ -354,7 +336,7 @@ export function ProgramDetailPage() {
                                             href={paymentUrl}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="btn btn-secondary border-orange-200 text-orange-700 hover:bg-orange-50"
+                                            className="btn btn-secondary border-accent/30 text-accent hover:bg-accent/5"
                                         >
                                             <ExternalLink size={18} />
                                             פתח קישור
@@ -369,15 +351,15 @@ export function ProgramDetailPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* Main Content: Sessions History (Now 2/3 width) */}
+                {/* Main Content: Sessions History */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex justify-between items-center">
-                        <h2 className="text-lg font-bold text-[var(--color-text-main)] flex items-center gap-2">
-                            <History size={20} className="text-[var(--color-text-muted)]" />
+                        <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                            <History size={20} className="text-text-muted" />
                             היסטוריית מפגשים
                         </h2>
                         <Link to={`/programs/${id}/sessions/new`} className="btn btn-primary text-sm py-2 px-4">
-                            <Plus size={16} className="ml-2" />
+                            <Plus size={16} className="ms-2" />
                             תיעוד מפגש חדש
                         </Link>
                     </div>
@@ -389,26 +371,26 @@ export function ProgramDetailPage() {
                             description="הוסף את המפגש הראשון כדי להתחיל לעקוב אחר ההתקדמות בתוכנית."
                             actionLabel="תיעוד מפגש ראשון"
                             onAction={() => navigate(`/programs/${program.id}/sessions/new`)}
-                            color="orange"
+                            color="warning"
                         />
                     ) : (
                         <div className="space-y-4">
                             {sessions.map((session) => (
-                                <div key={session.id} className="flat-card p-5 hover:border-[var(--color-primary)] transition-colors group">
+                                <div key={session.id} className="flat-card p-5 hover:border-primary transition-colors group">
                                     <div className="flex justify-between items-start mb-3">
                                         <div className="flex items-center gap-4">
                                             <div className="text-center w-12 shrink-0">
-                                                <div className="text-xs font-bold text-[var(--color-text-muted)] uppercase leading-none mb-1">
+                                                <div className="text-xs font-medium text-text-muted uppercase leading-none mb-1">
                                                     {new Date(session.session_date).toLocaleDateString('en-US', { month: 'short' })}
                                                 </div>
-                                                <div className="text-xl font-black text-[var(--color-text-main)] leading-none">
+                                                <div className="text-xl font-bold text-text-primary leading-none ltr-nums">
                                                     {new Date(session.session_date).getDate()}
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <div className="font-bold text-[var(--color-text-main)]">מפגש אילוף</div>
-                                                <div className="text-xs text-[var(--color-text-muted)] flex items-center gap-1 mt-0.5">
+                                                <div className="font-bold text-text-primary">מפגש אילוף</div>
+                                                <div className="text-xs text-text-muted flex items-center gap-1 mt-0.5">
                                                     <Clock size={12} />
                                                     {new Date(session.session_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </div>
@@ -416,7 +398,7 @@ export function ProgramDetailPage() {
                                         </div>
 
                                         {session.next_session_date && (
-                                            <div className="text-xs font-medium bg-[var(--color-accent)] text-[var(--color-accent-text)] px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                                            <div className="text-xs font-medium bg-accent/10 text-accent px-2.5 py-1 rounded-lg flex items-center gap-1.5">
                                                 <Calendar size={12} />
                                                 <span>הבא: {new Date(session.next_session_date).toLocaleDateString('he-IL')}</span>
                                             </div>
@@ -424,23 +406,23 @@ export function ProgramDetailPage() {
                                     </div>
 
                                     {session.session_notes && (
-                                        <div className="text-sm text-[var(--color-text-main)] whitespace-pre-line leading-relaxed mb-3 pl-16">
+                                        <div className="text-sm text-text-primary whitespace-pre-line leading-relaxed mb-3 ps-16">
                                             {session.session_notes}
                                         </div>
                                     )}
 
                                     {session.homework && (
-                                        <div className="ml-16 bg-orange-50/50 p-3 rounded-lg border border-orange-100 flex gap-3">
-                                            <CheckCircle size={16} className="text-orange-400 shrink-0 mt-0.5" />
+                                        <div className="ms-16 bg-accent/5 p-3 rounded-lg border border-accent/10 flex gap-3">
+                                            <CheckCircle size={16} className="text-accent/60 shrink-0 mt-0.5" />
                                             <div>
-                                                <span className="text-xs font-bold text-orange-800 uppercase block mb-0.5">שיעורי בית</span>
-                                                <span className="text-sm text-orange-900">{session.homework}</span>
+                                                <span className="text-xs font-bold text-accent uppercase block mb-0.5">שיעורי בית</span>
+                                                <span className="text-sm text-text-secondary">{session.homework}</span>
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Action Footer */}
-                                    <div className="mt-4 pt-4 border-t border-[var(--color-border)] flex justify-end">
+                                    <div className="mt-4 pt-4 border-t border-border flex justify-end">
                                         <a
                                             href={`https://wa.me/?text=${encodeURIComponent(
                                                 `היי ${program?.clients.full_name.split(' ')[0]}! 👋\n` +
@@ -451,7 +433,7 @@ export function ProgramDetailPage() {
                                             )}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="text-xs font-bold text-green-600 hover:text-green-700 flex items-center gap-1.5 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors"
+                                            className="text-xs font-medium text-success hover:text-success flex items-center gap-1.5 bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors"
                                         >
                                             <MessageCircle size={14} />
                                             שתף בוואטסאפ
@@ -471,13 +453,13 @@ export function ProgramDetailPage() {
                             onClick={() => setIsEmailOpen(true)}
                             className="btn btn-secondary w-full justify-start text-sm"
                         >
-                            <Mail size={16} className="ml-3 text-[var(--color-text-muted)]" />
+                            <Mail size={16} className="ms-3 text-text-muted" />
                             שלח סיכום במייל
                         </button>
                     </div>
 
                     <div>
-                        <h3 className="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-wide mb-3">פעילות אחרונה</h3>
+                        <h3 className="text-sm font-medium text-text-muted uppercase tracking-wide mb-3">פעילות אחרונה</h3>
                         <div className="flat-card p-0 overflow-hidden">
                             <ActivityTimeline entityType="program" entityId={id} />
                         </div>
