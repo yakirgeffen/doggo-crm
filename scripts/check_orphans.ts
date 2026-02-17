@@ -1,37 +1,51 @@
+
 import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { config } from 'dotenv';
+import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-dotenv.config({ path: resolve(__dirname, '../.env') });
+// Load .env from project root
+config({ path: path.join(process.cwd(), '.env') });
+config({ path: path.join(process.cwd(), '.env.local') });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase credentials');
+    console.error('Missing VITE_SUPABASE_URL or SERVICE_ROLE_KEY');
     process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function main() {
-    console.log('Checking for orphans (rows with user_id = NULL)...');
+async function checkOrphans() {
+    console.log('Checking for orphans (NULL user_id)...');
 
-    // We can see NULL rows because of the "Hybrid" policy: "using (auth.uid() = user_id or user_id is null)"
-    const { count, error } = await supabase
-        .from('clients')
+    const tables = ['clients', 'programs', 'sessions', 'services'];
+
+    for (const table of tables) {
+        const { count, error } = await supabase
+            .from(table)
+            .select('*', { count: 'exact', head: true })
+            .is('user_id', null);
+
+        if (error) {
+            console.error(`Error checking ${table}:`, error.message);
+        } else {
+            console.log(`${table}: ${count} orphans found.`);
+        }
+    }
+
+    // Check intake_submissions (trainer_id)
+    const { count: intakeCount, error: intakeError } = await supabase
+        .from('intake_submissions')
         .select('*', { count: 'exact', head: true })
-        .is('user_id', null);
+        .is('trainer_id', null);
 
-    if (error) {
-        console.error('Error checking orphans:', error);
+    if (intakeError) {
+        console.error(`Error checking intake_submissions:`, intakeError.message);
     } else {
-        console.log(`Found ${count} orphan clients.`);
+        console.log(`intake_submissions: ${intakeCount} orphans found.`);
     }
 }
 
-main();
+checkOrphans();

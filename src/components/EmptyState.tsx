@@ -1,5 +1,6 @@
 import { type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { type ReactNode } from 'react';
 
 interface EmptyStateProps {
     icon: LucideIcon;
@@ -8,6 +9,7 @@ interface EmptyStateProps {
     actionLabel?: string;
     actionTo?: string;
     onAction?: () => void;
+    action?: ReactNode;
     color?: 'primary' | 'success' | 'warning' | 'accent';
 }
 
@@ -18,7 +20,7 @@ const colorStyles: Record<string, string> = {
     accent: 'bg-accent/10 text-accent border-accent/20',
 };
 
-export function EmptyState({ icon: Icon, title, description, actionLabel, actionTo, onAction, color = 'primary' }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, actionLabel, actionTo, onAction, action, color = 'primary' }: EmptyStateProps) {
     return (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in" role="status">
             {/* Rounded square icon — NOT circle per design system */}
@@ -34,16 +36,18 @@ export function EmptyState({ icon: Icon, title, description, actionLabel, action
                 {description}
             </p>
 
-            {actionLabel && (
-                actionTo ? (
-                    <Link to={actionTo} className="btn btn-primary">
-                        {actionLabel}
-                    </Link>
-                ) : onAction ? (
-                    <button onClick={onAction} className="btn btn-primary">
-                        {actionLabel}
-                    </button>
-                ) : null
+            {action ? action : (
+                actionLabel && (
+                    actionTo ? (
+                        <Link to={actionTo} className="btn btn-primary">
+                            {actionLabel}
+                        </Link>
+                    ) : onAction ? (
+                        <button onClick={onAction} className="btn btn-primary">
+                            {actionLabel}
+                        </button>
+                    ) : null
+                )
             )}
         </div>
     );

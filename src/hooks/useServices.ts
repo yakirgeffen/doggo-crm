@@ -9,6 +9,8 @@ export interface Service {
     price: number;
     currency: string;
     duration_minutes: number;
+    type: 'fixed' | 'open';
+    sessions_included: number | null;
     color?: string;
     is_active: boolean;
 }

@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-
-export interface UserSettings {
-    user_id: string;
-    business_name: string | null;
-    work_days: number[]; // 0-6
-    work_hours_start: string; // "09:00"
-    work_hours_end: string; // "17:00"
-}
+import { type UserSettings } from '../types';
 
 export function useSettings() {
     const { user } = useAuth();
@@ -41,6 +34,10 @@ export function useSettings() {
                 const defaults: UserSettings = {
                     user_id: user!.id,
                     business_name: null,
+                    trainer_handle: null,
+                    bio: null,
+                    avatar_url: null,
+                    specialties: [],
                     work_days: [0, 1, 2, 3, 4], // Sun-Thu
                     work_hours_start: '09:00',
                     work_hours_end: '17:00'
@@ -56,27 +53,35 @@ export function useSettings() {
         }
     };
 
-    const updateSettings = async (newSettings: Partial<UserSettings>) => {
+    const updateLocalSettings = (newSettings: Partial<UserSettings>) => {
+        if (!settings) return;
+        setSettings({ ...settings, ...newSettings });
+    };
+
+    const saveSettings = async (overrides?: Partial<UserSettings>) => {
         if (!user || !settings) return;
 
-        const updated = { ...settings, ...newSettings };
-        setSettings(updated); // Optimistic update
+        const finalSettings = { ...settings, ...overrides };
+
+        // Optimistically update local state if overrides provided
+        if (overrides) {
+            setSettings(finalSettings);
+        }
 
         const { error } = await supabase
             .from('user_settings')
             .upsert({
-                user_id: user.id,
-                ...newSettings,
+                ...finalSettings,
                 updated_at: new Date().toISOString()
             });
 
         if (error) {
             console.error('Error saving settings:', error);
             setError('Failed to save settings');
-            fetchSettings(); // Revert
+            fetchSettings(); // Revert to DB state
             throw error;
         }
     };
 
-    return { settings, loading, error, updateSettings };
+    return { settings, loading, error, updateLocalSettings, saveSettings };
 }

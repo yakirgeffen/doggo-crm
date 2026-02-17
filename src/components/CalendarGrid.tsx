@@ -16,9 +16,10 @@ export interface CalendarGridEvent {
 interface CalendarGridProps {
     startDate: Date;
     events: CalendarGridEvent[];
+    onSlotClick?: (date: Date, hour: number) => void;
 }
 
-export function CalendarGrid({ startDate, events }: CalendarGridProps) {
+export function CalendarGrid({ startDate, events, onSlotClick }: CalendarGridProps) {
     const weekDates = useMemo(() => {
         const dates = [];
         const start = new Date(startDate);
@@ -132,8 +133,13 @@ export function CalendarGrid({ startDate, events }: CalendarGridProps) {
                                     return (
                                         <div
                                             key={h}
-                                            className={`border-b border-border/30 w-full absolute ${isAvailable ? 'bg-surface' : 'bg-surface-warm diagonal-stripes'}`}
+                                            className={`border-b border-border/30 w-full absolute transition-colors ${isAvailable ? 'bg-surface' : 'bg-surface-warm diagonal-stripes'} ${onSlotClick && isAvailable ? 'cursor-pointer hover:bg-primary/5' : ''}`}
                                             style={{ top: `${h * rowHeight}px`, height: `${rowHeight}px` }}
+                                            onClick={() => {
+                                                if (onSlotClick && isAvailable) {
+                                                    onSlotClick(date, startHour + h);
+                                                }
+                                            }}
                                         ></div>
                                     );
                                 })}

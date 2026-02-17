@@ -72,8 +72,10 @@ export function NewSessionPage() {
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `Session logged for ${programName}`);
                 await logActivity('program', programId, 'updated', 'Session added');
+                navigate(`/programs/${programId}`, { state: { newSession: data[0] } });
+            } else {
+                navigate(`/programs/${programId}`);
             }
-            navigate(`/programs/${programId}`);
         }
     };
 

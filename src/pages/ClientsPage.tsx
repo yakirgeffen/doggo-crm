@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Plus, Search, Mail, Users, Phone, ChevronRight, Upload } from 'lucide-react';
+import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Client } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
 import { EmptyState } from '../components/EmptyState';
 import { PageHeader } from '../components/PageHeader';
 import { ImportClientsModal } from '../components/ImportClientsModal';
+import { QuickAddClientModal } from '../components/QuickAddClientModal';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
+import { SkeletonRow } from '../components/Skeleton';
 
 export function ClientsPage() {
     const navigate = useNavigate();
@@ -16,6 +18,7 @@ export function ClientsPage() {
     const [sort, setSort] = useState<'name' | 'newest'>('name');
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setIsImportOpen] = useState(false);
+    const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
 
     useEffect(() => {
         fetchClients();
@@ -135,10 +138,13 @@ export function ClientsPage() {
                             <Upload size={18} className="ms-2" />
                             ייבוא CSV
                         </button>
-                        <Link to="/clients/new" className="btn btn-primary">
-                            <Plus size={18} className="ms-2" />
-                            לקוח חדש
-                        </Link>
+                        <button
+                            onClick={() => setIsQuickAddOpen(true)}
+                            className="btn btn-primary"
+                        >
+                            <Zap size={18} className="ms-2" />
+                            + לקוח חדש
+                        </button>
                     </div>
                 }
             />
@@ -150,6 +156,11 @@ export function ClientsPage() {
                     fetchClients();
                     setIsImportOpen(false);
                 }}
+            />
+
+            <QuickAddClientModal
+                isOpen={isQuickAddOpen}
+                onClose={() => setIsQuickAddOpen(false)}
             />
 
             {/* Search & Sort */}
@@ -199,9 +210,10 @@ export function ClientsPage() {
             {/* Clients List */}
             <div className="flat-card p-0 overflow-hidden">
                 {loading ? (
-                    <div className="py-24 text-center" role="status" aria-label="טוען נתונים">
-                        <div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 opacity-50"></div>
-                        <p className="text-text-muted font-medium">טוען נתונים...</p>
+                    <div role="status" aria-label="טוען נתונים">
+                        {[0, 1, 2, 3, 4].map(i => (
+                            <SkeletonRow key={i} />
+                        ))}
                     </div>
                 ) : filteredClients.length === 0 ? (
                     <EmptyState

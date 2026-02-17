@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, type ActivityLog } from '../lib/supabase';
 import { FileText, CheckCircle, BookOpen } from 'lucide-react';
+import { SkeletonTimeline } from './Skeleton';
 
 interface ActivityTimelineProps {
     entityType?: 'client' | 'program';
@@ -58,7 +59,7 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
         setLoading(false);
     };
 
-    if (loading) return <div className="text-sm text-text-muted p-4">טוען פעילות...</div>;
+    if (loading) return <SkeletonTimeline count={3} />;
     if (logs.length === 0) return <div className="text-sm text-text-muted italic p-4">אין פעילות מתועדת עדיין.</div>;
 
     return (

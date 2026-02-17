@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Calendar as CalendarIcon, ExternalLink, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, List, Grid } from 'lucide-react';
+import { Calendar as CalendarIcon, ExternalLink, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, List, Grid, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { listUpcomingEvents } from '../lib/calendar';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { CalendarGrid } from '../components/CalendarGrid';
+import { BookSessionModal } from '../components/BookSessionModal';
 
 interface AgendaItem {
     id: string;
@@ -18,7 +19,9 @@ interface AgendaItem {
 
 export function CalendarPage() {
     const { providerToken } = useAuth();
-    const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
+    // Default to list view on mobile for better usability
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const [viewMode, setViewMode] = useState<'week' | 'list'>(isMobile ? 'list' : 'week');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showInternal, setShowInternal] = useState(true);
     const [showExternal, setShowExternal] = useState(true);
@@ -26,6 +29,11 @@ export function CalendarPage() {
     const [items, setItems] = useState<AgendaItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Book Session Modal
+    const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+    const [bookPrefillDate, setBookPrefillDate] = useState<string>();
+    const [bookPrefillTime, setBookPrefillTime] = useState<string>();
 
     useEffect(() => {
         fetchAgenda();
@@ -50,6 +58,7 @@ export function CalendarPage() {
                     id, 
                     session_date, 
                     programs:program_id (
+                        id,
                         program_name,
                         clients (full_name, primary_dog_name)
                     )
@@ -61,7 +70,20 @@ export function CalendarPage() {
             if (dbError) throw dbError;
 
             if (sessions) {
-                sessions.forEach((s: any) => {
+                type SessionQuery = {
+                    id: string;
+                    session_date: string;
+                    programs: {
+                        id: string; // Added id to selection
+                        program_name: string;
+                        clients: {
+                            full_name: string;
+                            primary_dog_name: string;
+                        }
+                    }
+                };
+
+                (sessions as unknown as SessionQuery[]).forEach((s) => {
                     const start = new Date(s.session_date);
                     const end = new Date(start.getTime() + 60 * 60 * 1000);
 
@@ -245,6 +267,14 @@ export function CalendarPage() {
                 <CalendarGrid
                     startDate={getGridStartDate()}
                     events={filteredItems}
+                    onSlotClick={(date, hour) => {
+                        const yyyy = date.getFullYear();
+                        const mm = String(date.getMonth() + 1).padStart(2, '0');
+                        const dd = String(date.getDate()).padStart(2, '0');
+                        setBookPrefillDate(`${yyyy}-${mm}-${dd}`);
+                        setBookPrefillTime(`${String(hour).padStart(2, '0')}:00`);
+                        setIsBookModalOpen(true);
+                    }}
                 />
             ) : (
                 /* Grouped List View */
@@ -341,6 +371,31 @@ export function CalendarPage() {
                     {error}
                 </div>
             )}
+
+            <BookSessionModal
+                isOpen={isBookModalOpen}
+                onClose={() => setIsBookModalOpen(false)}
+                onBooked={fetchAgenda}
+                prefillDate={bookPrefillDate}
+                prefillTime={bookPrefillTime}
+            />
+
+            {/* Mobile FAB — quick book button */}
+            <button
+                onClick={() => {
+                    const now = new Date();
+                    const yyyy = now.getFullYear();
+                    const mm = String(now.getMonth() + 1).padStart(2, '0');
+                    const dd = String(now.getDate()).padStart(2, '0');
+                    setBookPrefillDate(`${yyyy}-${mm}-${dd}`);
+                    setBookPrefillTime(`${String(now.getHours() + 1).padStart(2, '0')}:00`);
+                    setIsBookModalOpen(true);
+                }}
+                className="md:hidden fixed bottom-24 end-5 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-card flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
+                title="קבע מפגש חדש"
+            >
+                <Plus size={24} />
+            </button>
         </div>
     );
 }
