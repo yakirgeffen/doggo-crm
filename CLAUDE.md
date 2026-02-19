@@ -2,11 +2,20 @@
 
 A CRM built for dog trainers. Manages clients, their dogs, training programs, sessions, and scheduling. Includes a public-facing storefront and intake form per trainer, with full Hebrew RTL UI.
 
+## Philosophy
+
+- **Simplicity over sophistication** — no state management libraries, no form libraries, no HTTP clients. One dependency for one job.
+- **TypeScript strict mode is the test suite** — there are no automated tests. `npm run build` is the correctness check.
+- **Hebrew-first** — all UI copy is in Hebrew. RTL is a first-class concern, not an afterthought.
+- **Security through the database** — RLS enforces data isolation per trainer. Don't replicate that logic in the application layer.
+- **Audit everything** — every data mutation should produce an `activity_logs` row via `logActivity()`.
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | UI | React 19, TypeScript 5.9, Tailwind CSS 4 |
+| Icons | lucide-react (only — do not add other icon libraries) |
 | Routing | React Router DOM 7 |
 | Build | Vite 7 |
 | Backend | Supabase (PostgreSQL + Auth + Edge Functions) |
@@ -86,27 +95,79 @@ supabase_schema.sql        # Full database schema with RLS policies and triggers
 All database access goes through the Supabase client in `src/lib/supabase.ts`. Row Level Security (RLS) is enabled on all tables — queries are automatically scoped to the authenticated trainer.
 
 Helper functions to use for side effects:
-- `logActivity(table, id, action, details)` — audit trail
-- `updateProgramStatus(programId, status)` — handles program status transitions
+- `logActivity(table, id, action, details)` — writes to `activity_logs`; call this after every successful mutation
+- `updateProgramStatus(programId, status)` — handles program status transitions; use this instead of updating the `status` column directly
+
+### Notifications
+Use the `useToast()` hook for all user-facing feedback. Never use `alert()`.
+
+```tsx
+const { showToast } = useToast();
+showToast('הפעולה הצליחה', 'success');  // 'success' | 'error' | 'info'
+```
+
+Toast auto-dismisses after 3500ms. The `ToastContext` is provided at the app root.
 
 ### Routing
-- `/` → Dashboard (requires auth, via `<RequireAuth>`)
+
+**Authenticated routes** (wrapped in `<RequireAuth>`):
+- `/` → Dashboard
 - `/clients`, `/clients/:id`, `/clients/new` — client management
 - `/programs`, `/programs/:id`, `/programs/new` — training programs
-- `/sessions/new` — new session creation
+- `/programs/:programId/sessions/new` — new session creation
 - `/calendar` — scheduling
 - `/settings` — trainer profile/preferences
-- `/admin/storefront` — public storefront admin
-- `/t/:trainerHandle` — public storefront (no auth)
-- `/t/:trainerHandle/intake` — public lead intake form (no auth)
-- `/login` — auth page
+- `/storefront` — storefront admin panel
 - `/seed` — dev-only data seeding
 
+**Public routes** (no auth):
+- `/t/:trainerHandle` — public storefront
+- `/t/:trainerHandle/intake` — public lead intake form
+- `/login` — auth page
+- `/welcome`, `/privacy`, `/terms` — static public pages
+
 ### Component Patterns
+
 - **Page components** own data fetching and pass data down as props.
 - **Feature components** are grouped by domain in subdirectories.
 - **Modal components** are standalone files (`BookSessionModal.tsx`, `QuickAddClientModal.tsx`, etc.).
-- Use `clsx` for conditional class composition.
+- **Conditional classes** use template literals with ternary expressions — `clsx` is not used.
+
+  ```tsx
+  className={`base-class ${condition ? 'class-a' : 'class-b'}`}
+  ```
+
+#### Modal Lifecycle Pattern
+Every modal that performs an async mutation should follow this pattern:
+
+1. Track loading state with a `saving` (or `loading`) boolean.
+2. Disable the submit button and show a spinner or in-button text ("שומר...") while saving.
+3. On success: call `showToast()`, then the parent callback (e.g. `onSaved()`), then `onClose()`.
+4. On error: call `showToast(..., 'error')` and keep the modal open.
+
+```tsx
+const [saving, setSaving] = useState(false);
+
+async function handleSubmit() {
+  setSaving(true);
+  try {
+    await supabase.from('...').insert({...});
+    await logActivity('...', id, 'created', '...');
+    showToast('נשמר בהצלחה', 'success');
+    onSaved();
+    onClose();
+  } catch (err) {
+    showToast('שגיאה בשמירה', 'error');
+  } finally {
+    setSaving(false);
+  }
+}
+
+// In JSX:
+<button disabled={saving || !requiredField} onClick={handleSubmit}>
+  {saving ? 'שומר...' : 'שמור'}
+</button>
+```
 
 ### TypeScript
 Strict mode is enabled. Key flags: `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`. Build will fail on type errors.
@@ -131,18 +192,38 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 - All tables have RLS enabled — always query as an authenticated user in tests/seeds.
 - `sessions_completed` on programs is updated automatically via a DB trigger.
 - `trainer_handle` on `user_settings` drives the public storefront URL.
+- `supabase_schema.sql` is the source of truth for table/column names and RLS policies — check it before writing queries.
 
 ### Security
 - `.env` is gitignored — never commit secrets.
 - RLS enforces data isolation per trainer at the database level.
 - Turnstile CAPTCHA on the public intake form.
-- Google OAuth scopes limited to Gmail and Calendar.
+- Google OAuth scopes limited to Gmail and Calendar — do not expand them without deliberate review.
+
+## Do Not
+
+- **No `alert()`** — use `showToast()` from `useToast()` instead.
+- **No `window.location.href` for in-app navigation** — use React Router's `navigate()`.
+- **No `window.location.reload()`** — refetch data via state or re-render instead.
+- **No new state management libraries** — React Context + `useState` is the pattern.
+- **No new icon libraries** — `lucide-react` only.
+- **No form libraries** (React Hook Form, Formik, etc.) — controlled `useState` inputs only.
+- **No HTTP client libraries** (axios, etc.) — Supabase client and native `fetch` only.
+- **No `date-fns`** — it's installed but unused; use native `Date` and `toLocaleDateString()` instead.
+- **Don't update `programs.status` directly** — always use `updateProgramStatus()` from `src/lib/supabase.ts`.
+- **Don't skip `logActivity()`** after mutations — every write to the DB should produce an audit log row.
 
 ## Common Tasks
 
 **Add a new page**: Create `src/pages/MyPage.tsx`, add a `<Route>` in `src/App.tsx`, wrap with `<RequireAuth>` if it needs authentication.
 
 **Add a new DB query**: Use the Supabase client from `src/lib/supabase.ts`. Check `supabase_schema.sql` for table/column names and RLS policies.
+
+**Add a new mutation (insert/update/delete)**:
+1. Run the Supabase query.
+2. Call `logActivity(table, recordId, action, details)` on success.
+3. Call `showToast()` with a success or error message.
+4. Disable the triggering button while the request is in flight.
 
 **Add a new edge function**: Create a directory under `supabase/functions/`, use Deno APIs. Deploy via `supabase functions deploy <name>`.
 
@@ -151,3 +232,12 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 npm run lint
 npm run build   # also runs tsc type-check
 ```
+
+## Known Tech Debt
+
+- **`alert()` in `QuickAddClientModal.tsx:43`** — should be replaced with `showToast()`.
+- **`window.location.reload()` in `EmailComposer.tsx`** — should refetch data via state instead.
+- **Intake tab in `ClientDetailPage`** — placeholder, marked Phase 3. Do not build on it yet.
+- **Email templates in `EmailComposer`** — 3 templates are hardcoded in the component; they are not loaded from the `email_templates` DB table yet.
+- **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
+- **`logActivity()` coverage is incomplete** — it is currently only called in `EmailComposer`. All other mutations are missing audit log calls.
