@@ -12,6 +12,17 @@ serve(async (req) => {
         return new Response('ok', { headers: corsHeaders })
     }
 
+    // Helper to sanitize user input against HTML injection XSS
+    const escapeHtml = (unsafe: string) => {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     try {
         const {
             trainer_id,
@@ -88,10 +99,10 @@ serve(async (req) => {
                         <div dir="rtl" style="font-family: sans-serif; padding: 20px; background: #f9fafb;">
                             <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                                 <h2 style="color: #15803d; margin-top: 0;">ליד חדש התקבל!</h2>
-                                <p><strong>שם:</strong> ${full_name}</p>
-                                <p><strong>טלפון:</strong> ${phone || '-'}</p>
-                                <p><strong>שם הכלב:</strong> ${dog_name || '-'}</p>
-                                ${notes ? `<p><strong>הערות:</strong><br/>${notes}</p>` : ''}
+                                <p><strong>שם:</strong> ${escapeHtml(full_name)}</p>
+                                <p><strong>טלפון:</strong> ${escapeHtml(phone) || '-'}</p>
+                                <p><strong>שם הכלב:</strong> ${escapeHtml(dog_name) || '-'}</p>
+                                ${notes ? `<p><strong>הערות:</strong><br/>${escapeHtml(notes)}</p>` : ''}
                                 <br/>
                                 <a href="${Deno.env.get('APP_URL') ?? 'http://localhost:5173'}" style="background: #15803d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">כנס למערכת כדי לטפל</a>
                             </div>
