@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useToast } from '../../context/ToastContext';
 
 const TOTAL_STEPS = 3;
 
@@ -49,6 +50,7 @@ export function PublicIntakePage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
     const [searchParams] = useSearchParams();
     const serviceId = searchParams.get('service');
+    const { showToast } = useToast();
 
     const [trainerId, setTrainerId] = useState<string | null>(null);
     const [trainerNotFound, setTrainerNotFound] = useState(false);
@@ -95,7 +97,7 @@ export function PublicIntakePage() {
         }
 
         if (!captchaToken) {
-            alert('אנא אשרו אינכם רובוט');
+            showToast('אנא אשרו אינכם רובוט', 'error');
             return;
         }
 
@@ -121,7 +123,7 @@ export function PublicIntakePage() {
 
         } catch (err: any) {
             console.error('Intake submission error:', err);
-            alert('אירעה שגיאה בשליחה. אנא נסו שוב.');
+            showToast('אירעה שגיאה בשליחה. אנא נסו שוב.', 'error');
         } finally {
             setSubmitting(false);
         }

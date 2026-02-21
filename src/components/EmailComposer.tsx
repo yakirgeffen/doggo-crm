@@ -14,6 +14,7 @@ interface EmailComposerProps {
     entityId: string;
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
 const TEMPLATES = [
@@ -60,7 +61,7 @@ const TEMPLATES = [
     }
 ];
 
-export function EmailComposer({ clientEmail, clientName, dogName, entityType, entityId, trainerName = "המאלף", isOpen, onClose }: EmailComposerProps) {
+export function EmailComposer({ clientEmail, clientName, dogName, entityType, entityId, trainerName = "המאלף", isOpen, onClose, onSuccess }: EmailComposerProps) {
     const { providerToken } = useAuth();
     const [selectedTemplate, setSelectedTemplate] = useState('');
     const [subject, setSubject] = useState('');
@@ -69,6 +70,17 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     const [sending, setSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedTemplate('');
+            setSubject('');
+            setBody('');
+            setSuccess(false);
+            setError(null);
+            setSending(false);
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -110,7 +122,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
             setSuccess(true);
             setTimeout(() => {
                 onClose();
-                window.location.reload();
+                onSuccess?.();
             }, 1500);
 
         } catch (err: any) {
@@ -125,7 +137,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         window.open(mailtoLink, '_blank');
         logActivity(entityType, entityId, 'email_sent', `Email launcher opened: ${subject}`);
         onClose();
-        window.location.reload();
+        onSuccess?.();
     };
 
     const dialogRef = useRef<HTMLDivElement>(null);

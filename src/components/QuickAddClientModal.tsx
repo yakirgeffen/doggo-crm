@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Dog, User, Phone } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 interface QuickAddClientModalProps {
     isOpen: boolean;
@@ -12,6 +13,7 @@ interface QuickAddClientModalProps {
 export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { showToast } = useToast();
     const [dogName, setDogName] = useState('');
     const [ownerName, setOwnerName] = useState('');
     const [phone, setPhone] = useState('');
@@ -40,11 +42,12 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
 
         if (error) {
             console.error('Error adding client:', error);
-            alert('שגיאה בהוספת הלקוח');
+            showToast('שגיאה בהוספת הלקוח', 'error');
             return;
         }
 
         if (data) {
+            await logActivity('client', data.id, 'created', `לקוח חדש (הוספה מהירה): ${ownerName.trim()}`);
             onClose();
             navigate(`/clients/${data.id}`);
         }

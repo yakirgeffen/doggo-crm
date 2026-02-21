@@ -19,6 +19,7 @@ export function ClientDetailPage() {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEmailOpen, setIsEmailOpen] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     // Tab & program selection
     const [activeTab, setActiveTab] = useState<TabId>('active');
@@ -175,6 +176,7 @@ export function ClientDetailPage() {
                         <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">פעילות אחרונה</h3>
                         <div className="flat-card p-0 overflow-hidden">
                             <ActivityTimeline
+                                key={refreshKey}
                                 entityType="client"
                                 entityId={id}
                                 programIds={programs.map(p => p.id)}
@@ -189,6 +191,12 @@ export function ClientDetailPage() {
                 <EmailComposer
                     isOpen={isEmailOpen}
                     onClose={() => {
+                        setIsEmailOpen(false);
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                    }}
+                    onSuccess={() => {
+                        setRefreshKey(prev => prev + 1);
                         setIsEmailOpen(false);
                         const newUrl = window.location.pathname;
                         window.history.replaceState({}, '', newUrl);

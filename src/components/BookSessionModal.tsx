@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -85,14 +85,18 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
 
         const sessionDate = `${date}T${time}:00`;
 
-        const { error } = await supabase.from('sessions').insert([{
+        const { data, error } = await supabase.from('sessions').insert([{
             program_id: selectedProgramId,
             session_date: sessionDate,
-        }]);
+        }]).select('id');
 
         if (error) {
             showToast('שגיאה בקביעת מפגש: ' + error.message, 'error');
         } else {
+            if (data && data[0]) {
+                await logActivity('session', data[0].id, 'created', `מפגש חדש נקבע (${date} ${time})`);
+                await logActivity('program', selectedProgramId, 'updated', 'מפגש חדש נוסף לתוכנית');
+            }
             showToast('המפגש נקבע בהצלחה! 🐾', 'success');
             onBooked();
             onClose();

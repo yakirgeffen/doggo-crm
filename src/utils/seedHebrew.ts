@@ -102,5 +102,5 @@ export async function seedHebrewData() {
     }
 
     console.log('Seeding complete!');
-    alert('Seeding complete! 10 Hebrew clients added.');
+    // alert was removed as it does not exist in module scope or is bad practice
 }

@@ -3,9 +3,11 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
+import { useToast } from '../context/ToastContext';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
+    const { showToast } = useToast();
     const { programId } = useParams<{ programId: string }>();
     const [loading, setLoading] = useState(false);
     const [programName, setProgramName] = useState('');
@@ -66,7 +68,7 @@ export function NewSessionPage() {
         const { data, error } = await supabase.from('sessions').insert([payload]).select();
 
         if (error) {
-            alert('Error logging session: ' + error.message);
+            showToast('שגיאה בתיעוד המפגש: ' + error.message, 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {

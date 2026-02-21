@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Upload, FileSpreadsheet, Check, AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
-import { supabase } from '../lib/supabase';
+import { supabase, logActivity } from '../lib/supabase';
+import { useToast } from '../context/ToastContext';
 
 interface ImportClientsModalProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ interface ParsedRow {
 }
 
 export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClientsModalProps) {
+    const { showToast } = useToast();
     const [step, setStep] = useState<Step>('upload');
     const [parsedData, setParsedData] = useState<ParsedRow[]>([]);
     const [headers, setHeaders] = useState<string[]>([]);
@@ -94,13 +96,20 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
             is_active: true
         }));
 
-        const { error } = await supabase.from('clients').insert(dbRows);
+        const { data, error } = await supabase.from('clients').insert(dbRows).select('id, full_name');
 
         if (error) {
             console.error('Import error:', error);
-            alert('Error importing data. Check console.');
+            showToast('שגיאה בייבוא הנתונים פנה לתמיכה.', 'error');
             setStep('preview');
         } else {
+            // Log import creation
+            if (data) {
+                await Promise.all(
+                    data.map(client => logActivity('client', client.id, 'created', `לקוח יובא מהקובץ: ${client.full_name}`))
+                );
+            }
+
             setImportStats({
                 total: validRows.length,
                 success: validRows.length,

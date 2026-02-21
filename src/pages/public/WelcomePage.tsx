@@ -8,8 +8,11 @@ import { supabase } from '../../lib/supabase';
 // Turnstile site key - hardcoded for production, env for local dev
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAACYYsn_UV1PvI8el';
 
+import { useToast } from '../../context/ToastContext';
+
 export function WelcomePage() {
     const [searchParams] = useSearchParams();
+    const { showToast } = useToast();
     const trainerId = searchParams.get('t'); // Trainer ID from URL: /welcome?t=uuid
 
     const [formData, setFormData] = useState({
@@ -46,7 +49,7 @@ export function WelcomePage() {
 
         if (error) {
             console.error('Submission error:', error);
-            alert('אופס, משהו השתבש. נסה שוב.');
+            showToast('אופס, משהו השתבש. נסה שוב.', 'error');
             // Reset CAPTCHA on error
             turnstileRef.current?.reset();
             setCaptchaToken(null);

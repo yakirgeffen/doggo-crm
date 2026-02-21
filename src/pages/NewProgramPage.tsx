@@ -4,9 +4,11 @@ import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 import { useServices } from '../hooks/useServices';
+import { useToast } from '../context/ToastContext';
 
 export function NewProgramPage() {
     const navigate = useNavigate();
+    const { showToast } = useToast();
     const [searchParams] = useSearchParams();
     const preselectedClientId = searchParams.get('client_id');
 
@@ -62,7 +64,7 @@ export function NewProgramPage() {
         const { data, error } = await supabase.from('programs').insert([payload]).select();
 
         if (error) {
-            alert('Error creating program: ' + error.message);
+            showToast('שגיאה ביצירת תוכנית: ' + error.message, 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {
