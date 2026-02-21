@@ -241,3 +241,11 @@ npm run build   # also runs tsc type-check
 - **Email templates in `EmailComposer`** — 3 templates are hardcoded in the component; they are not loaded from the `email_templates` DB table yet.
 - **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
 - **`logActivity()` coverage is incomplete** — it is currently only called in `EmailComposer`. All other mutations are missing audit log calls.
+
+## CRITICAL: Security & Data Isolation (Multi-Tenancy)
+- **Zero-Trust Multi-Tenancy**: This is a multi-tenant platform. Every user (e.g., trainer) MUST ONLY be able to see their own relevant data.
+- **Strict Data Isolation**: When creating a new trainer or user, their dashboard and data views must be completely empty (or show placeholders). They cannot and must not see any other user's data under any circumstances. This is a severe security requirement to prevent data breaches.
+- **Implementation Rules**:
+  - Enforce Row Level Security (RLS) on ALL Supabase tables.
+  - Ensure all database queries and policies strictly filter by the authenticated user's ID (`auth.uid() = user_id`).
+  - Never allow "legacy" or "orphan" data (where `user_id IS NULL`) to be visible to newly created users.
