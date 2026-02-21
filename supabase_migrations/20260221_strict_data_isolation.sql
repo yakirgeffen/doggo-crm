@@ -92,8 +92,8 @@ drop policy if exists "Users can manage their own settings" on public.user_setti
 create policy "Users can manage their own settings"
   on public.user_settings
   for all
-  using ( auth.uid() = id )
-  with check ( auth.uid() = id );
+  using ( auth.uid() = user_id )
+  with check ( auth.uid() = user_id );
 
 -- SERVICES
 alter table public.services enable row level security;
