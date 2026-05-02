@@ -17,6 +17,89 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'sumit-vs-greeninvoice': {
+        slug: 'sumit-vs-greeninvoice',
+        title: 'Sumit מול חשבונית ירוקה: מה מתאים למאלפים עצמאיים?',
+        description: 'שני שירותי החשבונית הפופולריים לעוסקים בישראל — Sumit וחשבונית ירוקה (Morning). הנה השוואה מנקודת המבט של מאלף עצמאי, ולמה Doggo CRM מתחבר לשניהם.',
+        publishedAt: '2026-05-02',
+        readingMinutes: 7,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    כשמאלף עצמאי בישראל בוחר שירות חשבונית, יש בעיקר שתי אפשרויות פופולריות:
+                    <strong> Sumit</strong> ו<strong>חשבונית ירוקה (Morning)</strong>. שתיהן עומדות ברגולציה הישראלית, שתיהן עובדות.
+                    אבל יש הבדלים שמשנים את היומיום של מאלף.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה הן עושות באותה רמה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2">
+                    <li>הפקת חשבונית מס + קבלה כדין מס הכנסה ישראל</li>
+                    <li>שליחת חשבונית במייל ישירות מהמערכת</li>
+                    <li>חיוב באשראי, בביט, ובערוצים אחרים</li>
+                    <li>ייצוא נתונים לרואה החשבון</li>
+                    <li>ממשק עברית מלא ותמיכה ישראלית</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איפה Sumit מובילה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2">
+                    <li><strong>הצעות מחיר נטיבית</strong> — Sumit מאפשרת להפיק "הצעת מחיר" כסוג מסמך נפרד, עם מעקב סטטוס. בחשבונית ירוקה זה דורש עבודה צד.</li>
+                    <li><strong>חיוב מתחדש (Recurring)</strong> — אם תרצי לעבור פעם למודל מנוי (לדוגמה, "תוכנית אילוף אונליין חודשית"), Sumit כבר תומכת בזה. בחשבונית ירוקה זו עבודה.</li>
+                    <li><strong>ממשק UI מודרני יותר</strong> — סובייקטיבי, אבל הרבה מאלפים שדיברנו איתם מציינים את זה.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איפה חשבונית ירוקה מובילה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2">
+                    <li><strong>היכרות בשוק</strong> — רואי חשבון ישראלים מכירים אותה היטב; פחות הסבר נדרש.</li>
+                    <li><strong>אינטגרציות עם תוכנות נוספות</strong> — ל-Morning יש מערכת אקוסיסטם רחבה יותר של שותפים.</li>
+                    <li><strong>תמחור פשוט יותר לעוסק פטור/מורשה</strong> — נקודת מבט שצריך לבדוק עם רואה חשבון, אבל נשמע פעמים רבות כשיקול.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">השאלה האמיתית: כמה זמן את חוסכת בכל חשבונית?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שני השירותים מצוינים בלהפיק חשבונית מהממשק שלהם. הבעיה: אצל מאלף שיש לו מערכת לקוחות (CRM) נפרדת, התהליך הוא:
+                </p>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-1 mr-4">
+                    <li>פתחי את ה-CRM, מצאי את הלקוח</li>
+                    <li>פתחי את חשבונית ירוקה / Sumit במסך נפרד</li>
+                    <li>הקלידי את שם הלקוח, מייל, פרטי השירות, סכום</li>
+                    <li>שלחי</li>
+                    <li>חזרי ל-CRM, רשמי שהחשבונית נשלחה</li>
+                </ol>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    זה 3-5 דקות לכל חשבונית. אם את שולחת 30 חשבוניות בחודש — זה שעתיים. במצב טוב 4 שעות.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה Doggo CRM מתחבר לשניהם</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    כשהCRM שלך כבר יודע מי הלקוח, מה התוכנית, ומה המחיר —
+                    אין סיבה להקליד את זה שוב באתר חיצוני. ב-Doggo CRM, הצעת מחיר וחשבונית נשלחות בלחיצה אחת ישירות דרך החשבון Sumit
+                    או חשבונית ירוקה <strong>שלך</strong>. לא דרך החשבון שלנו, לא עם עמלת תיווך — דרך החשבון שלך, באמצעות מפתחות ה-API שלך.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    התוצאה: אם את עובדת עם Sumit, ההצעות והחשבוניות שלך יופיעו בדשבורד של Sumit כרגיל.
+                    אם את עובדת עם חשבונית ירוקה, אותו דבר. את לא משנה את המערכת החשבונאית שלך — את רק מפסיקה להקליד את אותם נתונים פעמיים.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">המלצה</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    אם את רק מתחילה ואין לך חשבון בכלל — Sumit. הצעות המחיר הנטיביות וה-UI המודרני שווים את זה.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    אם רואה החשבון שלך עובד עם חשבונית ירוקה כבר — אין צורך לעבור. את יכולה להמשיך עם Morning ולחבר אותה ל-Doggo CRM באותה קלות.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM מתחבר לשני השירותים. בלי להחליף, בלי להקליד פעמיים. רואי שזה עובד.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'admin-mistakes': {
         slug: 'admin-mistakes',
         title: '5 טעויות שמאלפי כלבים עצמאיים עושים בניהול הלקוחות שלהם',
