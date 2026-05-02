@@ -26,6 +26,8 @@ export interface Program {
     invoice_url: string | null;
     invoice_pdf_url: string | null;
     greeninvoice_invoice_number: string | null;
+    sumit_invoice_document_id: number | null;
+    sumit_invoice_document_number: number | null;
     price: number | null;
     currency: string | null;
     start_date: string | null;

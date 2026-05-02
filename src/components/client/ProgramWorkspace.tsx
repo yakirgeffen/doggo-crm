@@ -10,6 +10,7 @@ import { SkeletonSessionList } from '../Skeleton';
 import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
+import { SendInvoiceButton } from './SendInvoiceButton';
 
 interface ProgramWorkspaceProps {
     program: Program;
@@ -207,6 +208,18 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                             צפה בחשבונית
                         </a>
                     )}
+
+                    <SendInvoiceButton
+                        programId={programState.id}
+                        programName={programState.program_name}
+                        price={programState.price}
+                        currency={programState.currency || 'ILS'}
+                        clientName={clientName}
+                        clientEmail={clientEmail || null}
+                        clientPhone={clientPhone}
+                        sumitInvoiceDocumentId={programState.sumit_invoice_document_id}
+                        onInvoiceSent={() => setProgramState(prev => ({ ...prev }))}
+                    />
 
                     {programState.payment_status !== 'paid' && (
                         <div className="flex items-center gap-2 flex-wrap">

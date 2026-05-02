@@ -233,6 +233,55 @@ export function useSumit() {
         return { success: true, documentId, documentNumber: created?.DocumentNumber };
     };
 
+    /**
+     * G-CTO loop iteration 8 — create + email a Sumit invoice for a paid program.
+     */
+    type SendInvoiceResult =
+        | { success: true; documentId: number; documentNumber?: number }
+        | { success: false; error?: string; documentId?: number };
+
+    const sendInvoiceToClient = async (params: {
+        clientName: string;
+        clientEmail: string;
+        clientPhone?: string;
+        items: SumitLineItem[];
+        subject?: string;
+        personalMessage?: string;
+    }): Promise<SendInvoiceResult> => {
+        const create = await createDocument({
+            DocumentType: SUMIT_DOC_TYPE_INVOICE,
+            Customer: {
+                Name: params.clientName,
+                EmailAddress: params.clientEmail,
+                Phone: params.clientPhone,
+            },
+            Items: params.items,
+            Subject: params.subject || 'חשבונית',
+            Language: 0,
+        });
+        if (!create.success) {
+            return { success: false, error: typeof create.error === 'string' ? create.error : 'create failed' };
+        }
+        const created = create.data as { DocumentID?: number; DocumentNumber?: number } | undefined;
+        const documentId = created?.DocumentID;
+        if (!documentId) {
+            return { success: false, error: 'Sumit returned no DocumentID' };
+        }
+        const send = await sendDocument({
+            DocumentID: documentId,
+            DocumentType: SUMIT_DOC_TYPE_INVOICE,
+            DocumentNumber: created?.DocumentNumber,
+            EmailAddress: params.clientEmail,
+            Subject: params.subject || 'חשבונית',
+            Language: 0,
+            PersonalMessage: params.personalMessage,
+        });
+        if (!send.success) {
+            return { success: false, error: typeof send.error === 'string' ? send.error : 'send failed', documentId };
+        }
+        return { success: true, documentId, documentNumber: created?.DocumentNumber };
+    };
+
     return {
         isConnected,
         vaultData,
@@ -242,5 +291,6 @@ export function useSumit() {
         createDocument,
         sendDocument,
         sendQuoteToClient,
+        sendInvoiceToClient,
     };
 }
