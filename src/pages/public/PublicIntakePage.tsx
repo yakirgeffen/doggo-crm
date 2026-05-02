@@ -1,50 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
 import { useToast } from '../../context/ToastContext';
 
 const TOTAL_STEPS = 3;
-
-// Turnstile Component
-
-
-function TurnstileWidget({ onVerify }: { onVerify: (token: string) => void }) {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback
-
-    useEffect(() => {
-        if (containerRef.current && (window as any).turnstile) {
-            // @ts-ignore
-            const widgetId = (window as any).turnstile.render(containerRef.current, {
-                sitekey: siteKey,
-                callback: (token: string) => onVerify(token),
-            });
-            return () => {
-                if ((window as any).turnstile && widgetId) (window as any).turnstile.reset(widgetId);
-            };
-        } else {
-            // If script isn't loaded yet, loop to check
-            const interval = setInterval(() => {
-                if ((window as any).turnstile && containerRef.current) {
-                    clearInterval(interval);
-                    // @ts-ignore
-                    (window as any).turnstile.render(containerRef.current, {
-                        sitekey: siteKey,
-                        callback: (token: string) => onVerify(token),
-                    });
-                }
-            }, 100);
-            return () => clearInterval(interval);
-        }
-    }, [onVerify, siteKey]);
-
-    return (
-        <div className="flex justify-center my-4">
-            <div ref={containerRef} />
-        </div>
-    );
-}
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback
 
 export function PublicIntakePage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
@@ -341,7 +303,12 @@ export function PublicIntakePage() {
                                 )}
                             </div>
 
-                            <TurnstileWidget onVerify={setCaptchaToken} />
+                            <div className="flex justify-center my-4">
+                                <Turnstile
+                                    siteKey={TURNSTILE_SITE_KEY}
+                                    onSuccess={setCaptchaToken}
+                                />
+                            </div>
                         </div>
                     )}
 
