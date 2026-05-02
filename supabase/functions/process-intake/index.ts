@@ -34,7 +34,8 @@ serve(async (req: Request) => {
             dog_age,
             notes,
             selected_service_id,
-            captcha_token
+            captcha_token,
+            lead_source
         } = await req.json()
 
         // 1. Verify Captcha
@@ -74,7 +75,8 @@ serve(async (req: Request) => {
                 notes,
                 selected_service_id, // Can be null
                 status: 'new',
-                captcha_token // Store for audit if needed
+                captcha_token, // Store for audit if needed
+                lead_source: lead_source || null // UTM-derived string from public intake form, or null for direct visits
             })
 
         if (insertError) {
