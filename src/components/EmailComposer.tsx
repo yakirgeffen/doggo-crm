@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Mail, Send, X, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react';
-import { logActivity } from '../lib/supabase';
+import { logActivity, supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { sendGmail } from '../lib/gmail';
 
@@ -17,7 +17,17 @@ interface EmailComposerProps {
     onSuccess?: () => void;
 }
 
-const TEMPLATES = [
+interface EmailTemplate {
+    id: string;
+    name: string;
+    subject: string;
+    body: string;
+}
+
+// Hardcoded fallback templates — surfaced only when the trainer has
+// no rows in the public.email_templates table. Once the trainer creates
+// their own templates, these are suppressed and only their templates show.
+const FALLBACK_TEMPLATES: EmailTemplate[] = [
     {
         id: 'welcome',
         name: 'ברוכים הבאים',
@@ -66,6 +76,8 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     const [selectedTemplate, setSelectedTemplate] = useState('');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
+    const [templates, setTemplates] = useState<EmailTemplate[]>(FALLBACK_TEMPLATES);
+    const [templatesLoading, setTemplatesLoading] = useState(false);
 
     const [sending, setSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -79,6 +91,24 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
             setSuccess(false);
             setError(null);
             setSending(false);
+
+            // Load this trainer's templates from DB; if none, keep the
+            // hardcoded fallback so first-time trainers still see the
+            // welcome/followup/completion starter set.
+            (async () => {
+                setTemplatesLoading(true);
+                const { data, error: fetchError } = await supabase
+                    .from('email_templates')
+                    .select('id, name, subject, body')
+                    .order('created_at', { ascending: true });
+
+                if (!fetchError && data && data.length > 0) {
+                    setTemplates(data as EmailTemplate[]);
+                } else {
+                    setTemplates(FALLBACK_TEMPLATES);
+                }
+                setTemplatesLoading(false);
+            })();
         }
     }, [isOpen]);
 
@@ -88,7 +118,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         const templateId = e.target.value;
         setSelectedTemplate(templateId);
 
-        const template = TEMPLATES.find(t => t.id === templateId);
+        const template = templates.find(t => t.id === templateId);
         if (template) {
             setSubject(template.subject);
             setBody(template.body
@@ -213,9 +243,10 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                                     className="input-field"
                                     value={selectedTemplate}
                                     onChange={handleTemplateChange}
+                                    disabled={templatesLoading}
                                 >
-                                    <option value="">בחר תבנית...</option>
-                                    {TEMPLATES.map(t => (
+                                    <option value="">{templatesLoading ? 'טוען תבניות...' : 'בחר תבנית...'}</option>
+                                    {templates.map(t => (
                                         <option key={t.id} value={t.id}>{t.name}</option>
                                     ))}
                                 </select>
