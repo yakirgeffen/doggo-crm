@@ -19,6 +19,7 @@ import { CalendarPage } from './pages/CalendarPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { ToastProvider } from './context/ToastContext';
 import { LandingPage } from './pages/public/LandingPage';
+import { PricingPage } from './pages/public/PricingPage';
 import { WelcomePage } from './pages/public/WelcomePage';
 import { PrivacyPolicyPage } from './pages/public/PrivacyPolicyPage';
 import { TermsOfServicePage } from './pages/public/TermsOfServicePage';
@@ -59,6 +60,7 @@ function App() {
           <Routes>
             {/* ========== Public Routes ========== */}
             <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/login" element={<LoginPage />} />
