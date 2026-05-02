@@ -112,6 +112,29 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         }
     }, [isOpen]);
 
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus trap + Escape key — hooks must be called before any early return.
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') { onClose(); return; }
+            if (e.key !== 'Tab' || !dialogRef.current) return;
+            const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+            } else {
+                if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -169,28 +192,6 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         onClose();
         onSuccess?.();
     };
-
-    const dialogRef = useRef<HTMLDivElement>(null);
-
-    // Focus trap + Escape key — IS 5568
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') { onClose(); return; }
-            if (e.key !== 'Tab' || !dialogRef.current) return;
-            const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
-                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-            );
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (e.shiftKey) {
-                if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
-            } else {
-                if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
-            }
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
 
     return createPortal(
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-fade-in">
