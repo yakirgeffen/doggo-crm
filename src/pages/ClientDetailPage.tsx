@@ -27,14 +27,19 @@ export function ClientDetailPage() {
     const [activeTab, setActiveTab] = useState<TabId>('active');
     const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
 
+    const [quotes, setQuotes] = useState<{ id: string; sumit_document_number: number | null; total_amount: number | null; currency: string | null; status: string; sent_at: string | null }[]>([]);
+
     const fetchClientData = useCallback(async () => {
         if (!id) return;
         setLoading(true);
 
-        const [clientRes, programsRes] = await Promise.all([
+        const [clientRes, programsRes, quotesRes] = await Promise.all([
             supabase.from('clients').select('*').eq('id', id).single(),
-            supabase.from('programs').select('*').eq('client_id', id).order('created_at', { ascending: false })
+            supabase.from('programs').select('*').eq('client_id', id).order('created_at', { ascending: false }),
+            supabase.from('quotes').select('id, sumit_document_number, total_amount, currency, status, sent_at').eq('client_id', id).order('sent_at', { ascending: false })
         ]);
+
+        if (quotesRes.data) setQuotes(quotesRes.data);
 
         if (clientRes.error) console.error('Error fetching client:', clientRes.error);
         if (programsRes.error) console.error('Error fetching programs:', programsRes.error);
@@ -183,6 +188,34 @@ export function ClientDetailPage() {
                         </div>
                     ) : (
                         <div className="text-center text-text-muted text-sm py-6">אין היסטוריית תוכניות</div>
+                    )}
+
+                    {/* Quote history (G8 native via Sumit) */}
+                    {quotes.length > 0 && (
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">הצעות מחיר</h3>
+                            {quotes.map((q) => (
+                                <div key={q.id} className="flat-card p-4 flex justify-between items-center">
+                                    <div>
+                                        <p className="font-bold text-text-primary">
+                                            הצעת מחיר {q.sumit_document_number ? `#${q.sumit_document_number}` : ''}
+                                        </p>
+                                        <p className="text-xs text-text-muted">
+                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                                            {q.total_amount && ` · ₪${Number(q.total_amount).toLocaleString()}`}
+                                        </p>
+                                    </div>
+                                    <span className={`badge ${q.status === 'accepted' ? 'badge-completed' : q.status === 'declined' || q.status === 'expired' ? 'badge-pending' : 'badge-active'}`}>
+                                        {q.status === 'sent' ? 'נשלחה' :
+                                         q.status === 'viewed' ? 'נצפתה' :
+                                         q.status === 'accepted' ? 'אושרה ✓' :
+                                         q.status === 'declined' ? 'נדחתה' :
+                                         q.status === 'expired' ? 'פגה' :
+                                         q.status === 'draft' ? 'טיוטה' : q.status}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     )}
 
                     {/* Activity Timeline */}
