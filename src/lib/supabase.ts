@@ -5,9 +5,20 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
+// activity_logs.entity_type has no DB CHECK constraint — values are
+// free-text. Keep a union here for autocomplete + signal of intent;
+// add new values as new mutation surfaces are covered.
+export type ActivityEntityType =
+    | 'client'
+    | 'program'
+    | 'session'
+    | 'email'
+    | 'service'
+    | 'settings';
+
 export interface ActivityLog {
     id: string;
-    entity_type: 'client' | 'program' | 'session' | 'email';
+    entity_type: ActivityEntityType;
     entity_id: string;
     action: string;
     description: string | null;
@@ -35,7 +46,7 @@ export async function logActivity(
     }
 }
 
-export async function updateProgramStatus(programId: string, status: 'active' | 'completed' | 'cancelled') {
+export async function updateProgramStatus(programId: string, status: 'active' | 'paused' | 'completed') {
     const { error } = await supabase
         .from('programs')
         .update({ status })

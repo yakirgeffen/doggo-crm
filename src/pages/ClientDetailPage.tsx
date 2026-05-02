@@ -14,7 +14,7 @@ import { ProgramWorkspace } from '../components/client/ProgramWorkspace';
 
 export function ClientDetailPage() {
     const { id } = useParams<{ id: string }>();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [client, setClient] = useState<Client | null>(null);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
@@ -192,14 +192,12 @@ export function ClientDetailPage() {
                     isOpen={isEmailOpen}
                     onClose={() => {
                         setIsEmailOpen(false);
-                        const newUrl = window.location.pathname;
-                        window.history.replaceState({}, '', newUrl);
+                        setSearchParams({}, { replace: true });
                     }}
                     onSuccess={() => {
                         setRefreshKey(prev => prev + 1);
                         setIsEmailOpen(false);
-                        const newUrl = window.location.pathname;
-                        window.history.replaceState({}, '', newUrl);
+                        setSearchParams({}, { replace: true });
                     }}
                     clientEmail={client.email || ''}
                     clientName={client.full_name}

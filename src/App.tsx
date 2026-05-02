@@ -62,7 +62,7 @@ function App() {
 
               <Route path="calendar" element={<CalendarPage />} />
               <Route path="settings" element={<SettingsPage />} />
-              <Route path="seed" element={<SeedPage />} />
+              {import.meta.env.DEV && <Route path="seed" element={<SeedPage />} />}
             </Route>
 
             {/* Catch-all */}

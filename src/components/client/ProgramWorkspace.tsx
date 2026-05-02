@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote, Loader2 } from 'lucide-react';
-import { supabase, updateProgramStatus } from '../../lib/supabase';
+import { supabase, updateProgramStatus, logActivity } from '../../lib/supabase';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
@@ -33,6 +33,10 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
     // Session checkout modal
     const [checkoutSession, setCheckoutSession] = useState<Session | null>(null);
     const [markingPaid, setMarkingPaid] = useState(false);
+
+    // Inline confirmation state for program-status actions (replaces native confirm())
+    const [pendingAction, setPendingAction] = useState<'complete' | 'cancel' | null>(null);
+    const [actionInFlight, setActionInFlight] = useState(false);
 
     useEffect(() => {
         setProgramState(program);
@@ -88,6 +92,12 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
         if (error) {
             console.error('Error extending program:', error);
         } else {
+            await logActivity(
+                'program',
+                programState.id,
+                'extended',
+                `הוספו ${additionalSessions} מפגשים${additionalPrice > 0 ? ` (תוספת תשלום: ${additionalPrice})` : ''}`
+            );
             setProgramState(prev => ({
                 ...prev,
                 sessions_included: newSessionsIncluded,
@@ -218,6 +228,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         payment_status: 'paid',
                                     }).eq('id', programState.id);
                                     if (!error) {
+                                        await logActivity('program', programState.id, 'payment_marked_paid', 'התוכנית סומנה כשולמה');
                                         setProgramState(prev => ({ ...prev, payment_status: 'paid' as const }));
                                         showToast('סומן כשולם ✅', 'success');
                                     } else {
@@ -256,6 +267,12 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                                 payment_status: 'pending',
                                                 payment_link_id: res.id
                                             }).eq('id', programState.id);
+                                            await logActivity(
+                                                'program',
+                                                programState.id,
+                                                'payment_link_generated',
+                                                `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
+                                            );
 
                                             setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
                                         } else {
@@ -297,36 +314,74 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
             {/* Program Actions */}
             {programState.status === 'active' && (
                 <div className="flex items-center gap-3">
-                    <Link
-                        to={`/programs/${programState.id}/sessions/new`}
-                        state={{ openCheckout: true, clientFirstName, dogName: clientName.split(' ')[0], programName: programState.program_name }}
-                        className="btn btn-primary text-sm py-2 px-4"
-                    >
-                        <Plus size={16} className="ms-2" />
-                        תיעוד מפגש חדש
-                    </Link>
-                    <button
-                        onClick={async () => {
-                            if (confirm('האם לסמן את התוכנית כהושלמה?')) {
-                                await updateProgramStatus(programState.id, 'completed');
-                                setProgramState(prev => ({ ...prev, status: 'completed' as const }));
-                            }
-                        }}
-                        className="btn bg-surface border border-success/30 text-success hover:bg-success/5 text-sm py-2"
-                    >
-                        סיום תוכנית
-                    </button>
-                    <button
-                        onClick={async () => {
-                            if (confirm('האם אתה בטוח שברצונך לבטל את התוכנית?')) {
-                                await updateProgramStatus(programState.id, 'cancelled');
-                                setProgramState(prev => ({ ...prev, status: 'paused' as const }));
-                            }
-                        }}
-                        className="btn bg-surface border border-error/30 text-error hover:bg-error/5 text-sm py-2"
-                    >
-                        ביטול
-                    </button>
+                    {pendingAction === null ? (
+                        <>
+                            <Link
+                                to={`/programs/${programState.id}/sessions/new`}
+                                state={{ openCheckout: true, clientFirstName, dogName: clientName.split(' ')[0], programName: programState.program_name }}
+                                className="btn btn-primary text-sm py-2 px-4"
+                            >
+                                <Plus size={16} className="ms-2" />
+                                תיעוד מפגש חדש
+                            </Link>
+                            <button
+                                onClick={() => setPendingAction('complete')}
+                                className="btn bg-surface border border-success/30 text-success hover:bg-success/5 text-sm py-2"
+                            >
+                                סיום תוכנית
+                            </button>
+                            <button
+                                onClick={() => setPendingAction('cancel')}
+                                className="btn bg-surface border border-error/30 text-error hover:bg-error/5 text-sm py-2"
+                            >
+                                ביטול
+                            </button>
+                        </>
+                    ) : (
+                        <div className="flex items-center gap-3 w-full bg-surface border border-border rounded-lg px-4 py-3">
+                            <span className="text-sm text-text-primary">
+                                {pendingAction === 'complete'
+                                    ? 'האם לסמן את התוכנית כהושלמה?'
+                                    : 'האם אתה בטוח שברצונך לבטל את התוכנית?'}
+                            </span>
+                            <div className="flex items-center gap-2 ms-auto">
+                                <button
+                                    disabled={actionInFlight}
+                                    onClick={async () => {
+                                        setActionInFlight(true);
+                                        try {
+                                            if (pendingAction === 'complete') {
+                                                const { error } = await updateProgramStatus(programState.id, 'completed');
+                                                if (error) throw error;
+                                                setProgramState(prev => ({ ...prev, status: 'completed' as const }));
+                                                showToast('התוכנית סומנה כהושלמה', 'success');
+                                            } else {
+                                                const { error } = await updateProgramStatus(programState.id, 'paused');
+                                                if (error) throw error;
+                                                setProgramState(prev => ({ ...prev, status: 'paused' as const }));
+                                                showToast('התוכנית בוטלה', 'success');
+                                            }
+                                            setPendingAction(null);
+                                        } catch {
+                                            showToast('שגיאה בעדכון התוכנית', 'error');
+                                        } finally {
+                                            setActionInFlight(false);
+                                        }
+                                    }}
+                                    className={`btn text-sm py-1.5 px-3 ${pendingAction === 'complete' ? 'bg-success/10 border border-success/30 text-success' : 'bg-error/10 border border-error/30 text-error'}`}
+                                >
+                                    {actionInFlight ? '...' : 'אישור'}
+                                </button>
+                                <button
+                                    disabled={actionInFlight}
+                                    onClick={() => setPendingAction(null)}
+                                    className="btn bg-surface border border-border text-text-secondary text-sm py-1.5 px-3"
+                                >
+                                    ביטול
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
