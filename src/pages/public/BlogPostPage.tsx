@@ -350,13 +350,38 @@ export function BlogPostPage() {
     const post = slug ? POSTS[slug] : null;
 
     useEffect(() => {
-        if (post) {
-            document.title = `${post.title} · Doggo CRM`;
-            const meta = document.querySelector('meta[name="description"]');
-            if (meta) meta.setAttribute('content', post.description);
-        }
+        if (!post) return;
+
+        document.title = `${post.title} · Doggo CRM`;
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute('content', post.description);
+
+        // JSON-LD Article structured data — improves Google snippet quality
+        const ldScript = document.createElement('script');
+        ldScript.type = 'application/ld+json';
+        ldScript.id = 'blog-jsonld';
+        ldScript.text = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: post.title,
+            description: post.description,
+            inLanguage: 'he-IL',
+            datePublished: post.publishedAt,
+            dateModified: post.publishedAt,
+            author: { '@type': 'Organization', name: 'Doggo CRM' },
+            publisher: {
+                '@type': 'Organization',
+                name: 'Doggo CRM',
+                logo: { '@type': 'ImageObject', url: 'https://doggocrm.app/og-image.png' },
+            },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': `https://doggocrm.app/blog/${post.slug}` },
+        });
+        document.head.appendChild(ldScript);
+
         return () => {
             document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל';
+            const existing = document.getElementById('blog-jsonld');
+            if (existing) existing.remove();
         };
     }, [post]);
 
