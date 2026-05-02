@@ -32,12 +32,13 @@ export function PublicStorefrontPage() {
         if (!trainerHandle) return;
         setLoading(true);
 
-        // 1. Find trainer by handle
-        const { data: settingsData, error: settingsError } = await supabase
-            .from('user_settings')
-            .select('user_id, business_name, bio, avatar_url, specialties')
-            .eq('trainer_handle', trainerHandle)
-            .single();
+        // 1. Find trainer by handle via security-definer RPC. Cross-tenant
+        //    authenticated access to user_settings is blocked since
+        //    2026-05-02 TG-1 hardening; the RPC exposes only storefront-
+        //    safe columns.
+        const { data: profileRows, error: settingsError } = await supabase
+            .rpc('get_trainer_profile_by_handle', { handle: trainerHandle });
+        const settingsData = Array.isArray(profileRows) ? profileRows[0] : null;
 
         if (settingsError || !settingsData) {
             setNotFound(true);

@@ -51,14 +51,14 @@ export function PublicIntakePage() {
 
     const resolveTrainer = useCallback(async () => {
         if (!trainerHandle) return;
+        // TG-1: query the security-definer RPC; user_settings is no longer
+        // anon-readable as of 2026-05-02 hardening.
         const { data } = await supabase
-            .from('user_settings')
-            .select('user_id')
-            .eq('trainer_handle', trainerHandle)
-            .single();
+            .rpc('get_trainer_profile_by_handle', { handle: trainerHandle });
 
-        if (data) {
-            setTrainerId(data.user_id);
+        const profile = Array.isArray(data) ? data[0] : null;
+        if (profile) {
+            setTrainerId(profile.user_id);
         } else {
             setTrainerNotFound(true);
         }
