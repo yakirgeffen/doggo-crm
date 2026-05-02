@@ -3,6 +3,7 @@ import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
+import { createCalendarEvent } from '../lib/calendar';
 
 interface ClientOption {
     id: string;
@@ -20,7 +21,7 @@ interface BookSessionModalProps {
 }
 
 export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefillTime }: BookSessionModalProps) {
-    const { user } = useAuth();
+    const { user, providerToken } = useAuth();
     const { showToast } = useToast();
     const [clients, setClients] = useState<ClientOption[]>([]);
     const [selectedClientId, setSelectedClientId] = useState('');
@@ -108,6 +109,26 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `מפגש חדש נקבע (${date} ${time})`);
                 await logActivity('program', selectedProgramId, 'updated', 'מפגש חדש נוסף לתוכנית');
+
+                if (providerToken && selectedClient) {
+                    try {
+                        const program = selectedClient.programs.find(p => p.id === selectedProgramId);
+                        const startDate = new Date(sessionDate);
+                        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+                        const event = await createCalendarEvent(providerToken, {
+                            summary: `אימון: ${selectedClient.full_name} • ${selectedClient.primary_dog_name}`,
+                            description: program ? `תוכנית: ${program.program_name}` : undefined,
+                            startDateTime: startDate.toISOString(),
+                            endDateTime: endDate.toISOString(),
+                        });
+                        await supabase
+                            .from('sessions')
+                            .update({ google_calendar_event_id: event.id })
+                            .eq('id', data[0].id);
+                    } catch (calErr) {
+                        console.error('Google Calendar event creation failed:', calErr);
+                    }
+                }
             }
             showToast('המפגש נקבע בהצלחה! 🐾', 'success');
             onBooked();

@@ -4,10 +4,13 @@ import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
 import { useToast } from '../context/toast-context';
+import { useAuth } from '../context/auth-context';
+import { createCalendarEvent } from '../lib/calendar';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { providerToken } = useAuth();
     const { programId } = useParams<{ programId: string }>();
     const [loading, setLoading] = useState(false);
     const [programName, setProgramName] = useState('');
@@ -66,6 +69,26 @@ export function NewSessionPage() {
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `Session logged for ${programName}`);
                 await logActivity('program', programId, 'updated', 'Session added');
+
+                if (providerToken) {
+                    try {
+                        const startDate = new Date(`${formData.session_date}T10:00:00`);
+                        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+                        const event = await createCalendarEvent(providerToken, {
+                            summary: `אימון: ${programName}`,
+                            description: formData.session_notes || undefined,
+                            startDateTime: startDate.toISOString(),
+                            endDateTime: endDate.toISOString(),
+                        });
+                        await supabase
+                            .from('sessions')
+                            .update({ google_calendar_event_id: event.id })
+                            .eq('id', data[0].id);
+                    } catch (calErr) {
+                        console.error('Google Calendar event creation failed:', calErr);
+                    }
+                }
+
                 navigate(`/programs/${programId}`, { state: { newSession: data[0] } });
             } else {
                 navigate(`/programs/${programId}`);
