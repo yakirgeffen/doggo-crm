@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Clock, Users, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+
+// G3 data-quality fix: forward marketing params (utm_*, gclid, fbclid, ref)
+// from the storefront URL to the intake URL so the lead_source captured at
+// intake time includes the trainer's outbound campaign tracking.
+const FORWARD_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ref'];
 
 interface TrainerPublicProfile {
     business_name: string | null;
@@ -23,6 +28,17 @@ interface PublicService {
 
 export function PublicStorefrontPage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
+    const [searchParams] = useSearchParams();
+
+    // Build a query suffix that forwards marketing params to the intake URL
+    const forwardQuery = (() => {
+        const out = new URLSearchParams();
+        for (const key of FORWARD_PARAMS) {
+            const v = searchParams.get(key);
+            if (v) out.set(key, v);
+        }
+        return out.toString();
+    })();
     const [profile, setProfile] = useState<TrainerPublicProfile | null>(null);
     const [services, setServices] = useState<PublicService[]>([]);
     const [loading, setLoading] = useState(true);
@@ -161,7 +177,7 @@ export function PublicStorefrontPage() {
                                         ₪{service.price}
                                     </span>
                                     <Link
-                                        to={`/t/${trainerHandle}/intake?service=${service.id}`}
+                                        to={`/t/${trainerHandle}/intake?service=${service.id}${forwardQuery ? `&${forwardQuery}` : ''}`}
                                         className="btn btn-primary text-sm py-2 px-5 flex items-center gap-1.5 group-hover:shadow-md transition-shadow"
                                     >
                                         קבע תור
