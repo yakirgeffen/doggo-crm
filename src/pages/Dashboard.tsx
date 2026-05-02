@@ -3,6 +3,7 @@ import { Users, Calendar, AlertCircle, DollarSign, CheckCircle, Plus, ChevronRig
 import { SkeletonKPIGrid } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
+import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
 import { useDashboard } from '../hooks/useDashboard';
 
 export function Dashboard() {
@@ -39,6 +40,9 @@ export function Dashboard() {
                         <p className="text-text-secondary text-sm">ברוך הבא! הנה מה שקורה היום.</p>
                     </div>
                 </header>
+
+                {/* G1 — first-run UX setup checklist (auto-hides when complete) */}
+                <TrainerSetupChecklist />
 
                 {/* QUICK ACTIONS ROW */}
                 <div className="grid grid-cols-3 gap-3 mb-8">
