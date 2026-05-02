@@ -31,10 +31,16 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
     const [loadingClients, setLoadingClients] = useState(true);
 
     // Sync prefill props when they change
-    useEffect(() => {
+    const [prevPrefillDate, setPrevPrefillDate] = useState(prefillDate);
+    const [prevPrefillTime, setPrevPrefillTime] = useState(prefillTime);
+    if (prefillDate !== prevPrefillDate) {
+        setPrevPrefillDate(prefillDate);
         if (prefillDate) setDate(prefillDate);
+    }
+    if (prefillTime !== prevPrefillTime) {
+        setPrevPrefillTime(prefillTime);
         if (prefillTime) setTime(prefillTime);
-    }, [prefillDate, prefillTime]);
+    }
 
     const fetchClients = useCallback(async () => {
         if (!user) return;
@@ -67,13 +73,19 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         setLoadingClients(false);
     }, [user]);
 
-    // Reset on open
-    useEffect(() => {
+    // Reset selections on each open transition.
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+    if (isOpen !== prevIsOpen) {
+        setPrevIsOpen(isOpen);
         if (isOpen) {
             setSelectedClientId('');
             setSelectedProgramId('');
-            fetchClients();
         }
+    }
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
+        if (isOpen) fetchClients();
     }, [isOpen, fetchClients]);
 
     const selectedClient = clients.find(c => c.id === selectedClientId);

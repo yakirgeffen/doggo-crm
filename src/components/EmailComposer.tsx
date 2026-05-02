@@ -83,7 +83,10 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
-    useEffect(() => {
+    // Reset composer state synchronously on each open transition.
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+    if (isOpen !== prevIsOpen) {
+        setPrevIsOpen(isOpen);
         if (isOpen) {
             setSelectedTemplate('');
             setSubject('');
@@ -91,25 +94,28 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
             setSuccess(false);
             setError(null);
             setSending(false);
-
-            // Load this trainer's templates from DB; if none, keep the
-            // hardcoded fallback so first-time trainers still see the
-            // welcome/followup/completion starter set.
-            (async () => {
-                setTemplatesLoading(true);
-                const { data, error: fetchError } = await supabase
-                    .from('email_templates')
-                    .select('id, name, subject, body')
-                    .order('created_at', { ascending: true });
-
-                if (!fetchError && data && data.length > 0) {
-                    setTemplates(data as EmailTemplate[]);
-                } else {
-                    setTemplates(FALLBACK_TEMPLATES);
-                }
-                setTemplatesLoading(false);
-            })();
         }
+    }
+
+    // Load this trainer's templates from DB on open; fall back to hardcoded
+    // starter set if the trainer has 0 rows. Async fetch — setState below
+    // resolves after I/O, not synchronously inside the effect.
+    useEffect(() => {
+        if (!isOpen) return;
+        (async () => {
+            setTemplatesLoading(true);
+            const { data, error: fetchError } = await supabase
+                .from('email_templates')
+                .select('id, name, subject, body')
+                .order('created_at', { ascending: true });
+
+            if (!fetchError && data && data.length > 0) {
+                setTemplates(data as EmailTemplate[]);
+            } else {
+                setTemplates(FALLBACK_TEMPLATES);
+            }
+            setTemplatesLoading(false);
+        })();
     }, [isOpen]);
 
     const dialogRef = useRef<HTMLDivElement>(null);

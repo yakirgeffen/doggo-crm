@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
 import { useServices, type Service } from '../hooks/useServices';
 import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X } from 'lucide-react';
@@ -22,15 +22,15 @@ export function StorefrontAdminPage() {
     const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
     const [editingService, setEditingService] = useState<Service | null>(null);
 
-    // Initial Load
-    useEffect(() => {
-        if (settings) {
-            setHandle(settings.trainer_handle || '');
-            setBio(settings.bio || '');
-            setBusinessName(settings.business_name || '');
-            setSpecialties(settings.specialties || []);
-        }
-    }, [settings]);
+    // Sync settings → local form fields whenever the hook returns a new object.
+    const [prevSettings, setPrevSettings] = useState(settings);
+    if (settings && settings !== prevSettings) {
+        setPrevSettings(settings);
+        setHandle(settings.trainer_handle || '');
+        setBio(settings.bio || '');
+        setBusinessName(settings.business_name || '');
+        setSpecialties(settings.specialties || []);
+    }
 
     const handleSaveProfile = async () => {
         setSavingProfile(true);

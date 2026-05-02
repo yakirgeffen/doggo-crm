@@ -52,6 +52,7 @@ export function ClientDetailPage() {
     }, [id, searchParams]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch + searchParam-derived state
         fetchClientData();
         if (searchParams.get('action') === 'email') setIsEmailOpen(true);
 

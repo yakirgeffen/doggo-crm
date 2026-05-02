@@ -56,6 +56,7 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
     }, [entityType, entityId, limit, programIds]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
         fetchLogs();
     }, [fetchLogs]);
 
