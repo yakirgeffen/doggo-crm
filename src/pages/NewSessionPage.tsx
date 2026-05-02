@@ -89,6 +89,19 @@ export function NewSessionPage() {
                     }
                 }
 
+                // Send booking confirmation email to client (fire-and-forget).
+                // Only fires for sessions on or after today (skip past-date "log
+                // a session that already happened" flow which is also routed
+                // through this page).
+                const sessionDateOnly = new Date(formData.session_date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (sessionDateOnly >= today) {
+                    supabase.functions.invoke('session-emails', {
+                        body: { action: 'send_booking_confirmation', session_id: data[0].id }
+                    }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
+                }
+
                 navigate(`/programs/${programId}`, { state: { newSession: data[0] } });
             } else {
                 navigate(`/programs/${programId}`);

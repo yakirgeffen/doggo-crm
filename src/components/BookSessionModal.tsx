@@ -129,6 +129,11 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         console.error('Google Calendar event creation failed:', calErr);
                     }
                 }
+
+                // Send booking confirmation email to client (fire-and-forget)
+                supabase.functions.invoke('session-emails', {
+                    body: { action: 'send_booking_confirmation', session_id: data[0].id }
+                }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
             }
             showToast('המפגש נקבע בהצלחה! 🐾', 'success');
             onBooked();
