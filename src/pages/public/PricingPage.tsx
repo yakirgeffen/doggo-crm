@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Check, X, Sparkles, ChevronLeft } from 'lucide-react';
 
 // CCO + CMO loop iteration 2 — pricing surface for trainer-acquisition.
@@ -77,6 +78,13 @@ const TIERS: Tier[] = [
 ];
 
 export function PricingPage() {
+    useEffect(() => {
+        document.title = 'מחירים · Doggo CRM — חינם להתחיל, 119 ש״ח/חודש לתוכנית מלאה';
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute('content', 'תמחור פשוט: חינם להתחלה (עד 10 לקוחות), Working Trainer 119 ש״ח/חודש לתוכנית בלתי מוגבלת, Growing Studio 249 ש״ח/חודש למרובי-מאלפים. ניסיון 30 יום חינם.');
+        return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
+    }, []);
+
     return (
         <div dir="rtl" className="min-h-screen bg-background text-text-primary">
             <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">

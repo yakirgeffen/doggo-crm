@@ -1,7 +1,13 @@
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function PrivacyPolicyPage() {
+    useEffect(() => {
+        document.title = 'מדיניות פרטיות · Doggo CRM';
+        return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
+    }, []);
+
     const lastUpdated = '2 במאי 2026';
     const contactEmail = 'yakirgeffen@gmail.com';
     const appName = 'Doggo CRM';
