@@ -175,6 +175,42 @@ serve(async (req: Request) => {
             })
         }
 
+        if (action === 'send_cancellation') {
+            // Used when a CRM session is cancelled. Sends a Hebrew RTL note to
+            // the client letting them know the appointment is off.
+            const subject = `🐾 ביטול פגישה: ${escapeHtml(client.primary_dog_name || client.full_name)} ב-${sessionDateLabel}`
+            const html = `
+                <div dir="rtl" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 24px; background: #f7f4ed; max-width: 560px; margin: 0 auto;">
+                    <div style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="font-size: 32px; margin-bottom: 8px;">🐾</div>
+                        <h2 style="color: #4A6741; margin: 0 0 16px;">הפגישה בוטלה</h2>
+                        <p style="color: #444; line-height: 1.7;">
+                            שלום ${escapeHtml(client.full_name)},<br/><br/>
+                            הפגישה שתוכננה ל-<strong>${escapeHtml(sessionDateLabel)}</strong> בשעה <strong>${escapeHtml(sessionTimeLabel)}</strong> בוטלה.
+                        </p>
+                        <p style="color: #444; line-height: 1.7;">
+                            אם רוצים לקבוע מועד חלופי, פשוט השיבו למייל הזה ונקבע משהו שיתאים.
+                        </p>
+                        <p style="color: #444; line-height: 1.7; margin-top: 24px;">
+                            <strong>${escapeHtml(trainerBusinessName)}</strong>
+                        </p>
+                    </div>
+                </div>
+            `
+
+            await resend.emails.send({
+                from: 'Doggo CRM <notifications@resend.dev>',
+                replyTo: trainerEmail || undefined,
+                to: client.email,
+                subject,
+                html,
+            })
+
+            return new Response(JSON.stringify({ success: true, sent_to: client.email }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+        }
+
         if (action === 'send_reminder') {
             // G6 partial — manually-triggered reminder for now. Future cron-driven
             // surface picks up sessions due in 24h and invokes this action per-row.

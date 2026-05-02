@@ -406,6 +406,8 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 key={session.id}
                                 session={session}
                                 clientFirstName={clientFirstName}
+                                programName={programState.program_name}
+                                onChanged={fetchSessions}
                             />
                         ))}
                     </div>
