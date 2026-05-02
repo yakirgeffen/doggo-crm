@@ -7,7 +7,7 @@ import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
 import { EmptyState } from '../EmptyState';
 import { SkeletonSessionList } from '../Skeleton';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
 

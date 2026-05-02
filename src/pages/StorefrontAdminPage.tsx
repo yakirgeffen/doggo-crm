@@ -3,7 +3,7 @@ import { useSettings } from '../hooks/useSettings';
 import { useServices, type Service } from '../hooks/useServices';
 import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X } from 'lucide-react';
 import { ServiceModal } from '../components/admin/ServiceModal';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast-context';
 
 export function StorefrontAdminPage() {
     const { settings, loading: settingsLoading, saveSettings: updateSettings } = useSettings();

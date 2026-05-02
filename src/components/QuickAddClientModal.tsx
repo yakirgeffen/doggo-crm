@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Dog, User, Phone } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/auth-context';
+import { useToast } from '../context/toast-context';
 
 interface QuickAddClientModalProps {
     isOpen: boolean;

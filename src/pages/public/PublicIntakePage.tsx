@@ -3,7 +3,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../context/toast-context';
 
 const TOTAL_STEPS = 3;
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback

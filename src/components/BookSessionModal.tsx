@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/auth-context';
+import { useToast } from '../context/toast-context';
 
 interface ClientOption {
     id: string;

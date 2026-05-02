@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Mail, Send, X, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react';
 import { logActivity, supabase } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import { sendGmail } from '../lib/gmail';
 
 interface EmailComposerProps {

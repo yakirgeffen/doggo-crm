@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 
 import type { IntakeSubmission } from '../../types';
 

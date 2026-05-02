@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Upload, FileSpreadsheet, Check, AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
 import { supabase, logActivity } from '../lib/supabase';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast-context';
 
 interface ImportClientsModalProps {
     isOpen: boolean;

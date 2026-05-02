@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Calendar as CalendarIcon, ExternalLink, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, List, Grid, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { listUpcomingEvents } from '../lib/calendar';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import { Link } from 'react-router-dom';
 import { CalendarGrid } from '../components/CalendarGrid';
 import { BookSessionModal } from '../components/BookSessionModal';

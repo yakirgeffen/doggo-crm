@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast-context';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
