@@ -37,9 +37,9 @@ export function useServices() {
 
             if (error) throw error;
             setServices(data || []);
-        } catch (err: any) {
+        } catch (err) {
             console.error('Error fetching services:', err);
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Unknown error');
         } finally {
             setLoading(false);
         }

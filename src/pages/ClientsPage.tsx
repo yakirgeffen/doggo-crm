@@ -193,10 +193,10 @@ export function ClientsPage() {
             <div className="flex gap-2 items-center text-sm font-medium text-text-muted">
                 <span className="ms-2">הצג:</span>
                 <div className="flex bg-background border border-border rounded-lg p-1" role="tablist" aria-label="סינון לפי סטטוס">
-                    {['all', 'active', 'inactive'].map((f) => (
+                    {(['all', 'active', 'inactive'] as const).map((f) => (
                         <button
                             key={f}
-                            onClick={() => setFilter(f as any)}
+                            onClick={() => setFilter(f)}
                             role="tab"
                             aria-selected={filter === f}
                             className={`px-4 py-1.5 rounded-md transition-all text-sm ${filter === f ? 'bg-surface text-primary shadow-soft font-medium' : 'hover:bg-surface-warm'}`}

@@ -45,9 +45,9 @@ export function useSettings() {
                 // Auto-create? Or just wait for save? Let's wait for save to avoid junk.
                 setSettings(defaults);
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error('Error fetching settings:', err);
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Unknown error');
         } finally {
             setLoading(false);
         }

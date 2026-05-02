@@ -32,7 +32,7 @@ const NOTES = [
     'יש בעיה של נביחות כשמשאירים אותו לבד.'
 ];
 
-function getRandom(arr: any[]) {
+function getRandom<T>(arr: readonly T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 

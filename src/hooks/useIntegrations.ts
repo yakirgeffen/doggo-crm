@@ -77,9 +77,9 @@ export function useIntegrations() {
 
             setIsConnected(true);
             return { success: true, message: data.message };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Test connection error:', error);
-            return { success: false, message: error.message || 'Connection failed' };
+            return { success: false, message: error instanceof Error ? error.message : 'Connection failed' };
         } finally {
             setLoading(false);
         }
@@ -99,9 +99,9 @@ export function useIntegrations() {
             if (!data.success) throw new Error(data.message || 'Failed to generate link');
 
             return { success: true, url: data.url, id: data.id };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Generate Link error:', error);
-            return { success: false, error: error.message || 'Generation failed' };
+            return { success: false, error: error instanceof Error ? error.message : 'Generation failed' };
         } finally {
             setLoading(false);
         }

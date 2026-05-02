@@ -67,8 +67,8 @@ export function IncomingLeads() {
 
             setLeads(prev => prev.filter(l => l.id !== lead.id));
             showToast(`${lead.full_name} נוסף/ה כלקוח/ה חדש/ה! 🎉`, 'success');
-        } catch (err: any) {
-            showToast('שגיאה ביצירת לקוח: ' + (err.message || ''), 'error');
+        } catch (err) {
+            showToast('שגיאה ביצירת לקוח: ' + (err instanceof Error ? err.message : ''), 'error');
         }
         setActioning(null);
     };

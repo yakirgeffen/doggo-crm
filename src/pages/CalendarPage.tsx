@@ -125,7 +125,7 @@ export function CalendarPage() {
             allItems.sort((a, b) => a.start.getTime() - b.start.getTime());
             setItems(allItems);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
             setError("Failed to load schedule");
         } finally {

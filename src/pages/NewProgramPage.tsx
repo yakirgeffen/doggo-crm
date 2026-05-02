@@ -13,7 +13,7 @@ export function NewProgramPage() {
     const preselectedClientId = searchParams.get('client_id');
 
     const [loading, setLoading] = useState(false);
-    const [clients, setClients] = useState<any[]>([]);
+    const [clients, setClients] = useState<{ id: string; full_name: string; primary_dog_name: string }[]>([]);
 
     const { services } = useServices();
 

@@ -33,7 +33,7 @@ export function ProgramsPage() {
         if (error) {
             console.error('Error fetching programs:', error);
         } else {
-            setPrograms(data as any || []);
+            setPrograms((data as ProgramWithClient[] | null) || []);
         }
         setLoading(false);
     };

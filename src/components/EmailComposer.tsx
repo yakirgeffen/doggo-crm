@@ -178,9 +178,9 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                 onSuccess?.();
             }, 1500);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
-            setError(err.message || "שגיאה בשליחת האימייל");
+            setError(err instanceof Error ? err.message : "שגיאה בשליחת האימייל");
             setSending(false);
         }
     };

@@ -83,7 +83,7 @@ export function PublicIntakePage() {
             if (error) throw error;
             setSubmitted(true);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error('Intake submission error:', err);
             showToast('אירעה שגיאה בשליחה. אנא נסו שוב.', 'error');
         } finally {
