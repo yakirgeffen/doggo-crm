@@ -42,7 +42,7 @@ export function StorefrontAdminPage() {
                 specialties,
             });
             showToast('הפרופיל עודכן בהצלחה!', 'success');
-        } catch (err) {
+        } catch {
             showToast('שגיאה בשמירת הפרופיל', 'error');
         }
         setSavingProfile(false);
@@ -63,12 +63,11 @@ export function StorefrontAdminPage() {
         }
     };
 
-    const handleDeleteService = async (id: string, _name: string) => {
-        // if (!window.confirm(`האם למחוק את השירות "${name}"?`)) return; // Removed for automation
+    const handleDeleteService = async (id: string) => {
         try {
             await deleteService(id);
             showToast('השירות נמחק', 'info');
-        } catch (err) {
+        } catch {
             showToast('שגיאה במחיקת השירות', 'error');
         }
     };
@@ -294,7 +293,7 @@ export function StorefrontAdminPage() {
                                         <Edit2 size={16} />
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteService(service.id, service.name)}
+                                        onClick={() => handleDeleteService(service.id)}
                                         className="p-2 text-text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors"
                                         title="מחק"
                                     >

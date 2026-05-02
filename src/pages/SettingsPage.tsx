@@ -19,7 +19,7 @@ export function SettingsPage() {
             await saveSettings();
             setSuccessMessage("ההגדרות נשמרו בהצלחה");
             setTimeout(() => setSuccessMessage(null), 3000);
-        } catch (error) {
+        } catch {
             // Error managed by hook
         } finally {
             setSaving(false);
