@@ -17,6 +17,97 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'pricing-guide': {
+        slug: 'pricing-guide',
+        title: 'איך לקבוע מחיר לתוכנית אילוף — מדריך מהשטח',
+        description: 'תמחור הוא אחד הדברים הכי קשים למאלפי כלבים עצמאיים. הנה מסגרת פרקטית שעובדת ב-2026, מבוססת על ראיונות עם מאלפים בישראל.',
+        publishedAt: '2026-05-02',
+        readingMinutes: 8,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    "כמה לקחת על תוכנית אילוף?" — השאלה שכל מאלף עצמאי שואל את עצמו לפחות פעם בשבוע.
+                    אין תשובה אחת נכונה, אבל יש מסגרת פרקטית שעוזרת להגיע למחיר הוגן וריווחי. הנה מה שלמדנו מראיונות עם מאלפים בישראל.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. התחילי מהעלות-לדקה שלך, לא מהמחיר של המתחרים</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    הטעות הנפוצה: לבדוק 3 מאלפים בסביבה ולקבוע מחיר באמצע. בעיה: זה לא מבטיח שאת מרוויחה.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    החישוב הנכון: כמה את עובדת בחודש? נסיעות + מפגשים + תיעוד + שיחות וואטסאפ אחרי? קבלי שעות. חלקי במשכורת שאת רוצה לקחת הביתה (ברוטו).
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    דוגמה: 120 שעות עבודה בחודש, רוצה 12,000 ש"ח ברוטו → 100 ש"ח לשעה כעלות-לדקה. עכשיו תכפילי במספר השעות הריאלי שתוכנית אילוף לוקחת ממך, וזה רצפת המחיר.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. תמחר/י לפי תוצאה, לא לפי מפגש</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שתי תוכניות "אילוף בייסיק 8 מפגשים":
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>תמחור לפי שעה</strong> — 8 × 250 = 2,000 ש"ח</li>
+                    <li><strong>תמחור לפי תוצאה</strong> — 2,400 ש"ח, "8 מפגשים, פתרון בעיה ספציפית, ליווי בוואטסאפ עד תום הקורס"</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הלקוח לא קונה שעות. הוא קונה כלב מאולף. תמחור-לפי-תוצאה מאפשר לך:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>לעלות מחיר ב-15-25% בלי שזה ירגיש קופצני</li>
+                    <li>לכסות את הזמן הלא-מפגשי (וואטסאפ, הכנה, מעקב)</li>
+                    <li>למקם את עצמך כפתרון, לא כשרות שעתי</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. חבילות במקום מפגש בודד</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    מאלפים שמוכרים מפגשים בודדים תמיד נאבקים במחזור-תזרים. חבילה של 8 מפגשים מראש פותרת את זה: התשלום מגיע בהתחלה, ההכנסה צפויה,
+                    הלקוח מחויב להגיע (כי כבר שילם), ואת לא צריכה לשכנע אותו לכל מפגש.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    טיפ: 3 חבילות בלבד. בייסיק (4-6 מפגשים) / סטנדרט (8-10) / פרימיום (12+). יותר אופציות = פחות החלטות = שיתוק לקוח.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. כמה ל-"מפגש ראשון בלבד"?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שתי גישות:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>מפגש היכרות חינם</strong> — מושך הרבה לידים, חלקם לא רציניים. הופך את החודש שלך ל-15 פגישות-היכרות + 5 לקוחות אמיתיים.</li>
+                    <li><strong>מפגש היכרות בתשלום (250-350 ש"ח)</strong> — מסנן רציניים. שיעור ההמרה ללקוח גבוה משמעותית. גם בלי חבילה — שולמת על הזמן שלך.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    ההמלצה: השני. המפגש בתשלום הוא בעצם הצעת מחיר אצלך בבית, וזה מתפקד כסינון איכותי.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. הצעת מחיר ב-30 שניות, לא ב-30 דקות</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    אחרי שהגדרת את החבילות שלך — את כבר לא מחשבת מחיר לכל לקוח. את לוחצת "הצעת מחיר", בוחרת את החבילה, שולחת.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    זה ההבדל בין מאלף שמתמחר במהירות ושולח 5 הצעות בערב, לבין מאלף שמתחיל ל"חשב את המחיר" ושולח אחת — אחרי שהלקוח כבר פנה למתחרה.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סיכום: מסגרת ב-5 דקות</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li>עלות-לדקה שלך = משכורת ברוטו רצויה ÷ שעות עבודה בחודש</li>
+                    <li>תמחור לפי תוצאה (חבילה), לא לפי שעה</li>
+                    <li>3 חבילות בלבד (בייסיק / סטנדרט / פרימיום)</li>
+                    <li>מפגש היכרות בתשלום (250-350 ש"ח)</li>
+                    <li>הצעת מחיר אוטומטית מ-CRM = הצעות נשלחות מהר → תשובות מהירות → סגירות מהירות</li>
+                </ol>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM יודע את החבילות שלך. הצעת מחיר ללקוח חדש לוקחת 30 שניות, לא 30 דקות.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'sumit-vs-greeninvoice': {
         slug: 'sumit-vs-greeninvoice',
         title: 'Sumit מול חשבונית ירוקה: מה מתאים למאלפים עצמאיים?',
