@@ -35,15 +35,15 @@ export function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
                 {/* Sidebar Navigation */}
                 <div className="flex flex-col gap-2">
-                    {[
+                    {([
                         { key: 'profile', icon: Building2, label: 'פרופיל עסק' },
                         { key: 'schedule', icon: Calendar, label: 'שעות פעילות' },
                         { key: 'services', icon: Tag, label: 'שירותים ומחירים' },
                         { key: 'integrations', icon: Globe, label: 'חיבורים' },
-                    ].map(tab => (
+                    ] as const).map(tab => (
                         <button
                             key={tab.key}
-                            onClick={() => setActiveTab(tab.key as any)}
+                            onClick={() => setActiveTab(tab.key)}
                             className={`text-right px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3
                                 ${activeTab === tab.key
                                     ? 'bg-surface shadow-soft text-primary'

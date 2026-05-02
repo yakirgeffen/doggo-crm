@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
 
 import type { IntakeSubmission } from '../../types';
 
@@ -67,8 +67,8 @@ export function IncomingLeads() {
 
             setLeads(prev => prev.filter(l => l.id !== lead.id));
             showToast(`${lead.full_name} נוסף/ה כלקוח/ה חדש/ה! 🎉`, 'success');
-        } catch (err: any) {
-            showToast('שגיאה ביצירת לקוח: ' + (err.message || ''), 'error');
+        } catch (err) {
+            showToast('שגיאה ביצירת לקוח: ' + (err instanceof Error ? err.message : ''), 'error');
         }
         setActioning(null);
     };

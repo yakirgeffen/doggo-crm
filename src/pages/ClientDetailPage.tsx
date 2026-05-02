@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { SkeletonClientDetail } from '../components/Skeleton';
@@ -25,24 +25,13 @@ export function ClientDetailPage() {
     const [activeTab, setActiveTab] = useState<TabId>('active');
     const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (id) fetchClientData();
-        if (searchParams.get('action') === 'email') setIsEmailOpen(true);
-
-        // Pre-select a program if coming from /programs/:id redirect
-        const programParam = searchParams.get('program');
-        if (programParam) {
-            setSelectedProgramId(programParam);
-            setActiveTab('active');
-        }
-    }, [id, searchParams]);
-
-    const fetchClientData = async () => {
+    const fetchClientData = useCallback(async () => {
+        if (!id) return;
         setLoading(true);
 
         const [clientRes, programsRes] = await Promise.all([
-            supabase.from('clients').select('*').eq('id', id!).single(),
-            supabase.from('programs').select('*').eq('client_id', id!).order('created_at', { ascending: false })
+            supabase.from('clients').select('*').eq('id', id).single(),
+            supabase.from('programs').select('*').eq('client_id', id).order('created_at', { ascending: false })
         ]);
 
         if (clientRes.error) console.error('Error fetching client:', clientRes.error);
@@ -60,7 +49,20 @@ export function ClientDetailPage() {
         }
 
         setLoading(false);
-    };
+    }, [id, searchParams]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch + searchParam-derived state
+        fetchClientData();
+        if (searchParams.get('action') === 'email') setIsEmailOpen(true);
+
+        // Pre-select a program if coming from /programs/:id redirect
+        const programParam = searchParams.get('program');
+        if (programParam) {
+            setSelectedProgramId(programParam);
+            setActiveTab('active');
+        }
+    }, [searchParams, fetchClientData]);
 
     if (loading) return <SkeletonClientDetail />;
     if (!client) return <div className="p-8 text-center text-text-muted">הלקוח לא נמצא.</div>;

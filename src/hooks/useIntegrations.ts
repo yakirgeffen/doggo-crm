@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 
 export function useIntegrations() {
     const { user } = useAuth();
@@ -8,18 +8,13 @@ export function useIntegrations() {
     const [isConnected, setIsConnected] = useState(false);
     const [vaultData, setVaultData] = useState<{ access_key_id: string } | null>(null);
 
-    // Check status on load
-    useEffect(() => {
+    const fetchStatus = useCallback(async () => {
         if (!user) return;
-        fetchStatus();
-    }, [user]);
-
-    const fetchStatus = async () => {
         try {
             const { data } = await supabase
                 .from('sys_integrations_vault')
                 .select('access_key_id, is_connected')
-                .eq('user_id', user?.id)
+                .eq('user_id', user.id)
                 .eq('service_name', 'morning')
                 .single();
 
@@ -30,7 +25,11 @@ export function useIntegrations() {
         } catch (error) {
             console.error('Error fetching integration status:', error);
         }
-    };
+    }, [user]);
+
+    useEffect(() => {
+        fetchStatus();
+    }, [fetchStatus]);
 
     const saveKeys = async (keyId: string, secretKey: string) => {
         if (!user) return;
@@ -77,9 +76,9 @@ export function useIntegrations() {
 
             setIsConnected(true);
             return { success: true, message: data.message };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Test connection error:', error);
-            return { success: false, message: error.message || 'Connection failed' };
+            return { success: false, message: error instanceof Error ? error.message : 'Connection failed' };
         } finally {
             setLoading(false);
         }
@@ -99,9 +98,9 @@ export function useIntegrations() {
             if (!data.success) throw new Error(data.message || 'Failed to generate link');
 
             return { success: true, url: data.url, id: data.id };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Generate Link error:', error);
-            return { success: false, error: error.message || 'Generation failed' };
+            return { success: false, error: error instanceof Error ? error.message : 'Generation failed' };
         } finally {
             setLoading(false);
         }

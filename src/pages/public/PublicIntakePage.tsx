@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../context/toast-context';
 
 const TOTAL_STEPS = 3;
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback
@@ -29,12 +29,8 @@ export function PublicIntakePage() {
     const [notes, setNotes] = useState('');
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-    useEffect(() => {
+    const resolveTrainer = useCallback(async () => {
         if (!trainerHandle) return;
-        resolveTrainer();
-    }, [trainerHandle]);
-
-    const resolveTrainer = async () => {
         const { data } = await supabase
             .from('user_settings')
             .select('user_id')
@@ -46,7 +42,11 @@ export function PublicIntakePage() {
         } else {
             setTrainerNotFound(true);
         }
-    };
+    }, [trainerHandle]);
+
+    useEffect(() => {
+        resolveTrainer();
+    }, [resolveTrainer]);
 
     const handleSubmit = async () => {
         if (!trainerId) return;
@@ -83,7 +83,7 @@ export function PublicIntakePage() {
             if (error) throw error;
             setSubmitted(true);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error('Intake submission error:', err);
             showToast('אירעה שגיאה בשליחה. אנא נסו שוב.', 'error');
         } finally {

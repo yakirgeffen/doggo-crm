@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/auth-context';
+import { useToast } from '../context/toast-context';
 
 interface ClientOption {
     id: string;
@@ -31,21 +31,18 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
     const [loadingClients, setLoadingClients] = useState(true);
 
     // Sync prefill props when they change
-    useEffect(() => {
+    const [prevPrefillDate, setPrevPrefillDate] = useState(prefillDate);
+    const [prevPrefillTime, setPrevPrefillTime] = useState(prefillTime);
+    if (prefillDate !== prevPrefillDate) {
+        setPrevPrefillDate(prefillDate);
         if (prefillDate) setDate(prefillDate);
+    }
+    if (prefillTime !== prevPrefillTime) {
+        setPrevPrefillTime(prefillTime);
         if (prefillTime) setTime(prefillTime);
-    }, [prefillDate, prefillTime]);
+    }
 
-    // Reset on open
-    useEffect(() => {
-        if (isOpen) {
-            setSelectedClientId('');
-            setSelectedProgramId('');
-            fetchClients();
-        }
-    }, [isOpen]);
-
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
         if (!user) return;
         setLoadingClients(true);
         const { data, error } = await supabase
@@ -74,7 +71,22 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
             setClients(withActivePrograms);
         }
         setLoadingClients(false);
-    };
+    }, [user]);
+
+    // Reset selections on each open transition.
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+    if (isOpen !== prevIsOpen) {
+        setPrevIsOpen(isOpen);
+        if (isOpen) {
+            setSelectedClientId('');
+            setSelectedProgramId('');
+        }
+    }
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
+        if (isOpen) fetchClients();
+    }, [isOpen, fetchClients]);
 
     const selectedClient = clients.find(c => c.id === selectedClientId);
 

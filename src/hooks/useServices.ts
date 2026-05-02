@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, logActivity } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 
 export interface Service {
     id: string;
@@ -37,9 +37,9 @@ export function useServices() {
 
             if (error) throw error;
             setServices(data || []);
-        } catch (err: any) {
+        } catch (err) {
             console.error('Error fetching services:', err);
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Unknown error');
         } finally {
             setLoading(false);
         }

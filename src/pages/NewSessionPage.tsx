@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast-context';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
@@ -40,14 +40,6 @@ export function NewSessionPage() {
         }
     }, [programId]);
 
-    useEffect(() => {
-        if (formData.service_id) {
-            const service = services.find(s => s.id === formData.service_id);
-            if (service) {
-                setFormData(prev => ({ ...prev, price: service.price.toString() }));
-            }
-        }
-    }, [formData.service_id, services]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -123,7 +115,15 @@ export function NewSessionPage() {
                                     id="ns-service"
                                     className="input-field text-sm"
                                     value={formData.service_id}
-                                    onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
+                                    onChange={(e) => {
+                                        const service_id = e.target.value;
+                                        const service = services.find(s => s.id === service_id);
+                                        setFormData({
+                                            ...formData,
+                                            service_id,
+                                            price: service ? service.price.toString() : formData.price,
+                                        });
+                                    }}
                                 >
                                     <option value="">בחר שירות...</option>
                                     {services.map(s => (

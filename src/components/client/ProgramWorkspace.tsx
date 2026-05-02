@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote, Loader2 } from 'lucide-react';
 import { supabase, updateProgramStatus, logActivity } from '../../lib/supabase';
@@ -7,7 +7,7 @@ import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
 import { EmptyState } from '../EmptyState';
 import { SkeletonSessionList } from '../Skeleton';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
 
@@ -42,22 +42,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
         setProgramState(program);
     }, [program]);
 
-    useEffect(() => {
-        fetchSessions();
-    }, [program.id]);
-
-    // Auto-open checkout modal if we came from NewSessionPage with a freshly created session
-    useEffect(() => {
-        const state = location.state as { newSession?: Session } | null;
-        if (state?.newSession && state.newSession.program_id === program.id) {
-            setCheckoutSession(state.newSession);
-            fetchSessions(); // refresh to include the new session
-            // Clear the state to prevent re-opening on re-render
-            window.history.replaceState({}, '');
-        }
-    }, [location.state, program.id]);
-
-    const fetchSessions = async () => {
+    const fetchSessions = useCallback(async () => {
         setLoadingSessions(true);
         const { data, error } = await supabase
             .from('sessions')
@@ -68,7 +53,22 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
         if (error) console.error('Error fetching sessions:', error);
         if (data) setSessions(data);
         setLoadingSessions(false);
-    };
+    }, [program.id]);
+
+    useEffect(() => {
+        fetchSessions();
+    }, [fetchSessions]);
+
+    // Auto-open checkout modal if we came from NewSessionPage with a freshly created session
+    useEffect(() => {
+        const state = location.state as { newSession?: Session } | null;
+        if (state?.newSession && state.newSession.program_id === program.id) {
+            setCheckoutSession(state.newSession);
+            fetchSessions(); // refresh to include the new session
+            // Clear the state to prevent re-opening on re-render
+            window.history.replaceState({}, '');
+        }
+    }, [location.state, program.id, fetchSessions]);
 
     const handleExtendProgram = async (additionalSessions: number, additionalPrice: number) => {
         const newSessionsIncluded = (programState.sessions_included || 0) + additionalSessions;

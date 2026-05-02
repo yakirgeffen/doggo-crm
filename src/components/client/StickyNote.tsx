@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase, logActivity } from '../../lib/supabase';
 
 interface StickyNoteProps {
@@ -10,11 +10,14 @@ export function StickyNote({ clientId, initialNote }: StickyNoteProps) {
     const [note, setNote] = useState(initialNote || '');
     const [isDirty, setIsDirty] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [prevInitial, setPrevInitial] = useState(initialNote);
 
-    useEffect(() => {
+    // Reset local note when parent supplies a new initialNote (e.g. client switch).
+    if (initialNote !== prevInitial) {
+        setPrevInitial(initialNote);
         setNote(initialNote || '');
         setIsDirty(false);
-    }, [initialNote]);
+    }
 
     const handleSave = async () => {
         setSaving(true);

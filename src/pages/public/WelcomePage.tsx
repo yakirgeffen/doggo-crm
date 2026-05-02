@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabase';
 // Turnstile site key - hardcoded for production, env for local dev
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAACYYsn_UV1PvI8el';
 
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../context/toast-context';
 
 export function WelcomePage() {
     const [searchParams] = useSearchParams();

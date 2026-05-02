@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Upload, FileSpreadsheet, Check, AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
 import { supabase, logActivity } from '../lib/supabase';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast-context';
 
 interface ImportClientsModalProps {
     isOpen: boolean;
@@ -16,6 +16,17 @@ interface ParsedRow {
     [key: string]: string;
 }
 
+interface PreviewRow {
+    id: number;
+    raw: ParsedRow;
+    full_name: string;
+    primary_dog_name: string;
+    phone: string;
+    email: string;
+    isValid: boolean;
+    issues: string[];
+}
+
 export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClientsModalProps) {
     const { showToast } = useToast();
     const [step, setStep] = useState<Step>('upload');
@@ -27,7 +38,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
     const [phoneColumn, setPhoneColumn] = useState<string>('');
     const [emailColumn, setEmailColumn] = useState<string>('');
 
-    const [previewData, setPreviewData] = useState<any[]>([]);
+    const [previewData, setPreviewData] = useState<PreviewRow[]>([]);
     const [importStats, setImportStats] = useState({ total: 0, success: 0, failed: 0 });
     const dialogRef = useRef<HTMLDivElement>(null);
 

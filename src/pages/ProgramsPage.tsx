@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Plus, Layers, ChevronLeft } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Program } from '../types';
@@ -19,11 +19,7 @@ export function ProgramsPage() {
     const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('active');
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchPrograms();
-    }, []);
-
-    const fetchPrograms = async () => {
+    const fetchPrograms = useCallback(async () => {
         setLoading(true);
         const { data, error } = await supabase
             .from('programs')
@@ -33,10 +29,15 @@ export function ProgramsPage() {
         if (error) {
             console.error('Error fetching programs:', error);
         } else {
-            setPrograms(data as any || []);
+            setPrograms((data as ProgramWithClient[] | null) || []);
         }
         setLoading(false);
-    };
+    }, []);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
+        fetchPrograms();
+    }, [fetchPrograms]);
 
     const filteredPrograms = programs.filter((p) => {
         if (filter === 'all') return true;

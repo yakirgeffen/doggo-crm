@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Calendar as CalendarIcon, ExternalLink, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, List, Grid, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { listUpcomingEvents } from '../lib/calendar';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import { Link } from 'react-router-dom';
 import { CalendarGrid } from '../components/CalendarGrid';
 import { BookSessionModal } from '../components/BookSessionModal';
@@ -35,11 +35,7 @@ export function CalendarPage() {
     const [bookPrefillDate, setBookPrefillDate] = useState<string>();
     const [bookPrefillTime, setBookPrefillTime] = useState<string>();
 
-    useEffect(() => {
-        fetchAgenda();
-    }, [providerToken, currentDate, viewMode]);
-
-    const fetchAgenda = async () => {
+    const fetchAgenda = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -125,13 +121,17 @@ export function CalendarPage() {
             allItems.sort((a, b) => a.start.getTime() - b.start.getTime());
             setItems(allItems);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
             setError("Failed to load schedule");
         } finally {
             setLoading(false);
         }
-    };
+    }, [providerToken, currentDate]);
+
+    useEffect(() => {
+        fetchAgenda();
+    }, [fetchAgenda]);
 
     const navigateWeek = (direction: 'prev' | 'next') => {
         const newDate = new Date(currentDate);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 
 const navItems = [
     { to: "/", label: "בית", icon: Home },

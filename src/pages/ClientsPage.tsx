@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Client } from '../types';
@@ -20,11 +20,7 @@ export function ClientsPage() {
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
 
-    useEffect(() => {
-        fetchClients();
-    }, []);
-
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
         setLoading(true);
         const { data, error } = await supabase
             .from('clients')
@@ -37,7 +33,12 @@ export function ClientsPage() {
             setClients(data || []);
         }
         setLoading(false);
-    };
+    }, []);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
+        fetchClients();
+    }, [fetchClients]);
 
     const filteredClients = clients.filter((client) => {
         const matchesStatus =
@@ -193,10 +194,10 @@ export function ClientsPage() {
             <div className="flex gap-2 items-center text-sm font-medium text-text-muted">
                 <span className="ms-2">הצג:</span>
                 <div className="flex bg-background border border-border rounded-lg p-1" role="tablist" aria-label="סינון לפי סטטוס">
-                    {['all', 'active', 'inactive'].map((f) => (
+                    {(['all', 'active', 'inactive'] as const).map((f) => (
                         <button
                             key={f}
-                            onClick={() => setFilter(f as any)}
+                            onClick={() => setFilter(f)}
                             role="tab"
                             aria-selected={filter === f}
                             className={`px-4 py-1.5 rounded-md transition-all text-sm ${filter === f ? 'bg-surface text-primary shadow-soft font-medium' : 'hover:bg-surface-warm'}`}
