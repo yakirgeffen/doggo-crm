@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase, logActivity } from '../../lib/supabase';
 
 interface StickyNoteProps {
     clientId: string;
@@ -23,10 +23,11 @@ export function StickyNote({ clientId, initialNote }: StickyNoteProps) {
             .update({ notes: note })
             .eq('id', clientId);
 
-        setSaving(false);
         if (!error) {
+            await logActivity('client', clientId, 'note_updated', 'פתק הלקוח עודכן');
             setIsDirty(false);
         }
+        setSaving(false);
     };
 
     return (

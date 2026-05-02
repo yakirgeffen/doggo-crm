@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote, Loader2 } from 'lucide-react';
-import { supabase, updateProgramStatus } from '../../lib/supabase';
+import { supabase, updateProgramStatus, logActivity } from '../../lib/supabase';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
@@ -92,6 +92,12 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
         if (error) {
             console.error('Error extending program:', error);
         } else {
+            await logActivity(
+                'program',
+                programState.id,
+                'extended',
+                `הוספו ${additionalSessions} מפגשים${additionalPrice > 0 ? ` (תוספת תשלום: ${additionalPrice})` : ''}`
+            );
             setProgramState(prev => ({
                 ...prev,
                 sessions_included: newSessionsIncluded,
@@ -222,6 +228,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         payment_status: 'paid',
                                     }).eq('id', programState.id);
                                     if (!error) {
+                                        await logActivity('program', programState.id, 'payment_marked_paid', 'התוכנית סומנה כשולמה');
                                         setProgramState(prev => ({ ...prev, payment_status: 'paid' as const }));
                                         showToast('סומן כשולם ✅', 'success');
                                     } else {
@@ -260,6 +267,12 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                                 payment_status: 'pending',
                                                 payment_link_id: res.id
                                             }).eq('id', programState.id);
+                                            await logActivity(
+                                                'program',
+                                                programState.id,
+                                                'payment_link_generated',
+                                                `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
+                                            );
 
                                             setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
                                         } else {
