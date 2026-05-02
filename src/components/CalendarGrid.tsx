@@ -72,11 +72,13 @@ export function CalendarGrid({ startDate, events, onSlotClick }: CalendarGridPro
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (scrollContainerRef.current) {
-            const currentTop = getCurrentTimeTop();
+            const now = new Date();
+            const hours = now.getHours() + now.getMinutes() / 60;
+            const currentTop = (hours - startHour) * rowHeight;
             const scrollTo = Math.max(0, currentTop - 300);
             scrollContainerRef.current.scrollTop = scrollTo;
         }
-    }, []);
+    }, [startHour, rowHeight]);
 
     const { settings } = useSettings();
 

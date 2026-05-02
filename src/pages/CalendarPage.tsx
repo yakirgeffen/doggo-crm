@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Calendar as CalendarIcon, ExternalLink, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, List, Grid, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { listUpcomingEvents } from '../lib/calendar';
@@ -35,11 +35,7 @@ export function CalendarPage() {
     const [bookPrefillDate, setBookPrefillDate] = useState<string>();
     const [bookPrefillTime, setBookPrefillTime] = useState<string>();
 
-    useEffect(() => {
-        fetchAgenda();
-    }, [providerToken, currentDate, viewMode]);
-
-    const fetchAgenda = async () => {
+    const fetchAgenda = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -131,7 +127,11 @@ export function CalendarPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [providerToken, currentDate]);
+
+    useEffect(() => {
+        fetchAgenda();
+    }, [fetchAgenda]);
 
     const navigateWeek = (direction: 'prev' | 'next') => {
         const newDate = new Date(currentDate);

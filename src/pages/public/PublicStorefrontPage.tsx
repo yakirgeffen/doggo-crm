@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Clock, Users, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -28,12 +28,8 @@ export function PublicStorefrontPage() {
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
-    useEffect(() => {
+    const fetchStorefront = useCallback(async () => {
         if (!trainerHandle) return;
-        fetchStorefront();
-    }, [trainerHandle]);
-
-    const fetchStorefront = async () => {
         setLoading(true);
 
         // 1. Find trainer by handle
@@ -66,7 +62,11 @@ export function PublicStorefrontPage() {
 
         if (servicesData) setServices(servicesData);
         setLoading(false);
-    };
+    }, [trainerHandle]);
+
+    useEffect(() => {
+        fetchStorefront();
+    }, [fetchStorefront]);
 
     if (loading) {
         return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -36,16 +36,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         if (prefillTime) setTime(prefillTime);
     }, [prefillDate, prefillTime]);
 
-    // Reset on open
-    useEffect(() => {
-        if (isOpen) {
-            setSelectedClientId('');
-            setSelectedProgramId('');
-            fetchClients();
-        }
-    }, [isOpen]);
-
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
         if (!user) return;
         setLoadingClients(true);
         const { data, error } = await supabase
@@ -74,7 +65,16 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
             setClients(withActivePrograms);
         }
         setLoadingClients(false);
-    };
+    }, [user]);
+
+    // Reset on open
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedClientId('');
+            setSelectedProgramId('');
+            fetchClients();
+        }
+    }, [isOpen, fetchClients]);
 
     const selectedClient = clients.find(c => c.id === selectedClientId);
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
@@ -29,12 +29,8 @@ export function PublicIntakePage() {
     const [notes, setNotes] = useState('');
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-    useEffect(() => {
+    const resolveTrainer = useCallback(async () => {
         if (!trainerHandle) return;
-        resolveTrainer();
-    }, [trainerHandle]);
-
-    const resolveTrainer = async () => {
         const { data } = await supabase
             .from('user_settings')
             .select('user_id')
@@ -46,7 +42,11 @@ export function PublicIntakePage() {
         } else {
             setTrainerNotFound(true);
         }
-    };
+    }, [trainerHandle]);
+
+    useEffect(() => {
+        resolveTrainer();
+    }, [resolveTrainer]);
 
     const handleSubmit = async () => {
         if (!trainerId) return;

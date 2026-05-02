@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase, type ActivityLog } from '../lib/supabase';
 import { FileText, CheckCircle, BookOpen } from 'lucide-react';
 import { SkeletonTimeline } from './Skeleton';
@@ -14,11 +14,7 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
     const [logs, setLogs] = useState<ActivityLog[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchLogs();
-    }, [entityType, entityId]);
-
-    const fetchLogs = async () => {
+    const fetchLogs = useCallback(async () => {
         setLoading(true);
 
         let mainQuery = supabase
@@ -57,7 +53,11 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
 
         setLogs(uniqueLogs.slice(0, limit));
         setLoading(false);
-    };
+    }, [entityType, entityId, limit, programIds]);
+
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
 
     if (loading) return <SkeletonTimeline count={3} />;
     if (logs.length === 0) return <div className="text-sm text-text-muted italic p-4">אין פעילות מתועדת עדיין.</div>;

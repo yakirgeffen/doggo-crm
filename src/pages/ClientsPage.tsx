@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Client } from '../types';
@@ -20,11 +20,7 @@ export function ClientsPage() {
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
 
-    useEffect(() => {
-        fetchClients();
-    }, []);
-
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
         setLoading(true);
         const { data, error } = await supabase
             .from('clients')
@@ -37,7 +33,11 @@ export function ClientsPage() {
             setClients(data || []);
         }
         setLoading(false);
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchClients();
+    }, [fetchClients]);
 
     const filteredClients = clients.filter((client) => {
         const matchesStatus =
