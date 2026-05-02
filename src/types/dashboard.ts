@@ -18,7 +18,6 @@ export interface ProgramWithClient extends Program {
 export interface SessionWithProgram {
     id: string;
     session_date: string;
-    session_number: number | null;
     programs: {
         id: string;
         program_name: string;

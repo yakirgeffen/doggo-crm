@@ -98,9 +98,6 @@ export function Dashboard() {
                                     const past = isPast(session.session_date);
                                     const clientId = session.programs.clients.id;
                                     const phone = session.programs.clients.phone;
-                                    const sessionLabel = session.session_number && session.programs.sessions_included
-                                        ? `מפגש ${session.session_number}/${session.programs.sessions_included}`
-                                        : null;
 
                                     return (
                                         <div
@@ -120,7 +117,6 @@ export function Dashboard() {
                                                     </h3>
                                                     <p className="text-xs text-text-muted truncate">
                                                         {session.programs.clients.primary_dog_name} • {session.programs.program_name}
-                                                        {sessionLabel && <span className="text-primary/70 ms-1.5">({sessionLabel})</span>}
                                                     </p>
                                                 </div>
                                             </Link>
