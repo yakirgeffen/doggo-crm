@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { type UserSettings } from '../types';
 
@@ -81,6 +81,8 @@ export function useSettings() {
             fetchSettings(); // Revert to DB state
             throw error;
         }
+
+        await logActivity('settings', user.id, 'updated', 'הגדרות המאלף עודכנו');
     };
 
     return { settings, loading, error, updateLocalSettings, saveSettings };

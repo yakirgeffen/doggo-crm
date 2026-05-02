@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 export interface Service {
@@ -58,6 +58,7 @@ export function useServices() {
             .single();
 
         if (error) throw error;
+        await logActivity('service', data.id, 'created', `שירות חדש: ${data.name}`);
         setServices([...services, data]);
         return data;
     };
@@ -69,17 +70,20 @@ export function useServices() {
             .eq('id', id);
 
         if (error) throw error;
+        await logActivity('service', id, 'updated', `שירות עודכן${updates.name ? `: ${updates.name}` : ''}`);
         setServices(services.map(s => s.id === id ? { ...s, ...updates } : s));
     };
 
     const deleteService = async (id: string) => {
         // Soft delete
+        const service = services.find(s => s.id === id);
         const { error } = await supabase
             .from('services')
             .update({ is_active: false })
             .eq('id', id);
 
         if (error) throw error;
+        await logActivity('service', id, 'deleted', `שירות נמחק${service ? `: ${service.name}` : ''}`);
         setServices(services.filter(s => s.id !== id));
     };
 
