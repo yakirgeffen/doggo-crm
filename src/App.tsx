@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { ClientsPage } from './pages/ClientsPage';
@@ -12,17 +12,43 @@ import { SeedPage } from './pages/SeedPage';
 import { StorefrontAdminPage } from './pages/StorefrontAdminPage';
 
 import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/auth-context';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoginPage } from './pages/LoginPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { RequireAuth } from './components/RequireAuth';
 import { ToastProvider } from './context/ToastContext';
+import { LandingPage } from './pages/public/LandingPage';
 import { WelcomePage } from './pages/public/WelcomePage';
 import { PrivacyPolicyPage } from './pages/public/PrivacyPolicyPage';
 import { TermsOfServicePage } from './pages/public/TermsOfServicePage';
 import { PublicStorefrontPage } from './pages/public/PublicStorefrontPage';
 import { PublicIntakePage } from './pages/public/PublicIntakePage';
+
+// Root entry: unauthenticated visitors at '/' see the LandingPage
+// (CMO trainer-acquisition surface). Authenticated visitors render the
+// Layout with the Dashboard. Sub-routes under '/' (e.g., /clients) still
+// require auth — unauthenticated visitors land on /login per the
+// existing redirect contract.
+function RootEntry() {
+    const { session, loading } = useAuth();
+    const location = useLocation();
+
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-bg-app">
+                <div className="text-primary">Loading...</div>
+            </div>
+        );
+    }
+
+    if (!session) {
+        if (location.pathname === '/') return <LandingPage />;
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return <Layout />;
+}
 
 function App() {
   return (
@@ -41,15 +67,8 @@ function App() {
             <Route path="/t/:trainerHandle" element={<PublicStorefrontPage />} />
             <Route path="/t/:trainerHandle/intake" element={<PublicIntakePage />} />
 
-            {/* ========== Authenticated Routes ========== */}
-            <Route
-              path="/"
-              element={
-                <RequireAuth>
-                  <Layout />
-                </RequireAuth>
-              }
-            >
+            {/* ========== Root + Authenticated Routes ========== */}
+            <Route path="/" element={<RootEntry />}>
               <Route index element={<Dashboard />} />
               <Route path="clients" element={<ClientsPage />} />
               <Route path="clients/new" element={<NewClientPage />} />
