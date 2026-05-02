@@ -20,6 +20,8 @@ import { SettingsPage } from './pages/SettingsPage';
 import { ToastProvider } from './context/ToastContext';
 import { LandingPage } from './pages/public/LandingPage';
 import { PricingPage } from './pages/public/PricingPage';
+import { BlogIndexPage } from './pages/public/BlogIndexPage';
+import { BlogPostPage } from './pages/public/BlogPostPage';
 import { WelcomePage } from './pages/public/WelcomePage';
 import { PrivacyPolicyPage } from './pages/public/PrivacyPolicyPage';
 import { TermsOfServicePage } from './pages/public/TermsOfServicePage';
@@ -61,6 +63,8 @@ function App() {
             {/* ========== Public Routes ========== */}
             <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/blog" element={<BlogIndexPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/login" element={<LoginPage />} />

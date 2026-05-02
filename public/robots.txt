@@ -4,6 +4,8 @@
 User-agent: *
 Allow: /
 Allow: /pricing
+Allow: /blog
+Allow: /blog/
 Allow: /privacy
 Allow: /terms
 Allow: /welcome

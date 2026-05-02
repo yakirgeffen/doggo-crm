@@ -20,16 +20,13 @@ export function LandingPage() {
                             <span className="font-bold text-lg">Doggo CRM</span>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Link
-                                to="/pricing"
-                                className="text-sm font-medium text-text-secondary hover:text-primary transition-colors"
-                            >
+                            <Link to="/pricing" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
                                 מחירים
                             </Link>
-                            <Link
-                                to="/login"
-                                className="text-sm font-medium text-text-secondary hover:text-primary transition-colors"
-                            >
+                            <Link to="/blog" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
+                                בלוג
+                            </Link>
+                            <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
                                 כניסה
                             </Link>
                         </div>
