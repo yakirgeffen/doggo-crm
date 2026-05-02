@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store } from 'lucide-react';
+import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/auth-context';
 
 const navItems = [
@@ -66,7 +66,7 @@ export function Layout() {
                     ))}
                 </nav>
 
-                {/* Footer: Settings + Sign Out + Version */}
+                {/* Footer: Settings + Blog + Sign Out + Version */}
                 <div className="border-t border-border-light p-3 space-y-1">
                     <NavLink
                         to="/settings"
@@ -80,6 +80,16 @@ export function Layout() {
                         <Settings size={20} />
                         הגדרות
                     </NavLink>
+                    <a
+                        href="/blog"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
+                        title="תכנים ומדריכים למאלפי כלבים"
+                    >
+                        <BookOpen size={20} />
+                        בלוג
+                    </a>
                     <button
                         onClick={() => signOut()}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
