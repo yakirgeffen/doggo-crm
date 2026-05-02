@@ -338,11 +338,13 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         setActionInFlight(true);
                                         try {
                                             if (pendingAction === 'complete') {
-                                                await updateProgramStatus(programState.id, 'completed');
+                                                const { error } = await updateProgramStatus(programState.id, 'completed');
+                                                if (error) throw error;
                                                 setProgramState(prev => ({ ...prev, status: 'completed' as const }));
                                                 showToast('התוכנית סומנה כהושלמה', 'success');
                                             } else {
-                                                await updateProgramStatus(programState.id, 'cancelled');
+                                                const { error } = await updateProgramStatus(programState.id, 'paused');
+                                                if (error) throw error;
                                                 setProgramState(prev => ({ ...prev, status: 'paused' as const }));
                                                 showToast('התוכנית בוטלה', 'success');
                                             }

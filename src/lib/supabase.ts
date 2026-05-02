@@ -35,7 +35,7 @@ export async function logActivity(
     }
 }
 
-export async function updateProgramStatus(programId: string, status: 'active' | 'completed' | 'cancelled') {
+export async function updateProgramStatus(programId: string, status: 'active' | 'paused' | 'completed') {
     const { error } = await supabase
         .from('programs')
         .update({ status })
