@@ -39,7 +39,7 @@ export function useDashboard() {
                 supabase.from('sessions').select('*', { count: 'exact', head: true }).gte('session_date', startOfMonth.toISOString()),
                 supabase.from('programs').select('*', { count: 'exact', head: true }).eq('payment_status', 'pending'),
                 supabase.from('sessions')
-                    .select('id, session_date, session_number, programs(id, program_name, sessions_included, clients(id, full_name, primary_dog_name, phone))')
+                    .select('id, session_date, programs(id, program_name, sessions_included, clients(id, full_name, primary_dog_name, phone))')
                     .gte('session_date', startOfDay.toISOString())
                     .lt('session_date', endOfDay.toISOString())
                     .order('session_date', { ascending: true })
@@ -53,9 +53,12 @@ export function useDashboard() {
             });
 
             if (todayData) {
-                // Supabase returns deeply nested objects that match our interface structure
-                // We trust the query matches the SessionWithProgram interface
-                setTodaysSessions(todayData as unknown as SessionWithProgram[]);
+                // Embedded relations come back null when RLS hides the joined row
+                // (e.g. orphan program referencing a client owned by a different
+                // trainer). Drop those rows — render path assumes both are present.
+                const safeToday = (todayData as unknown as SessionWithProgram[])
+                    .filter(s => s.programs && s.programs.clients);
+                setTodaysSessions(safeToday);
             }
 
             // Build unified action feed
@@ -68,8 +71,8 @@ export function useDashboard() {
                 .eq('program_type', 'fixed_sessions');
 
             if (activeProgs) {
-                // Strong typing for joined data
-                const typedProgs = activeProgs as unknown as ProgramWithClient[];
+                const typedProgs = (activeProgs as unknown as ProgramWithClient[])
+                    .filter(p => p.clients);
                 typedProgs.forEach(p => {
                     if (p.sessions_included && (p.sessions_completed / p.sessions_included) >= 0.8) {
                         items.push({ type: 'renewal', program: p });
@@ -84,7 +87,8 @@ export function useDashboard() {
                 .limit(10);
 
             if (unpaid) {
-                const typedUnpaid = unpaid as unknown as ProgramWithClient[];
+                const typedUnpaid = (unpaid as unknown as ProgramWithClient[])
+                    .filter(p => p.clients);
                 typedUnpaid.forEach(p => {
                     items.push({ type: 'unpaid', program: p });
                 });

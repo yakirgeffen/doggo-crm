@@ -12,6 +12,7 @@ import { SeedPage } from './pages/SeedPage';
 import { StorefrontAdminPage } from './pages/StorefrontAdminPage';
 
 import { AuthProvider } from './context/AuthContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoginPage } from './pages/LoginPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -25,9 +26,10 @@ import { PublicIntakePage } from './pages/public/PublicIntakePage';
 
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
           <Routes>
             {/* ========== Public Routes ========== */}
             <Route path="/welcome" element={<WelcomePage />} />
@@ -70,7 +72,8 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ToastProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
