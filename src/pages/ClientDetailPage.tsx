@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Receipt } from 'lucide-react';
 import { SkeletonClientDetail } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
 import { type Client, type Program } from '../types';
 import { ActivityTimeline } from '../components/ActivityTimeline';
 import { EmailComposer } from '../components/EmailComposer';
+import { SendQuoteModal } from '../components/SendQuoteModal';
 import { PageHeader } from '../components/PageHeader';
 import { ClientHero } from '../components/client/ClientHero';
 import { StickyNote } from '../components/client/StickyNote';
@@ -19,6 +20,7 @@ export function ClientDetailPage() {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEmailOpen, setIsEmailOpen] = useState(false);
+    const [isQuoteOpen, setIsQuoteOpen] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
 
     // Tab & program selection
@@ -79,13 +81,23 @@ export function ClientDetailPage() {
                 subtitle={client.primary_dog_name || undefined}
                 backUrl="/clients"
                 actions={
-                    <Link
-                        to={`/programs/new?client_id=${id}`}
-                        className="btn btn-primary text-sm py-2 px-4"
-                    >
-                        <Plus size={16} className="ms-1" />
-                        תוכנית חדשה
-                    </Link>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setIsQuoteOpen(true)}
+                            className="btn btn-secondary text-sm py-2 px-4 flex items-center gap-1"
+                            title="שלח הצעת מחיר ללקוח"
+                        >
+                            <Receipt size={16} />
+                            הצעת מחיר
+                        </button>
+                        <Link
+                            to={`/programs/new?client_id=${id}`}
+                            className="btn btn-primary text-sm py-2 px-4"
+                        >
+                            <Plus size={16} className="ms-1" />
+                            תוכנית חדשה
+                        </Link>
+                    </div>
                 }
             />
 
@@ -186,6 +198,19 @@ export function ClientDetailPage() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Send Quote Modal */}
+            {client && (
+                <SendQuoteModal
+                    isOpen={isQuoteOpen}
+                    onClose={() => setIsQuoteOpen(false)}
+                    onSent={() => setRefreshKey(prev => prev + 1)}
+                    clientId={client.id}
+                    clientName={client.full_name}
+                    clientEmail={client.email || ''}
+                    clientPhone={client.phone || undefined}
+                />
             )}
 
             {/* Email Composer */}
