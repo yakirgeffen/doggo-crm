@@ -4,6 +4,7 @@ import { SkeletonKPIGrid } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
 import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
+import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
 import { useDashboard } from '../hooks/useDashboard';
 
 export function Dashboard() {
@@ -68,6 +69,9 @@ export function Dashboard() {
 
                 {/* INCOMING LEADS (only renders if there are new leads) */}
                 <IncomingLeads />
+
+                {/* G3 — lead-source UTM reporting (renders only when there are leads in the last 30 days) */}
+                <LeadSourceReport />
 
                 {/* TODAY'S MISSIONS + KPIs side-by-side on desktop */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
