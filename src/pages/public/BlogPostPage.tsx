@@ -17,6 +17,76 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'excel-to-crm': {
+        slug: 'excel-to-crm',
+        title: 'מתי כדאי לעבור מאקסל ל-CRM ייעודי?',
+        description: 'אקסל זה כלי מצוין — עד שהוא הופך לבעיה. הנה ארבעה סימנים פרקטיים שאומרים שהגיע הזמן לעבור ל-CRM ייעודי, ומה לבחון לפני המעבר.',
+        publishedAt: '2026-05-02',
+        readingMinutes: 6,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    אקסל זה כלי מצוין. הוא חינם, גמיש, וכולם יודעים להשתמש בו. אבל בשלב מסוים בעסק שלך, הוא הופך מנכס לחיכוך.
+                    הנה ארבעה סימנים מהשטח שאומרים שהגיע הזמן לעבור.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 1: יש לך יותר מ-15 לקוחות פעילים</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    עד 10-15 לקוחות, אקסל עובד. אחרי זה, החיפוש (איפה הפרטים של רותם?), הסינון (מי שילם החודש?), והעדכון (כמה מפגשים נשארו לחבילה של דנה?) הופכים לעבודה.
+                    אצל מאלפים מקצועיים, החצי שעה ביום שמושקעת ב"לחפש את הקובץ" היא בדרך-כלל הסימן הראשון.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 2: שכחת לחזור ללקוח</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בעבר היה לך פתק. עכשיו יש 4 פתקים, 3 הודעות וואטסאפ, ואחד-שניים שאת זוכרת רק כי הם רושמים-מודעות בפייסבוק.
+                    כשמבקשים ממאלפים לתאר את "הרגע שעברתי ל-CRM", זו הסיבה הכי שכיחה: לקוח אחד נשמט, וזה הספיק.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 3: יש לך נתונים שאי אפשר לשאול אותם</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    בקובץ אקסל, אם תרצי לדעת:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>כמה לידים קיבלת בחודש האחרון מאינסטגרם?</li>
+                    <li>מהו הזמן הממוצע מליד לחבילה?</li>
+                    <li>כמה לקוחות חזרו לחבילה שנייה?</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    אקסל יודע לגלגל מספרים, אבל רק אם תקצי את הנתונים מראש בצורה שמאפשרת את זה. ב-CRM ייעודי, השאלות האלו פתוחות ב-3 לחיצות.
+                    זה ההבדל בין לעבוד ב-עסק לבין לעבוד עליו.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 4: את שולחת הצעות מחיר וחשבוניות בכלים נפרדים</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    אם הצעת המחיר ב-Word, החשבונית ב-Sumit/חשבונית ירוקה, ההסכם ב-PDF במייל, וההיסטוריה ב-WhatsApp — את עובדת ב-4 כלים שלא מדברים ביניהם.
+                    CRM ייעודי מחבר אותם. אותו לקוח, אותה תוכנית, הצעת מחיר → חשבונית → אישור → תזכורות אוטומטיות. הכל קשור.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה לבדוק לפני המעבר</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li><strong>עברית מלאה</strong> — לא תרגום של כלי אנגלי. CRM שתורגם הוא חוויה לא אחידה.</li>
+                    <li><strong>מותאם לתחום שלך</strong> — מאלפי כלבים זקוקים לדברים שונים מסוכני נדל"ן או יועצים פיננסיים. CRM אופקי גנרי לא יידע לדבר על "תוכנית אילוף", "מפגשים שנשארו", או "כלב ראשי".</li>
+                    <li><strong>מתחבר למה שכבר יש לך</strong> — Sumit / חשבונית ירוקה, Google Calendar, Gmail. אם CRM דורש ממך לעזוב את הכלים הקיימים, זה דגל אדום.</li>
+                    <li><strong>חינם להתחיל</strong> — תוכנית חינם או ניסיון מספיק ארוך כדי לראות אם זה עובד אצלך, לפני שמשלמים.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שורה תחתונה</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    אקסל הוא לא הבעיה. הבעיה היא לעבוד עם 4 כלים שלא מדברים. כשהזמן שאת מבזבזת על אדמין עולה על שעה ביום — זה הגיע הזמן.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM נבנה מאלפים, לא לסוכני נדל"ן. עברית מלאה, חיבור ל-Sumit + Google + Gmail, ניסיון 30 יום חינם.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'pricing-guide': {
         slug: 'pricing-guide',
         title: 'איך לקבוע מחיר לתוכנית אילוף — מדריך מהשטח',
