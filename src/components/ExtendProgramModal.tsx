@@ -13,20 +13,9 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
     const [sessionsToAdd, setSessionsToAdd] = useState(1);
     const [additionalPrice, setAdditionalPrice] = useState(0);
     const [loading, setLoading] = useState(false);
-
-    if (!isOpen) return null;
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        await onConfirm(sessionsToAdd, additionalPrice);
-        setLoading(false);
-        onClose();
-    };
-
     const dialogRef = useRef<HTMLDivElement>(null);
 
-    // Focus trap + Escape key — IS 5568
+    // Focus trap + Escape key — hooks must be called before any early return.
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Escape') { onClose(); return; }
         if (e.key !== 'Tab' || !dialogRef.current) return;
@@ -43,9 +32,20 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
     }, [onClose]);
 
     useEffect(() => {
+        if (!isOpen) return;
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [handleKeyDown]);
+    }, [isOpen, handleKeyDown]);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        await onConfirm(sessionsToAdd, additionalPrice);
+        setLoading(false);
+        onClose();
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in">

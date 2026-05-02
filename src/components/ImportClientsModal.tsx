@@ -29,6 +29,29 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
 
     const [previewData, setPreviewData] = useState<any[]>([]);
     const [importStats, setImportStats] = useState({ total: 0, success: 0, failed: 0 });
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus trap + Escape key — hooks must be called before any early return.
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') { onClose(); return; }
+        if (e.key !== 'Tab' || !dialogRef.current) return;
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        } else {
+            if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        }
+    }, [onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, handleKeyDown]);
 
     if (!isOpen) return null;
 
@@ -119,28 +142,6 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
         }
     };
 
-    const dialogRef = useRef<HTMLDivElement>(null);
-
-    // Focus trap + Escape key — IS 5568
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (e.key === 'Escape') { onClose(); return; }
-        if (e.key !== 'Tab' || !dialogRef.current) return;
-        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey) {
-            if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
-        } else {
-            if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
-        }
-    }, [onClose]);
-
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [handleKeyDown]);
 
     return (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in">
