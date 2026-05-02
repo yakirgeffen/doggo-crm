@@ -1,0 +1,24 @@
+# Doggo CRM — robots.txt
+# Public marketing surfaces are indexable; trainer-authenticated app routes are not.
+
+User-agent: *
+Allow: /
+Allow: /pricing
+Allow: /privacy
+Allow: /terms
+Allow: /welcome
+Allow: /t/
+
+# Authenticated app routes — block crawler indexing
+Disallow: /clients
+Disallow: /clients/
+Disallow: /programs
+Disallow: /programs/
+Disallow: /sessions
+Disallow: /sessions/
+Disallow: /calendar
+Disallow: /settings
+Disallow: /storefront
+Disallow: /seed
+
+Sitemap: https://doggocrm.app/sitemap.xml
