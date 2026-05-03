@@ -110,6 +110,16 @@ serve(async (req: Request) => {
         }
 
         if (action === 'create_intake_submission') {
+            // INTENTIONAL ASYMMETRY (CPO 2026-05-03, QA Avner follow-up #4): the
+            // programmatic API accepts `behavioral_tags` while the public intake
+            // form (`src/pages/public/PublicIntakePage.tsx`) does NOT. Rationale:
+            // behavioral_tags is trainer-vocabulary categorization populated at
+            // conversion; partner systems (Make/Zapier, partner platforms running
+            // brief assessments) can pre-classify with quality, whereas dog-owners
+            // self-classifying in the public form would be a vocabulary mismatch
+            // and lower-quality data. Programmatic-richer-than-public is a common
+            // CRM pattern. Revisit if a customer base of programmatic-API users
+            // who also use the public form for the same lead emerges.
             const { full_name, phone, dog_name, dog_breed, dog_age, notes, lead_source, behavioral_tags } = payload || {}
             if (!full_name) {
                 return new Response(JSON.stringify({ error: 'full_name is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })

@@ -40,7 +40,15 @@ export function PublicIntakePage() {
     const [submitted, setSubmitted] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    // Form state
+    // Form state.
+    // INTENTIONAL ASYMMETRY (CPO 2026-05-03, QA Avner follow-up #4): this form
+    // does NOT collect `behavioral_tags`, while the programmatic api-v1
+    // `create_intake_submission` endpoint DOES. behavioral_tags is
+    // trainer-vocabulary classification populated at conversion; dog-owners
+    // self-tagging in their own vocabulary would degrade data quality and
+    // bloat the form. Public surface stays simple; trainers tag during
+    // initial-conversation conversion. See api-v1/index.ts for the matching
+    // comment and `leadership/cpo/decisions-log.md` for the rationale.
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [dogName, setDogName] = useState('');
