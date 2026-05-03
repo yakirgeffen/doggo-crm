@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-03",
+  "generated_at": "2026-05-03-iter135",
   "project_id": "mmcgbtnjdatxkdzmsmwy",
   "schema": "public",
   "_purpose": "Snapshot of the live public schema (tables + columns + RLS policies), regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. `npm run check:rls-defaults` parses `rls_policies` predicates of the form `auth.uid() = X` and cross-references the column default for X. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout, the iter 120 silent-prod-bug arc, and the iter 128 RLS-vs-default guard install.",
@@ -37,7 +37,7 @@
         { "name": "notes", "type": "text", "nullable": true, "default": null },
         { "name": "is_active", "type": "boolean", "nullable": true, "default": "true" },
         { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
-        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": "auth.uid()" },
         { "name": "behavioral_tags", "type": "ARRAY", "nullable": true, "default": "'{}'::text[]" },
         { "name": "lead_source", "type": "text", "nullable": true, "default": null },
         { "name": "primary_dog_breed", "type": "text", "nullable": true, "default": null }
@@ -74,7 +74,7 @@
         { "name": "notes", "type": "text", "nullable": true, "default": null },
         { "name": "status", "type": "text", "nullable": true, "default": "'new'::text" },
         { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
-        { "name": "trainer_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "trainer_id", "type": "uuid", "nullable": false, "default": null },
         { "name": "captcha_token", "type": "text", "nullable": true, "default": null },
         { "name": "dog_breed", "type": "text", "nullable": true, "default": null },
         { "name": "dog_age", "type": "text", "nullable": true, "default": null },
@@ -131,7 +131,7 @@
         { "name": "payment_link_id", "type": "text", "nullable": true, "default": null },
         { "name": "invoice_url", "type": "text", "nullable": true, "default": null },
         { "name": "invoice_pdf_url", "type": "text", "nullable": true, "default": null },
-        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": "auth.uid()" },
         { "name": "service_id", "type": "uuid", "nullable": true, "default": null },
         { "name": "sumit_invoice_document_id", "type": "bigint", "nullable": true, "default": null },
         { "name": "sumit_invoice_document_number", "type": "bigint", "nullable": true, "default": null },
@@ -186,7 +186,7 @@
         { "name": "payment_status", "type": "text", "nullable": true, "default": "'unpaid'::text" },
         { "name": "payment_link_id", "type": "text", "nullable": true, "default": null },
         { "name": "invoice_url", "type": "text", "nullable": true, "default": null },
-        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": "auth.uid()" },
         { "name": "google_calendar_event_id", "type": "text", "nullable": true, "default": null }
       ]
     },
@@ -252,7 +252,7 @@
     { "table": "profiles", "name": "Users can view their own profile", "cmd": "SELECT", "qual": "(auth.uid() = id)", "with_check": null },
     { "table": "programs", "name": "Users can manage their own programs", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
     { "table": "quotes", "name": "Users can manage their own quotes", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
-    { "table": "services", "name": "Public can view active services for storefront", "cmd": "SELECT", "qual": "(is_active = true)", "with_check": null },
+    { "table": "services", "name": "Anon can view active services for storefront", "cmd": "SELECT", "qual": "(is_active = true)", "with_check": null },
     { "table": "services", "name": "Users can manage their own services", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
     { "table": "services", "name": "Users can view their own services", "cmd": "SELECT", "qual": "(auth.uid() = user_id)", "with_check": null },
     { "table": "sessions", "name": "Users can manage their own sessions", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
