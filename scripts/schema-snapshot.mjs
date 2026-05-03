@@ -36,7 +36,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
     process.exit(0);
 }
 
-const sql = `
+const COLUMNS_SQL = `
     SELECT
         table_name::text AS table_name,
         jsonb_agg(
@@ -53,39 +53,76 @@ const sql = `
     ORDER BY table_name;
 `;
 
-const url = `${SUPABASE_URL}/rest/v1/rpc/exec_sql`;
-const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-        'apikey': SERVICE_ROLE_KEY,
-        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ sql }),
-});
+// pg_policies snapshot — substrate for `check:rls-defaults` guard (iter 128).
+// We capture qual + with_check verbatim so the guard can parse RLS predicates
+// of the form `auth.uid() = X` and cross-reference X's column default.
+// See scripts/check-rls-defaults.mjs header for the full class-of-bug.
+const POLICIES_SQL = `
+    SELECT
+        schemaname::text AS schemaname,
+        tablename::text AS tablename,
+        policyname::text AS policyname,
+        cmd::text AS cmd,
+        qual::text AS qual,
+        with_check::text AS with_check
+    FROM pg_policies
+    WHERE schemaname = 'public'
+    ORDER BY tablename, policyname;
+`;
 
-if (!res.ok) {
+async function runSql(sql) {
+    const url = `${SUPABASE_URL}/rest/v1/rpc/exec_sql`;
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'apikey': SERVICE_ROLE_KEY,
+            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sql }),
+    });
+    if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`HTTP ${res.status} from exec_sql: ${body.slice(0, 200)}`);
+    }
+    return await res.json();
+}
+
+let columnsRows;
+let policiesRows;
+try {
+    columnsRows = await runSql(COLUMNS_SQL);
+    policiesRows = await runSql(POLICIES_SQL);
+} catch (err) {
     console.error(
-        `[schema:snapshot] Could not query information_schema via REST (HTTP ${res.status}). ` +
+        `[schema:snapshot] Could not query schema/policies via REST (${err.message}). ` +
         'This script requires an `exec_sql(text)` RPC function in the public schema. ' +
         'Fallback: run the equivalent SQL via Supabase MCP and paste into scripts/schema-snapshot.json manually.'
     );
     process.exit(1);
 }
 
-const rows = await res.json();
 const tables = {};
-for (const row of rows) {
+for (const row of columnsRows) {
     tables[row.table_name] = { columns: row.columns };
 }
+
+const rls_policies = policiesRows.map((row) => ({
+    table: row.tablename,
+    name: row.policyname,
+    cmd: row.cmd,
+    qual: row.qual,
+    with_check: row.with_check,
+}));
 
 const out = {
     generated_at: new Date().toISOString().split('T')[0], // YYYY-MM-DD
     project_id: SUPABASE_URL.replace(/^https?:\/\//, '').split('.')[0],
     schema: 'public',
-    _purpose: 'Snapshot of the live public schema, regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout and the iter 120 silent-prod-bug arc.',
+    _purpose: 'Snapshot of the live public schema (tables + columns + RLS policies), regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. `npm run check:rls-defaults` parses `rls_policies` predicates of the form `auth.uid() = X` and cross-references the column default for X. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout, the iter 120 silent-prod-bug arc, and the iter 128 RLS-vs-default guard install.',
     tables,
+    rls_policies,
 };
 
 await writeFile(SNAPSHOT_PATH, JSON.stringify(out, null, 2) + '\n', 'utf8');
-console.log(`[schema:snapshot] Wrote ${Object.keys(tables).length} tables to scripts/schema-snapshot.json (project ${out.project_id}, generated ${out.generated_at}).`);
+console.log(`[schema:snapshot] Wrote ${Object.keys(tables).length} tables + ${rls_policies.length} RLS policies to scripts/schema-snapshot.json (project ${out.project_id}, generated ${out.generated_at}).`);

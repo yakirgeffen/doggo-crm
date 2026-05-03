@@ -2,7 +2,7 @@
   "generated_at": "2026-05-03",
   "project_id": "mmcgbtnjdatxkdzmsmwy",
   "schema": "public",
-  "_purpose": "Snapshot of the live public schema, regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout and the iter 120 silent-prod-bug arc.",
+  "_purpose": "Snapshot of the live public schema (tables + columns + RLS policies), regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. `npm run check:rls-defaults` parses `rls_policies` predicates of the form `auth.uid() = X` and cross-references the column default for X. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout, the iter 120 silent-prod-bug arc, and the iter 128 RLS-vs-default guard install.",
   "tables": {
     "activity_logs": {
       "columns": [
@@ -235,5 +235,33 @@
         { "name": "intro_pages_seen", "type": "ARRAY", "nullable": false, "default": "'{}'::text[]" }
       ]
     }
-  }
+  },
+  "rls_policies": [
+    { "table": "activity_logs", "name": "Users can manage their own logs", "cmd": "ALL", "qual": "(auth.uid() = performed_by)", "with_check": "(auth.uid() = performed_by)" },
+    { "table": "client_attachments", "name": "Users can delete their own client attachments", "cmd": "DELETE", "qual": "(auth.uid() = user_id)", "with_check": null },
+    { "table": "client_attachments", "name": "Users can insert their own client attachments", "cmd": "INSERT", "qual": null, "with_check": "(auth.uid() = user_id)" },
+    { "table": "client_attachments", "name": "Users can view their own client attachments", "cmd": "SELECT", "qual": "(auth.uid() = user_id)", "with_check": null },
+    { "table": "clients", "name": "Users can manage their own clients", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "email_send_log", "name": "Users can view their own send log", "cmd": "SELECT", "qual": "(auth.uid() = user_id)", "with_check": null },
+    { "table": "email_templates", "name": "Users can manage their own email templates", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "intake_submissions", "name": "Public can submit intake forms", "cmd": "INSERT", "qual": null, "with_check": "true" },
+    { "table": "intake_submissions", "name": "Trainers can manage their own submissions", "cmd": "ALL", "qual": "(auth.uid() = trainer_id)", "with_check": "(auth.uid() = trainer_id)" },
+    { "table": "intro_modal_events", "name": "Users can insert their own intro modal events", "cmd": "INSERT", "qual": null, "with_check": "(auth.uid() = trainer_id)" },
+    { "table": "intro_modal_events", "name": "Users can view their own intro modal events", "cmd": "SELECT", "qual": "(auth.uid() = trainer_id)", "with_check": null },
+    { "table": "profiles", "name": "Users can update their own profile", "cmd": "UPDATE", "qual": "(auth.uid() = id)", "with_check": "(auth.uid() = id)" },
+    { "table": "profiles", "name": "Users can view their own profile", "cmd": "SELECT", "qual": "(auth.uid() = id)", "with_check": null },
+    { "table": "programs", "name": "Users can manage their own programs", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "quotes", "name": "Users can manage their own quotes", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "services", "name": "Public can view active services for storefront", "cmd": "SELECT", "qual": "(is_active = true)", "with_check": null },
+    { "table": "services", "name": "Users can manage their own services", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "services", "name": "Users can view their own services", "cmd": "SELECT", "qual": "(auth.uid() = user_id)", "with_check": null },
+    { "table": "sessions", "name": "Users can manage their own sessions", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "sys_integrations_vault", "name": "Users can manage their own integration keys", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "trainer_testimonials", "name": "Public reads published testimonials", "cmd": "SELECT", "qual": "(is_published = true)", "with_check": null },
+    { "table": "trainer_testimonials", "name": "Trainers manage own testimonials", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "user_settings", "name": "Users can insert their own settings", "cmd": "INSERT", "qual": null, "with_check": "(auth.uid() = user_id)" },
+    { "table": "user_settings", "name": "Users can manage their own settings", "cmd": "ALL", "qual": "(auth.uid() = user_id)", "with_check": "(auth.uid() = user_id)" },
+    { "table": "user_settings", "name": "Users can update their own settings", "cmd": "UPDATE", "qual": "(auth.uid() = user_id)", "with_check": null },
+    { "table": "user_settings", "name": "Users can view their own settings", "cmd": "SELECT", "qual": "(auth.uid() = user_id)", "with_check": null }
+  ]
 }

@@ -10,8 +10,9 @@
     "check:routes": "node scripts/check-routes.mjs",
     "check:vercel": "node scripts/check-vercel.mjs",
     "check:schema": "node scripts/check-schema.mjs",
+    "check:rls-defaults": "node scripts/check-rls-defaults.mjs",
     "schema:snapshot": "node scripts/schema-snapshot.mjs",
-    "prebuild": "node scripts/check-routes.mjs",
+    "prebuild": "node scripts/check-routes.mjs && node scripts/check-rls-defaults.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
