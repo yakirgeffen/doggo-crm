@@ -16,6 +16,7 @@ const BlogPostPage = lazy(() => import('./pages/public/BlogPostPage').then(m => 
 const WelcomePage = lazy(() => import('./pages/public/WelcomePage').then(m => ({ default: m.WelcomePage })));
 const PrivacyPolicyPage = lazy(() => import('./pages/public/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsOfServicePage = lazy(() => import('./pages/public/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
+const CostCalculatorPage = lazy(() => import('./pages/public/CostCalculatorPage').then(m => ({ default: m.CostCalculatorPage })));
 const PublicStorefrontPage = lazy(() => import('./pages/public/PublicStorefrontPage').then(m => ({ default: m.PublicStorefrontPage })));
 const PublicIntakePage = lazy(() => import('./pages/public/PublicIntakePage').then(m => ({ default: m.PublicIntakePage })));
 const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
@@ -74,6 +75,7 @@ function App() {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/free/cost-calculator" element={<CostCalculatorPage />} />
             <Route path="/login" element={<LoginPage />} />
 
             {/* Public Storefront & Intake */}
