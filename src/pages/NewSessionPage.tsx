@@ -4,10 +4,13 @@ import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useServices } from '../hooks/useServices';
 import { useToast } from '../context/toast-context';
+import { useAuth } from '../context/auth-context';
+import { createCalendarEvent } from '../lib/calendar';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { providerToken } = useAuth();
     const { programId } = useParams<{ programId: string }>();
     const [loading, setLoading] = useState(false);
     const [programName, setProgramName] = useState('');
@@ -66,6 +69,39 @@ export function NewSessionPage() {
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `Session logged for ${programName}`);
                 await logActivity('program', programId, 'updated', 'Session added');
+
+                if (providerToken) {
+                    try {
+                        const startDate = new Date(`${formData.session_date}T10:00:00`);
+                        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+                        const event = await createCalendarEvent(providerToken, {
+                            summary: `אימון: ${programName}`,
+                            description: formData.session_notes || undefined,
+                            startDateTime: startDate.toISOString(),
+                            endDateTime: endDate.toISOString(),
+                        });
+                        await supabase
+                            .from('sessions')
+                            .update({ google_calendar_event_id: event.id })
+                            .eq('id', data[0].id);
+                    } catch (calErr) {
+                        console.error('Google Calendar event creation failed:', calErr);
+                    }
+                }
+
+                // Send booking confirmation email to client (fire-and-forget).
+                // Only fires for sessions on or after today (skip past-date "log
+                // a session that already happened" flow which is also routed
+                // through this page).
+                const sessionDateOnly = new Date(formData.session_date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (sessionDateOnly >= today) {
+                    supabase.functions.invoke('session-emails', {
+                        body: { action: 'send_booking_confirmation', session_id: data[0].id }
+                    }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
+                }
+
                 navigate(`/programs/${programId}`, { state: { newSession: data[0] } });
             } else {
                 navigate(`/programs/${programId}`);

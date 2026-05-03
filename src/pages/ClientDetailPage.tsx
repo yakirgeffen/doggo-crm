@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Receipt } from 'lucide-react';
 import { SkeletonClientDetail } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
 import { type Client, type Program } from '../types';
 import { ActivityTimeline } from '../components/ActivityTimeline';
 import { EmailComposer } from '../components/EmailComposer';
+import { SendQuoteModal } from '../components/SendQuoteModal';
 import { PageHeader } from '../components/PageHeader';
 import { ClientHero } from '../components/client/ClientHero';
 import { StickyNote } from '../components/client/StickyNote';
@@ -19,20 +20,26 @@ export function ClientDetailPage() {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEmailOpen, setIsEmailOpen] = useState(false);
+    const [isQuoteOpen, setIsQuoteOpen] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
 
     // Tab & program selection
     const [activeTab, setActiveTab] = useState<TabId>('active');
     const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
 
+    const [quotes, setQuotes] = useState<{ id: string; sumit_document_number: number | null; total_amount: number | null; currency: string | null; status: string; sent_at: string | null }[]>([]);
+
     const fetchClientData = useCallback(async () => {
         if (!id) return;
         setLoading(true);
 
-        const [clientRes, programsRes] = await Promise.all([
+        const [clientRes, programsRes, quotesRes] = await Promise.all([
             supabase.from('clients').select('*').eq('id', id).single(),
-            supabase.from('programs').select('*').eq('client_id', id).order('created_at', { ascending: false })
+            supabase.from('programs').select('*').eq('client_id', id).order('created_at', { ascending: false }),
+            supabase.from('quotes').select('id, sumit_document_number, total_amount, currency, status, sent_at').eq('client_id', id).order('sent_at', { ascending: false })
         ]);
+
+        if (quotesRes.data) setQuotes(quotesRes.data);
 
         if (clientRes.error) console.error('Error fetching client:', clientRes.error);
         if (programsRes.error) console.error('Error fetching programs:', programsRes.error);
@@ -79,13 +86,23 @@ export function ClientDetailPage() {
                 subtitle={client.primary_dog_name || undefined}
                 backUrl="/clients"
                 actions={
-                    <Link
-                        to={`/programs/new?client_id=${id}`}
-                        className="btn btn-primary text-sm py-2 px-4"
-                    >
-                        <Plus size={16} className="ms-1" />
-                        תוכנית חדשה
-                    </Link>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setIsQuoteOpen(true)}
+                            className="btn btn-secondary text-sm py-2 px-4 flex items-center gap-1"
+                            title="שלח הצעת מחיר ללקוח"
+                        >
+                            <Receipt size={16} />
+                            הצעת מחיר
+                        </button>
+                        <Link
+                            to={`/programs/new?client_id=${id}`}
+                            className="btn btn-primary text-sm py-2 px-4"
+                        >
+                            <Plus size={16} className="ms-1" />
+                            תוכנית חדשה
+                        </Link>
+                    </div>
                 }
             />
 
@@ -173,6 +190,51 @@ export function ClientDetailPage() {
                         <div className="text-center text-text-muted text-sm py-6">אין היסטוריית תוכניות</div>
                     )}
 
+                    {/* Quote history (G8 native via Sumit) */}
+                    {quotes.length > 0 && (
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">הצעות מחיר</h3>
+                            {quotes.map((q) => (
+                                <div key={q.id} className="flat-card p-4 flex justify-between items-center gap-3">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-text-primary">
+                                            הצעת מחיר {q.sumit_document_number ? `#${q.sumit_document_number}` : ''}
+                                        </p>
+                                        <p className="text-xs text-text-muted">
+                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                                            {q.total_amount && ` · ₪${Number(q.total_amount).toLocaleString()}`}
+                                        </p>
+                                    </div>
+                                    <select
+                                        className={`text-xs font-medium px-2 py-1 rounded-lg border bg-surface ${
+                                            q.status === 'accepted' ? 'text-success border-success/30' :
+                                            q.status === 'declined' || q.status === 'expired' ? 'text-text-muted border-border' :
+                                            'text-primary border-primary/30'
+                                        }`}
+                                        value={q.status}
+                                        onChange={async (e) => {
+                                            const newStatus = e.target.value;
+                                            const { error } = await supabase
+                                                .from('quotes')
+                                                .update({ status: newStatus })
+                                                .eq('id', q.id);
+                                            if (!error) {
+                                                setQuotes(prev => prev.map(x => x.id === q.id ? { ...x, status: newStatus } : x));
+                                            }
+                                        }}
+                                    >
+                                        <option value="sent">נשלחה</option>
+                                        <option value="viewed">נצפתה</option>
+                                        <option value="accepted">אושרה ✓</option>
+                                        <option value="declined">נדחתה</option>
+                                        <option value="expired">פגה</option>
+                                        <option value="draft">טיוטה</option>
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     {/* Activity Timeline */}
                     <div>
                         <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">פעילות אחרונה</h3>
@@ -186,6 +248,19 @@ export function ClientDetailPage() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Send Quote Modal */}
+            {client && (
+                <SendQuoteModal
+                    isOpen={isQuoteOpen}
+                    onClose={() => setIsQuoteOpen(false)}
+                    onSent={() => setRefreshKey(prev => prev + 1)}
+                    clientId={client.id}
+                    clientName={client.full_name}
+                    clientEmail={client.email || ''}
+                    clientPhone={client.phone || undefined}
+                />
             )}
 
             {/* Email Composer */}

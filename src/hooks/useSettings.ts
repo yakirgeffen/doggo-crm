@@ -36,7 +36,9 @@ export function useSettings() {
                     specialties: [],
                     work_days: [0, 1, 2, 3, 4], // Sun-Thu
                     work_hours_start: '09:00',
-                    work_hours_end: '17:00'
+                    work_hours_end: '17:00',
+                    webhook_url: null,
+                    api_token_hash: null,
                 };
                 // Auto-create? Or just wait for save? Let's wait for save to avoid junk.
                 setSettings(defaults);

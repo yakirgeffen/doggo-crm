@@ -8,6 +8,26 @@ import { useToast } from '../../context/toast-context';
 const TOTAL_STEPS = 3;
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback
 
+// G3 — UTM tracking. Build a serialized lead_source string from the
+// canonical UTM params in the URL. Pipe-delimited key=value pairs are
+// human-readable in admin views and trivially parseable by any future
+// reporting surface. Direct-traffic visits (no utm_*) yield null so we
+// can distinguish 'no campaign data' from 'campaign data captured'.
+const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid'] as const;
+
+function buildLeadSource(searchParams: URLSearchParams): string | null {
+    const parts: string[] = [];
+    for (const key of UTM_PARAMS) {
+        const value = searchParams.get(key);
+        if (value) parts.push(`${key}=${value.slice(0, 200)}`); // cap per-value length defensively
+    }
+    if (parts.length === 0) {
+        const ref = searchParams.get('ref');
+        if (ref) parts.push(`ref=${ref.slice(0, 200)}`);
+    }
+    return parts.length > 0 ? parts.join('|').slice(0, 1000) : null; // overall cap
+}
+
 export function PublicIntakePage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
     const [searchParams] = useSearchParams();
@@ -31,14 +51,14 @@ export function PublicIntakePage() {
 
     const resolveTrainer = useCallback(async () => {
         if (!trainerHandle) return;
+        // TG-1: query the security-definer RPC; user_settings is no longer
+        // anon-readable as of 2026-05-02 hardening.
         const { data } = await supabase
-            .from('user_settings')
-            .select('user_id')
-            .eq('trainer_handle', trainerHandle)
-            .single();
+            .rpc('get_trainer_profile_by_handle', { handle: trainerHandle });
 
-        if (data) {
-            setTrainerId(data.user_id);
+        const profile = Array.isArray(data) ? data[0] : null;
+        if (profile) {
+            setTrainerId(profile.user_id);
         } else {
             setTrainerNotFound(true);
         }
@@ -76,7 +96,8 @@ export function PublicIntakePage() {
                     dog_age: dogAge.trim() || null,
                     notes: notes.trim() || null,
                     selected_service_id: serviceId || null,
-                    captcha_token: captchaToken
+                    captcha_token: captchaToken,
+                    lead_source: buildLeadSource(searchParams)
                 }
             });
 
@@ -350,7 +371,16 @@ export function PublicIntakePage() {
 
             {/* Footer */}
             <footer className="text-center py-4 text-xs text-text-muted border-t border-border-light">
-                פועל באמצעות <span className="font-medium">Doggo CRM</span> 🐾
+                פועל באמצעות{' '}
+                <a
+                    href="/?utm_source=intake_footer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-primary hover:underline"
+                >
+                    Doggo CRM
+                </a>{' '}
+                🐾 · CRM למאלפי כלבים
             </footer>
         </div>
     );

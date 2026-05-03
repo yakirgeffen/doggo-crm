@@ -10,6 +10,9 @@ import { SkeletonSessionList } from '../Skeleton';
 import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
+import { SendInvoiceButton } from './SendInvoiceButton';
+import { RecurringScheduleModal } from '../RecurringScheduleModal';
+import { ProgramNote } from './ProgramNote';
 
 interface ProgramWorkspaceProps {
     program: Program;
@@ -28,6 +31,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
     const { generatePaymentLink, loading: generatingLink } = useIntegrations();
     const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
     const [isExtendModalOpen, setIsExtendModalOpen] = useState(false);
+    const [isRecurringOpen, setIsRecurringOpen] = useState(false);
     const [programState, setProgramState] = useState(program);
 
     // Session checkout modal
@@ -208,6 +212,18 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         </a>
                     )}
 
+                    <SendInvoiceButton
+                        programId={programState.id}
+                        programName={programState.program_name}
+                        price={programState.price}
+                        currency={programState.currency || 'ILS'}
+                        clientName={clientName}
+                        clientEmail={clientEmail || null}
+                        clientPhone={clientPhone}
+                        sumitInvoiceDocumentId={programState.sumit_invoice_document_id}
+                        onInvoiceSent={() => setProgramState(prev => ({ ...prev }))}
+                    />
+
                     {programState.payment_status !== 'paid' && (
                         <div className="flex items-center gap-2 flex-wrap">
                             <a
@@ -385,9 +401,24 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                 </div>
             )}
 
+            {/* Program Notes */}
+            <ProgramNote programId={programState.id} initialNote={programState.notes} />
+
             {/* Sessions List */}
             <div>
-                <h3 className="text-lg font-bold text-text-primary mb-4">היסטוריית מפגשים</h3>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-text-primary">היסטוריית מפגשים</h3>
+                    {programState.program_type === 'fixed_sessions' && programState.sessions_included && programState.sessions_included > 0 && (
+                        <button
+                            onClick={() => setIsRecurringOpen(true)}
+                            className="text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                            title="קבע את כל המפגשים בחבילה במכה אחת"
+                        >
+                            <Calendar size={14} />
+                            תזמן את כל החבילה
+                        </button>
+                    )}
+                </div>
                 {loadingSessions ? (
                     <SkeletonSessionList count={2} />
                 ) : sessions.length === 0 ? (
@@ -406,11 +437,22 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 key={session.id}
                                 session={session}
                                 clientFirstName={clientFirstName}
+                                programName={programState.program_name}
+                                onChanged={fetchSessions}
                             />
                         ))}
                     </div>
                 )}
             </div>
+
+            <RecurringScheduleModal
+                isOpen={isRecurringOpen}
+                onClose={() => setIsRecurringOpen(false)}
+                onScheduled={fetchSessions}
+                programId={programState.id}
+                programName={programState.program_name}
+                suggestedCount={Math.max(1, (programState.sessions_included ?? 8) - programState.sessions_completed)}
+            />
 
             {/* Session Checkout Modal */}
             {checkoutSession && (

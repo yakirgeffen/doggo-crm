@@ -5,6 +5,7 @@ export interface DashboardStats {
     activePrograms: number;
     sessionsThisMonth: number;
     pendingPayment: number;
+    revenueThisMonth: number;
 }
 
 export interface ProgramWithClient extends Program {

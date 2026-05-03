@@ -1,12 +1,18 @@
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function PrivacyPolicyPage() {
-    const lastUpdated = '6 בפברואר 2026';
+    useEffect(() => {
+        document.title = 'מדיניות פרטיות · Doggo CRM';
+        return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
+    }, []);
+
+    const lastUpdated = '2 במאי 2026';
     const contactEmail = 'yakirgeffen@gmail.com';
-    const appName = 'DogGo CRM';
-    const companyName = 'DogGo';
-    const websiteUrl = 'https://doggo-crm-test.vercel.app';
+    const appName = 'Doggo CRM';
+    const companyName = 'Doggo CRM';
+    const websiteUrl = 'https://doggocrm.app';
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background to-surface-warm">
@@ -65,12 +71,24 @@ export function PrivacyPolicyPage() {
                             </p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2 mt-2">
                                 <li><strong>Gmail (שליחה בלבד):</strong> לשליחת תזכורות מפגשים ללקוחות שלכם בשמכם</li>
-                                <li><strong>יומן (קריאה בלבד):</strong> לבדיקת הזמינות שלכם בעת תזמון מפגשים</li>
+                                <li><strong>יומן (קריאה וכתיבה):</strong> לסנכרון מפגשים שאתם קובעים במערכת ליומן Google שלכם, ולבדיקת הזמינות בעת תזמון. לעולם לא נמחק או נשנה אירועים שלא יצרנו.</li>
                             </ul>
                             <p className="text-text-secondary leading-relaxed mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20">
                                 <strong>חשוב:</strong> אנחנו לעולם לא קוראים, מאחסנים או ניגשים לתוכן האימייל שלכם.
                                 אנו משתמשים רק ביכולת השליחה של Gmail למסירת תזכורות שאתם מאשרים.
                             </p>
+
+                            <h3 className="text-lg font-semibold text-text-secondary mb-2 mt-6">2.4 ספקי שירות חיצוניים</h3>
+                            <p className="text-text-secondary leading-relaxed mb-2">
+                                Doggo CRM משתמש בספקי שירות מהימנים לתפעול הפלטפורמה:
+                            </p>
+                            <ul className="list-disc list-inside text-text-secondary space-y-2">
+                                <li><strong>Supabase:</strong> אחסון מסד הנתונים ואימות. הנתונים מאוחסנים בתשתיות מאובטחות.</li>
+                                <li><strong>Vercel:</strong> אירוח האפליקציה.</li>
+                                <li><strong>Resend:</strong> שירות שליחת מייל טרנזקציוני (אישורי פגישה, תזכורות, הודעות לידים).</li>
+                                <li><strong>Cloudflare Turnstile:</strong> CAPTCHA בטופס הפניות הציבורי, להגנה מפני בוטים.</li>
+                                <li><strong>Sumit / חשבונית ירוקה (Morning):</strong> אם בחרתם לחבר חשבון, מפתחות ה-API שלכם משמשים אך ורק להפקת חשבוניות והצעות מחיר בשמכם. אנחנו לא מאחסנים את נתוני הלקוחות שלכם בחשבונות ספקי החיוב; הם נשלחים אליהם דרך ה-API שלהם.</li>
+                            </ul>
                         </section>
 
                         <section className="mb-8">
@@ -141,7 +159,16 @@ export function PrivacyPolicyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-primary mb-4">9. שינויים במדיניות זו</h2>
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">9. ציות לחוק הישראלי</h2>
+                            <p className="text-text-secondary leading-relaxed">
+                                Doggo CRM פועל בהתאם ל<strong>חוק הגנת הפרטיות, התשמ"א-1981</strong> ולתקנותיו (תקנות הגנת הפרטיות (אבטחת מידע), התשע"ז-2017).
+                                כמאלפי כלבים המנהלים נתוני לקוחות, אתם מנהלי המאגר; Doggo CRM מספק את התשתית הטכנית כעוסק בנתונים מטעמכם.
+                                המידע מאוחסן בתשתיות עם אבטחה ברמת שורה (RLS) המבטיחה הפרדה מלאה בין מאגרי לקוחות של מאלפים שונים.
+                            </p>
+                        </section>
+
+                        <section className="mb-8">
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">10. שינויים במדיניות זו</h2>
                             <p className="text-text-secondary leading-relaxed">
                                 אנו עשויים לעדכן מדיניות פרטיות זו מעת לעת. נודיע לכם על שינויים משמעותיים
                                 על ידי פרסום המדיניות החדשה בדף זה ועדכון תאריך "עודכן לאחרונה".
@@ -149,7 +176,7 @@ export function PrivacyPolicyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-primary mb-4">10. צרו קשר</h2>
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">11. צרו קשר</h2>
                             <p className="text-text-secondary leading-relaxed">
                                 אם יש לכם שאלות לגבי מדיניות פרטיות זו או שתרצו לממש את זכויות הנתונים שלכם,
                                 אנא פנו אלינו ב:

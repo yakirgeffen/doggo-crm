@@ -1,12 +1,18 @@
 import { FileText, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function TermsOfServicePage() {
-    const lastUpdated = '6 בפברואר 2026';
+    useEffect(() => {
+        document.title = 'תנאי שימוש · Doggo CRM';
+        return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
+    }, []);
+
+    const lastUpdated = '2 במאי 2026';
     const contactEmail = 'yakirgeffen@gmail.com';
-    const appName = 'DogGo CRM';
-    const companyName = 'DogGo';
-    const websiteUrl = 'https://doggo-crm-test.vercel.app';
+    const appName = 'Doggo CRM';
+    const companyName = 'Doggo CRM';
+    const websiteUrl = 'https://doggocrm.app';
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background to-surface-warm">

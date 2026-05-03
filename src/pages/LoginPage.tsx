@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 export function LoginPage() {
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Dev Login State
-    const [showDev, setShowDev] = useState(false);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
 
     const handleGoogleLogin = async () => {
         setLoading(true);
@@ -19,29 +13,12 @@ export function LoginPage() {
             provider: 'google',
             options: {
                 redirectTo: `${window.location.origin}/`,
-                scopes: 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.events.readonly',
+                scopes: 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.events',
             },
         });
         if (error) {
             setError(error.message);
             setLoading(false);
-        }
-    };
-
-    const handleDevLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        const email = `${username}@doggocrm.local`;
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (error) {
-            setError(error.message);
-            setLoading(false);
-        } else {
-            navigate('/');
         }
     };
 
@@ -53,11 +30,14 @@ export function LoginPage() {
 
             <div className="flat-card w-full max-w-md p-10 bg-surface/80 backdrop-blur-sm shadow-elevated relative z-10">
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 text-4xl">
+                    <Link to="/" className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 text-4xl hover:bg-primary/15 transition-colors" title="חזרה לעמוד הבית">
                         🐾
-                    </div>
+                    </Link>
                     <h1 className="text-[28px] font-bold text-text-primary mb-2">Doggo CRM</h1>
                     <p className="text-text-secondary">מרכז השליטה שלך לאילוף</p>
+                    <p className="text-xs text-text-muted mt-2">
+                        חדשים? <Link to="/" className="text-primary hover:underline">קראו עוד על Doggo CRM</Link>
+                    </p>
                 </div>
 
                 {error && (
@@ -95,42 +75,6 @@ export function LoginPage() {
                         <span>Windows / Outlook (בקרוב)</span>
                     </button>
                 </div>
-
-                <div className="mt-8 pt-6 border-t border-border text-center">
-                    <button
-                        onClick={() => setShowDev(!showDev)}
-                        className="text-xs text-text-muted hover:text-primary underline transition-colors"
-                    >
-                        {showDev ? 'הסתר כניסת מפתחים' : 'כניסת מפתחים (Legacy)'}
-                    </button>
-                </div>
-
-                {showDev && (
-                    <form onSubmit={handleDevLogin} className="mt-6 space-y-4 animate-fade-in bg-surface-warm p-4 rounded-xl border border-border">
-                        <div>
-                            <label className="block text-xs font-medium text-text-muted mb-1">Username</label>
-                            <input
-                                type="text"
-                                className="input-field py-2 text-sm"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="doggocrm"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-text-muted mb-1">Password</label>
-                            <input
-                                type="password"
-                                className="input-field py-2 text-sm"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-secondary w-full text-xs py-2">
-                            Login with Password
-                        </button>
-                    </form>
-                )}
 
                 {/* Legal Links */}
                 <div className="mt-8 pt-4 border-t border-border-light text-center">

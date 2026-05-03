@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Clock, Users, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+
+// G3 data-quality fix: forward marketing params (utm_*, gclid, fbclid, ref)
+// from the storefront URL to the intake URL so the lead_source captured at
+// intake time includes the trainer's outbound campaign tracking.
+const FORWARD_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ref'];
 
 interface TrainerPublicProfile {
     business_name: string | null;
@@ -23,6 +28,17 @@ interface PublicService {
 
 export function PublicStorefrontPage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
+    const [searchParams] = useSearchParams();
+
+    // Build a query suffix that forwards marketing params to the intake URL
+    const forwardQuery = (() => {
+        const out = new URLSearchParams();
+        for (const key of FORWARD_PARAMS) {
+            const v = searchParams.get(key);
+            if (v) out.set(key, v);
+        }
+        return out.toString();
+    })();
     const [profile, setProfile] = useState<TrainerPublicProfile | null>(null);
     const [services, setServices] = useState<PublicService[]>([]);
     const [loading, setLoading] = useState(true);
@@ -32,12 +48,13 @@ export function PublicStorefrontPage() {
         if (!trainerHandle) return;
         setLoading(true);
 
-        // 1. Find trainer by handle
-        const { data: settingsData, error: settingsError } = await supabase
-            .from('user_settings')
-            .select('user_id, business_name, bio, avatar_url, specialties')
-            .eq('trainer_handle', trainerHandle)
-            .single();
+        // 1. Find trainer by handle via security-definer RPC. Cross-tenant
+        //    authenticated access to user_settings is blocked since
+        //    2026-05-02 TG-1 hardening; the RPC exposes only storefront-
+        //    safe columns.
+        const { data: profileRows, error: settingsError } = await supabase
+            .rpc('get_trainer_profile_by_handle', { handle: trainerHandle });
+        const settingsData = Array.isArray(profileRows) ? profileRows[0] : null;
 
         if (settingsError || !settingsData) {
             setNotFound(true);
@@ -160,7 +177,7 @@ export function PublicStorefrontPage() {
                                         ₪{service.price}
                                     </span>
                                     <Link
-                                        to={`/t/${trainerHandle}/intake?service=${service.id}`}
+                                        to={`/t/${trainerHandle}/intake?service=${service.id}${forwardQuery ? `&${forwardQuery}` : ''}`}
                                         className="btn btn-primary text-sm py-2 px-5 flex items-center gap-1.5 group-hover:shadow-md transition-shadow"
                                     >
                                         קבע תור
@@ -173,9 +190,18 @@ export function PublicStorefrontPage() {
                 )}
             </main>
 
-            {/* Footer */}
+            {/* Footer — link to Doggo CRM landing for trainer acquisition */}
             <footer className="text-center pb-8 text-xs text-text-muted">
-                פועל באמצעות <span className="font-medium">Doggo CRM</span> 🐾
+                פועל באמצעות{' '}
+                <a
+                    href="/?utm_source=storefront_footer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-primary hover:underline"
+                >
+                    Doggo CRM
+                </a>{' '}
+                🐾 · CRM למאלפי כלבים
             </footer>
         </div>
     );

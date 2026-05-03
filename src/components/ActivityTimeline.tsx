@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase, type ActivityLog } from '../lib/supabase';
-import { FileText, CheckCircle, BookOpen } from 'lucide-react';
+import { FileText, CheckCircle, BookOpen, ChevronDown } from 'lucide-react';
 import { SkeletonTimeline } from './Skeleton';
 
 interface ActivityTimelineProps {
@@ -10,11 +10,14 @@ interface ActivityTimelineProps {
     programIds?: string[];
 }
 
-export function ActivityTimeline({ entityType, entityId, limit = 10, programIds }: ActivityTimelineProps) {
+export function ActivityTimeline({ entityType, entityId, limit: initialLimit = 10, programIds }: ActivityTimelineProps) {
     const [logs, setLogs] = useState<ActivityLog[]>([]);
     const [loading, setLoading] = useState(true);
+    const [pageSize, setPageSize] = useState(initialLimit);
+    const [hasMore, setHasMore] = useState(true);
+    const [filter, setFilter] = useState<string>('all');
 
-    const fetchLogs = useCallback(async () => {
+    const fetchLogs = useCallback(async (limit: number) => {
         setLoading(true);
 
         let mainQuery = supabase
@@ -51,21 +54,48 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
         const uniqueLogs = Array.from(new Map(allLogs.map(item => [item.id, item])).values());
         uniqueLogs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        setLogs(uniqueLogs.slice(0, limit));
+        const sliced = uniqueLogs.slice(0, limit);
+        setLogs(sliced);
+        // If we got fewer rows than asked for, no more available
+        setHasMore(sliced.length === limit);
         setLoading(false);
-    }, [entityType, entityId, limit, programIds]);
+    }, [entityType, entityId, programIds]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
-        fetchLogs();
-    }, [fetchLogs]);
+        fetchLogs(pageSize);
+    }, [fetchLogs, pageSize]);
 
-    if (loading) return <SkeletonTimeline count={3} />;
+    const FILTERS: { value: string; label: string }[] = [
+        { value: 'all', label: 'הכל' },
+        { value: 'session', label: 'מפגשים' },
+        { value: 'program', label: 'תוכניות' },
+        { value: 'client', label: 'לקוחות' },
+        { value: 'email', label: 'מיילים' },
+    ];
+    const visibleLogs = filter === 'all' ? logs : logs.filter(l => l.entity_type === filter);
+
+    if (loading && logs.length === 0) return <SkeletonTimeline count={3} />;
     if (logs.length === 0) return <div className="text-sm text-text-muted italic p-4">אין פעילות מתועדת עדיין.</div>;
 
     return (
         <div className="space-y-6 p-4">
-            {logs.map((log) => (
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-1.5 mb-2">
+                {FILTERS.map(f => (
+                    <button
+                        key={f.value}
+                        onClick={() => setFilter(f.value)}
+                        className={`text-xs px-2.5 py-1 rounded-full transition-colors ${filter === f.value ? 'bg-primary text-white' : 'bg-background text-text-secondary hover:bg-surface-warm'}`}
+                    >
+                        {f.label}
+                    </button>
+                ))}
+            </div>
+
+            {visibleLogs.length === 0 ? (
+                <p className="text-sm text-text-muted italic">אין פעילות בקטגוריה הזו.</p>
+            ) : visibleLogs.map((log) => (
                 <div key={log.id} className="relative flex gap-4">
                     <div className="flex flex-col items-center">
                         <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center border border-border z-10">
@@ -88,6 +118,19 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
                     </div>
                 </div>
             ))}
+
+            {hasMore && filter === 'all' && (
+                <div className="flex justify-center pt-2">
+                    <button
+                        onClick={() => setPageSize(p => p + 10)}
+                        disabled={loading}
+                        className="text-xs font-medium text-primary hover:underline flex items-center gap-1.5 px-3 py-1.5 disabled:opacity-50"
+                    >
+                        <ChevronDown size={14} />
+                        {loading ? 'טוען...' : 'טען עוד'}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

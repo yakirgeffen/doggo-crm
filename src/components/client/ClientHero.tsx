@@ -44,15 +44,23 @@ export function ClientHero({ client }: ClientHeroProps) {
                                 <Phone size={14} className="text-text-muted" />
                                 <span className="ltr-nums" dir="ltr">{client.phone}</span>
                             </a>
-                            <a
-                                href={`https://wa.me/${client.phone.replace(/[^0-9]/g, '')}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-1.5 text-sm font-medium text-success bg-success/10 px-3 py-1.5 rounded-lg hover:bg-success/15 transition-colors"
-                            >
-                                <MessageCircle size={14} />
-                                WhatsApp
-                            </a>
+                            {(() => {
+                                const phoneDigits = client.phone.replace(/[^0-9]/g, '');
+                                const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
+                                const dogReference = client.primary_dog_name ? ` ול-${client.primary_dog_name}` : '';
+                                const greeting = encodeURIComponent(`שלום ${client.full_name.split(' ')[0]}!${dogReference ? ` מה שלומכם${dogReference}? 🐾` : ' 🐾'}`);
+                                return (
+                                    <a
+                                        href={`https://wa.me/${intl}?text=${greeting}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1.5 text-sm font-medium text-success bg-success/10 px-3 py-1.5 rounded-lg hover:bg-success/15 transition-colors"
+                                    >
+                                        <MessageCircle size={14} />
+                                        WhatsApp
+                                    </a>
+                                );
+                            })()}
                         </>
                     )}
                     {client.email && (

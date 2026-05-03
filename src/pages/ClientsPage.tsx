@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap } from 'lucide-react';
+import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Client } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -39,6 +39,38 @@ export function ClientsPage() {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
         fetchClients();
     }, [fetchClients]);
+
+    const exportToCsv = () => {
+        const csvEscape = (v: unknown): string => {
+            if (v === null || v === undefined) return '';
+            const s = String(v);
+            if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+                return `"${s.replace(/"/g, '""')}"`;
+            }
+            return s;
+        };
+        const header = ['שם מלא', 'שם הכלב', 'מייל', 'טלפון', 'מקור הליד', 'הערות', 'סטטוס', 'תאריך הצטרפות'];
+        const rows = filteredClients.map(c => [
+            csvEscape(c.full_name),
+            csvEscape(c.primary_dog_name),
+            csvEscape(c.email),
+            csvEscape(c.phone),
+            csvEscape(c.lead_source),
+            csvEscape(c.notes),
+            csvEscape(c.is_active ? 'פעיל' : 'לא פעיל'),
+            csvEscape(new Date(c.created_at).toLocaleDateString('he-IL')),
+        ].join(','));
+        const csv = '﻿' + [header.join(','), ...rows].join('\n'); // BOM for Hebrew/Excel
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `doggo-crm-clients-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
 
     const filteredClients = clients.filter((client) => {
         const matchesStatus =
@@ -132,6 +164,15 @@ export function ClientsPage() {
                 subtitle="ניהול קשרי לקוחות ומעקב אחר התקדמות"
                 actions={
                     <div className="flex gap-2">
+                        <button
+                            onClick={exportToCsv}
+                            disabled={clients.length === 0}
+                            className="btn btn-secondary"
+                            title="ייצא את הלקוחות הנבחרים ל-CSV"
+                        >
+                            <Download size={18} className="ms-2" />
+                            ייצא CSV
+                        </button>
                         <button
                             onClick={() => setIsImportOpen(true)}
                             className="btn btn-secondary"

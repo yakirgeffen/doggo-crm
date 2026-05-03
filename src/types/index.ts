@@ -26,6 +26,9 @@ export interface Program {
     invoice_url: string | null;
     invoice_pdf_url: string | null;
     greeninvoice_invoice_number: string | null;
+    sumit_invoice_document_id: number | null;
+    sumit_invoice_document_number: number | null;
+    notes: string | null;
     price: number | null;
     currency: string | null;
     start_date: string | null;
@@ -82,4 +85,6 @@ export interface UserSettings {
     work_days: number[]; // 0-6
     work_hours_start: string; // "09:00"
     work_hours_end: string; // "17:00"
+    webhook_url: string | null;
+    api_token_hash: string | null;
 }

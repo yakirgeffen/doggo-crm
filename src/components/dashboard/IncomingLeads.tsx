@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2 } from 'lucide-react';
+import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2, MessageCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
@@ -160,10 +160,29 @@ export function IncomingLeads() {
 
                                 {/* Actions */}
                                 <div className="flex items-center gap-1.5 shrink-0">
+                                    {lead.phone && (
+                                        <a
+                                            href={(() => {
+                                                const phoneDigits = lead.phone.replace(/[^\d]/g, '');
+                                                const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
+                                                const msg = encodeURIComponent(
+                                                    `שלום ${lead.full_name}! קיבלתי את הפנייה שלך${lead.dog_name ? ` לגבי ${lead.dog_name}` : ''}. מתי נוח לך לשיחה קצרה? 🐾`
+                                                );
+                                                return `https://wa.me/${intl}?text=${msg}`;
+                                            })()}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
+                                            title="שלח/י WhatsApp ראשון"
+                                        >
+                                            <MessageCircle size={14} />
+                                            <span className="hidden sm:inline">WhatsApp</span>
+                                        </a>
+                                    )}
                                     <button
                                         onClick={() => handleApprove(lead)}
                                         disabled={actioning === lead.id}
-                                        className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
+                                        className="btn bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
                                         title="אשר והוסף כלקוח"
                                     >
                                         {actioning === lead.id ? (

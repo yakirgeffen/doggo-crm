@@ -1,12 +1,29 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Calendar, AlertCircle, DollarSign, CheckCircle, Plus, ChevronRight, MessageCircle, PartyPopper } from 'lucide-react';
 import { SkeletonKPIGrid } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
+import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
+import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
+import { BookSessionModal } from '../components/BookSessionModal';
 import { useDashboard } from '../hooks/useDashboard';
+import { useAuth } from '../context/auth-context';
+
+function timeOfDayGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 5) return 'לילה טוב';
+    if (hour < 12) return 'בוקר טוב';
+    if (hour < 17) return 'צהריים טובים';
+    if (hour < 21) return 'ערב טוב';
+    return 'לילה טוב';
+}
 
 export function Dashboard() {
     const { stats, actionItems, todaysSessions, loading } = useDashboard();
+    const { user } = useAuth();
+    const firstName = (user?.user_metadata?.full_name || user?.user_metadata?.name || '').toString().split(' ')[0];
+    const [isBookOpen, setIsBookOpen] = useState(false);
 
     if (loading) return (
         <div className="space-y-8 animate-fade-in pb-24 lg:pb-12">
@@ -35,10 +52,15 @@ export function Dashboard() {
             <div>
                 <header className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-[28px] font-bold text-text-primary mb-1">לוח בקרה</h1>
-                        <p className="text-text-secondary text-sm">ברוך הבא! הנה מה שקורה היום.</p>
+                        <h1 className="text-[28px] font-bold text-text-primary mb-1">
+                            {timeOfDayGreeting()}{firstName ? `, ${firstName}` : ''} 👋
+                        </h1>
+                        <p className="text-text-secondary text-sm">הנה מה שקורה היום.</p>
                     </div>
                 </header>
+
+                {/* G1 — first-run UX setup checklist (auto-hides when complete) */}
+                <TrainerSetupChecklist />
 
                 {/* QUICK ACTIONS ROW */}
                 <div className="grid grid-cols-3 gap-3 mb-8">
@@ -64,6 +86,9 @@ export function Dashboard() {
 
                 {/* INCOMING LEADS (only renders if there are new leads) */}
                 <IncomingLeads />
+
+                {/* G3 — lead-source UTM reporting (renders only when there are leads in the last 30 days) */}
+                <LeadSourceReport />
 
                 {/* TODAY'S MISSIONS + KPIs side-by-side on desktop */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
@@ -162,9 +187,13 @@ export function Dashboard() {
                                 <span className="text-2xl font-bold text-text-primary">{stats.sessionsThisMonth}</span>
                                 <span className="text-[11px] text-text-muted font-medium uppercase tracking-wide">מפגשי חודש</span>
                             </div>
-                            <div className="flat-card p-4 flex flex-col items-center text-center border-error/30">
+                            <div className="flat-card p-4 flex flex-col items-center text-center border-success/30 bg-success/5">
+                                <span className="text-2xl font-bold text-success ltr-nums" dir="ltr">₪{stats.revenueThisMonth.toLocaleString()}</span>
+                                <span className="text-[11px] text-success/80 font-medium uppercase tracking-wide">הכנסות חודש</span>
+                            </div>
+                            <div className="flat-card p-4 flex flex-col items-center text-center border-error/30 col-span-2">
                                 <span className="text-2xl font-bold text-error">{stats.pendingPayment}</span>
-                                <span className="text-[11px] text-error/80 font-medium uppercase tracking-wide">גבייה</span>
+                                <span className="text-[11px] text-error/80 font-medium uppercase tracking-wide">תוכניות בגבייה</span>
                             </div>
                         </div>
                     </div>
@@ -226,6 +255,22 @@ export function Dashboard() {
                     </div>
                 )}
             </div>
+
+            {/* Mobile FAB — quick-book session from anywhere on Dashboard */}
+            <button
+                onClick={() => setIsBookOpen(true)}
+                className="md:hidden fixed bottom-24 end-5 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-card flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
+                title="קבע מפגש חדש"
+                aria-label="קבע מפגש חדש"
+            >
+                <Plus size={24} />
+            </button>
+
+            <BookSessionModal
+                isOpen={isBookOpen}
+                onClose={() => setIsBookOpen(false)}
+                onBooked={() => setIsBookOpen(false)}
+            />
         </div>
     );
 }

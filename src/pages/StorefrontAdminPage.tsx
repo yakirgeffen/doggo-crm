@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
 import { useServices, type Service } from '../hooks/useServices';
-import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook } from 'lucide-react';
 import { ServiceModal } from '../components/admin/ServiceModal';
 import { useToast } from '../context/toast-context';
 
@@ -151,23 +151,68 @@ export function StorefrontAdminPage() {
                     </div>
 
                     {publicUrl && settings?.trainer_handle && (
-                        <div className="flex items-center gap-2">
-                            <a
-                                href={publicUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-xs font-mono text-primary hover:underline truncate flex-1"
-                                dir="ltr"
-                            >
-                                {publicUrl}
-                            </a>
-                            <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
-                                {copied ? <Check size={14} /> : <Copy size={14} />}
-                            </button>
-                            <a href={publicUrl} target="_blank" rel="noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
-                                <ExternalLink size={14} />
-                            </a>
-                        </div>
+                        <>
+                            <div className="flex items-center gap-2">
+                                <a
+                                    href={publicUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs font-mono text-primary hover:underline truncate flex-1"
+                                    dir="ltr"
+                                >
+                                    {publicUrl}
+                                </a>
+                                <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
+                                    {copied ? <Check size={14} /> : <Copy size={14} />}
+                                </button>
+                                <a href={publicUrl} target="_blank" rel="noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
+                                    <ExternalLink size={14} />
+                                </a>
+                            </div>
+
+                            {/* Share buttons — share storefront URL via WhatsApp / Facebook / native share */}
+                            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                                <span className="text-xs text-text-muted">שתף:</span>
+                                <a
+                                    href={`https://wa.me/?text=${encodeURIComponent(`${businessName ? `שלום! אני ${businessName}, ` : ''}אפשר לקבל אצלי הצעת מחיר לאילוף הכלב שלכם דרך הקישור הזה: ${publicUrl}`)}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs font-medium text-success bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                                    title="שתף את כתובת החנות בוואטסאפ"
+                                >
+                                    <Send size={14} />
+                                    WhatsApp
+                                </a>
+                                <a
+                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicUrl)}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs font-medium text-[#1877F2] bg-[#1877F2]/10 hover:bg-[#1877F2]/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                                    title="שתף את כתובת החנות בפייסבוק"
+                                >
+                                    <Facebook size={14} />
+                                    Facebook
+                                </a>
+                                {typeof navigator !== 'undefined' && 'share' in navigator && (
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                await navigator.share({
+                                                    title: businessName || 'דף החנות שלי ב-Doggo CRM',
+                                                    text: `${businessName ? `${businessName} — ` : ''}לקבלת הצעת מחיר לאילוף`,
+                                                    url: publicUrl,
+                                                });
+                                            } catch { /* user cancelled */ }
+                                        }}
+                                        className="text-xs font-medium text-text-secondary bg-background hover:bg-surface-warm px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                                        title="שיתוף נייטיב במכשיר"
+                                    >
+                                        <Send size={14} />
+                                        עוד...
+                                    </button>
+                                )}
+                            </div>
+                        </>
                     )}
                 </div>
 

@@ -1,12 +1,17 @@
-import { Clock, Calendar, CheckCircle, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Clock, Calendar, CheckCircle, MessageCircle, Pencil } from 'lucide-react';
 import type { Session } from '../../types';
+import { EditSessionModal } from './EditSessionModal';
 
 interface SessionCardProps {
     session: Session;
     clientFirstName: string;
+    programName?: string;
+    onChanged?: () => void;
 }
 
-export function SessionCard({ session, clientFirstName }: SessionCardProps) {
+export function SessionCard({ session, clientFirstName, programName, onChanged }: SessionCardProps) {
+    const [isEditing, setIsEditing] = useState(false);
     const whatsappSummary = encodeURIComponent(
         `היי ${clientFirstName}! 👋\n` +
         `סיכום מפגש (${new Date(session.session_date).toLocaleDateString('he-IL')}):\n\n` +
@@ -64,7 +69,17 @@ export function SessionCard({ session, clientFirstName }: SessionCardProps) {
             )}
 
             {/* Action Footer */}
-            <div className="mt-4 pt-4 border-t border-border flex justify-end">
+            <div className="mt-4 pt-4 border-t border-border flex justify-end gap-2">
+                {onChanged && (
+                    <button
+                        onClick={() => setIsEditing(true)}
+                        className="text-xs font-medium text-text-secondary hover:text-primary flex items-center gap-1.5 bg-background hover:bg-surface-warm px-3 py-1.5 rounded-lg transition-colors"
+                        title="ערוך מפגש"
+                    >
+                        <Pencil size={14} />
+                        עריכה
+                    </button>
+                )}
                 <a
                     href={`https://wa.me/?text=${whatsappSummary}`}
                     target="_blank"
@@ -75,6 +90,16 @@ export function SessionCard({ session, clientFirstName }: SessionCardProps) {
                     שתף בוואטסאפ
                 </a>
             </div>
+
+            {onChanged && programName && (
+                <EditSessionModal
+                    isOpen={isEditing}
+                    onClose={() => setIsEditing(false)}
+                    onSaved={onChanged}
+                    session={session}
+                    programName={programName}
+                />
+            )}
         </div>
     );
 }
