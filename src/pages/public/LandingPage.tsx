@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Calendar, Users, Receipt, Sparkles, MessageSquare, ChevronLeft } from 'lucide-react';
+import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 
 // G-CMO direction (2026-05-02 loop iteration) — public trainer-acquisition
 // landing page. Surfaces Doggo CRM's value prop to dog-trainer visitors
@@ -181,6 +182,13 @@ export function LandingPage() {
                         התחל עכשיו
                         <ChevronLeft size={18} />
                     </Link>
+                </div>
+            </section>
+
+            {/* Newsletter CTA */}
+            <section className="py-12 bg-surface-warm/40 border-t border-border">
+                <div className="max-w-5xl mx-auto px-6">
+                    <NewsletterCTA source="landing-page" />
                 </div>
             </section>
 
