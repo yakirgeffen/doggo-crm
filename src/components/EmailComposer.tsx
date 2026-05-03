@@ -176,7 +176,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                 token: providerToken
             });
 
-            await logActivity(entityType, entityId, 'email_sent', `Email sent via Gmail API: ${subject}`);
+            await logActivity(entityType, entityId, 'email_sent', `אימייל נשלח דרך Gmail: ${subject}`);
 
             setSuccess(true);
             setTimeout(() => {
@@ -194,7 +194,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     const handleFallbackMailto = () => {
         const mailtoLink = `mailto:${clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.open(mailtoLink, '_blank');
-        logActivity(entityType, entityId, 'email_sent', `Email launcher opened: ${subject}`);
+        logActivity(entityType, entityId, 'email_sent', `נפתח עורך אימייל חיצוני: ${subject}`);
         onClose();
         onSuccess?.();
     };
