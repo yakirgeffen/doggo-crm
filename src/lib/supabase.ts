@@ -55,7 +55,8 @@ export async function updateProgramStatus(programId: string, status: 'active' | 
         .eq('id', programId);
 
     if (!error) {
-        await logActivity('program', programId, 'status_change', `Program marked as ${status}`);
+        const statusLabel = status === 'active' ? 'פעיל' : status === 'paused' ? 'מושהה' : 'הושלם';
+        await logActivity('program', programId, 'status_change', `סטטוס תוכנית עודכן ל-${statusLabel}`);
     }
 
     return { error };
