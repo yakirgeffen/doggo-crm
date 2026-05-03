@@ -906,6 +906,8 @@ export function BlogPostPage() {
                     {post.body()}
                 </div>
 
+                <RelatedPosts currentSlug={post.slug} />
+
                 <div className="mt-16">
                     <NewsletterCTA
                         source={`blog:${post.slug}`}
@@ -924,3 +926,40 @@ export function BlogPostPage() {
 }
 
 export const BLOG_POSTS_LIST = Object.values(POSTS);
+
+function RelatedPosts({ currentSlug }: { currentSlug: string }) {
+    const others = Object.values(POSTS).filter(p => p.slug !== currentSlug);
+    // Pick 3 deterministically based on slug hash so each post shows a stable
+    // set of related links (good for SEO crawling — same anchors every time).
+    const hash = Array.from(currentSlug).reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 0);
+    const picks: typeof others = [];
+    for (let i = 0; i < 3 && i < others.length; i++) {
+        picks.push(others[(hash + i * 7) % others.length]);
+    }
+    if (picks.length === 0) return null;
+
+    return (
+        <section className="mt-16 pt-8 border-t border-border">
+            <h2 className="text-xl font-bold mb-6 text-text-primary">פוסטים נוספים שיעניינו אותך</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+                {picks.map(p => (
+                    <Link
+                        key={p.slug}
+                        to={`/blog/${p.slug}`}
+                        className="group flat-card p-5 hover:border-primary transition-colors"
+                    >
+                        <div className="text-xs text-text-muted mb-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'right' }}>
+                            {p.readingMinutes} דק׳ קריאה
+                        </div>
+                        <h3 className="font-bold text-base text-text-primary group-hover:text-primary transition-colors mb-2 leading-snug">
+                            {p.title}
+                        </h3>
+                        <p className="text-sm text-text-secondary leading-relaxed line-clamp-2">
+                            {p.description}
+                        </p>
+                    </Link>
+                ))}
+            </div>
+        </section>
+    );
+}
