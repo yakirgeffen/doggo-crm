@@ -17,6 +17,82 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'whatsapp-vs-crm': {
+        slug: 'whatsapp-vs-crm',
+        title: 'WhatsApp או מערכת ייעודית? לאן הולך עסק האילוף הקטן',
+        description: 'WhatsApp הוא כלי קסם לתקשורת. אבל הוא לא CRM. הנה מתי מאלף עצמאי צריך להוסיף מערכת ייעודית מעל ה-WhatsApp — ולמה זה לא או-או.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 6,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    אם רוב התקשורת שלך עם הלקוחות עוברת ב-WhatsApp — את לא לבד. בישראל, 95% מהמאלפים העצמאיים מנהלים את היומיום בוואטסאפ.
+                    זה לא בעיה. זה גם לא הפתרון השלם.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה WhatsApp עושה מצוין</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>תקשורת מהירה — לקוח שולח, את עונה תוך דקות</li>
+                    <li>שיתוף מדיה — תמונות וסרטונים של התקדמות הכלב</li>
+                    <li>נוכחות בערוץ הטבעי של הלקוח (95% מהישראלים פתוחים בוואטסאפ ביום)</li>
+                    <li>חינמי, ללא אינטגרציה</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה WhatsApp לא עושה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>סטטוס תוכנית</strong> — כמה מפגשים נשארו? מי שילם? מי לא? אי אפשר לחפש 30 שיחות אחרי תשובה.</li>
+                    <li><strong>היסטוריה ארוכת טווח</strong> — שיחות נמחקות, נשטפות בהודעות חדשות. אחרי שנה אי אפשר למצוא את "מה אמרנו על ראקס בפעם הראשונה".</li>
+                    <li><strong>חשבונאות</strong> — חשבוניות, מעקב תשלומים, דוחות לרואה החשבון. בוואטסאפ אין דבר כזה.</li>
+                    <li><strong>תזכורות אוטומטיות</strong> — אם זוכרים — שולחים. אחרת — לא.</li>
+                    <li><strong>סינון נתונים</strong> — "כל הלקוחות שעוד לא שילמו" — שאלה שלוקחת חמש דקות ב-CRM ובלתי-אפשרית בוואטסאפ.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">המערכת המנצחת: שניהם ביחד</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    הטעות הנפוצה: לחשוב על "WhatsApp או CRM". התשובה היא תמיד שניהם. WhatsApp נשאר הערוץ ללקוח. ה-CRM הוא הזיכרון של העסק.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    החיבור הנכון:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>הלקוח שולח הודעה ב-WhatsApp → את עונה ב-WhatsApp.</li>
+                    <li>אחרי השיחה, את מסכמת ב-CRM (נקודה חשובה, החלטה, צעד הבא).</li>
+                    <li>כשמגיע הזמן לשלוח הצעת מחיר / חשבונית — את לוחצת כפתור ב-CRM. הלקוח מקבל מייל + WhatsApp עם הקישור.</li>
+                    <li>תזכורות 24 שעות לפני המפגש — אוטומטיות מה-CRM למייל הלקוח.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איך לעשות את המעבר בלי כאב</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li><strong>שבוע 1</strong> — הוסיפי כל לקוח חדש ל-CRM. את הלקוחות הישנים, לא תכניסי בבת אחת. ככל שהם פונים — תעדכני.</li>
+                    <li><strong>שבוע 2</strong> — תתחילי לסכם כל שיחה משמעותית בכרטיס הלקוח. דקה לסיכום בסוף השיחה.</li>
+                    <li><strong>שבוע 3</strong> — תשתמשי בכפתור ההצעות / חשבוניות במקום לכתוב הכל ידנית.</li>
+                    <li><strong>שבוע 4</strong> — תפעילי תזכורות אוטומטיות. אחרי חודש, תראי הבדל.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה קורה אחרי</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    אחרי 60 ימים, רוב המאלפים שעברו ל-Doggo CRM מדווחים על שתי תוצאות:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>30-60 דקות פחות אדמין ביום (תזכורות אוטומטיות, פחות חיפוש בקבצים)</li>
+                    <li>שיעור חבילה-שלמה גבוה ב-15-25% (תזכורות מקטינות מבוטלות-ברגע-האחרון)</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    WhatsApp נשאר. ה-CRM מתחבר אליו (פיצ'ר עתידי בקרוב — בינתיים: הקישורים בכתב). העסק שלך גדל בלי שאת עובדת יותר.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM נבנה לעבוד לצד WhatsApp, לא להחליף אותו. כפתורי שיתוף ב-WhatsApp מובנים בכל מסך. ניסיון 30 יום חינם.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        התחילי בחינם
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'make-whatsapp-automation': {
         slug: 'make-whatsapp-automation',
         title: 'איך לחבר את Doggo CRM ל-Make כדי לשלוח WhatsApp אוטומטית לכל ליד חדש',
