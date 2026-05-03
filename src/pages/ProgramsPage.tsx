@@ -105,14 +105,26 @@ export function ProgramsPage() {
                                 }`}
                         >
                             <div>
-                                <div className="flex justify-between items-start mb-4">
-                                    <span className={`badge ${program.status === 'active' ? 'badge-active' :
-                                            program.status === 'completed' ? 'badge-muted' :
-                                                'badge-pending'
-                                        }`}>
-                                        {program.status === 'active' ? 'פעיל' : program.status === 'completed' ? 'הושלם' : program.status}
-                                    </span>
-                                    <ChevronLeft size={18} className="text-text-muted group-hover:text-primary transition-colors" />
+                                <div className="flex justify-between items-start mb-4 gap-2">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className={`badge ${program.status === 'active' ? 'badge-active' :
+                                                program.status === 'completed' ? 'badge-muted' :
+                                                    'badge-pending'
+                                            }`}>
+                                            {program.status === 'active' ? 'פעיל' : program.status === 'completed' ? 'הושלם' : program.status}
+                                        </span>
+                                        {program.payment_status === 'unpaid' && (
+                                            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-error/15 text-error">
+                                                לא שולם
+                                            </span>
+                                        )}
+                                        {program.payment_status === 'paid' && (
+                                            <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-success/10 text-success">
+                                                שולם
+                                            </span>
+                                        )}
+                                    </div>
+                                    <ChevronLeft size={18} className="text-text-muted group-hover:text-primary transition-colors shrink-0" />
                                 </div>
 
                                 <h3 className="text-xl font-bold text-text-primary mb-1 group-hover:text-primary transition-colors">
