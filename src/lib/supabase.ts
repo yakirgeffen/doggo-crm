@@ -14,7 +14,9 @@ export type ActivityEntityType =
     | 'session'
     | 'email'
     | 'service'
-    | 'settings';
+    | 'settings'
+    | 'client_attachment'
+    | 'testimonial';
 
 export interface ActivityLog {
     id: string;

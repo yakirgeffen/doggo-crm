@@ -12,6 +12,7 @@ import { ClientHero } from '../components/client/ClientHero';
 import { StickyNote } from '../components/client/StickyNote';
 import { ProgramTabs, type TabId } from '../components/client/ProgramTabs';
 import { ProgramWorkspace } from '../components/client/ProgramWorkspace';
+import { AttachmentsList } from '../components/client/AttachmentsList';
 
 export function ClientDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -157,6 +158,10 @@ export function ClientDetailPage() {
                     <p className="font-medium">אזור הקבלה</p>
                     <p className="text-sm mt-1">נתוני קבלה ואבחון יופיעו כאן בקרוב (Phase 3)</p>
                 </div>
+            )}
+
+            {activeTab === 'files' && (
+                <AttachmentsList clientId={client.id} />
             )}
 
             {activeTab === 'history' && (
