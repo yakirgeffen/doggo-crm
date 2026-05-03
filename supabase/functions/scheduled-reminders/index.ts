@@ -13,6 +13,31 @@ import { Resend } from "https://esm.sh/resend@3.2.0"
 // URL is triggered externally, the worst case is reminders fire
 // slightly earlier than scheduled (each fires exactly once due to
 // the email_send_log unique constraint on session_id+template).
+//
+// ─── Date-vs-timestamp window math (verified 2026-05-03, QA #6) ───
+// `sessions.session_date` is a Postgres `date` column (no time-of-day,
+// no timezone). The cron schedule is daily at 05:00 UTC (08:00 IL —
+// see migration 20260502240000_schedule_reminders_cron.sql). When
+// PostgREST compares a `date` column against an ISO timestamp
+// (`gte('session_date', now.toISOString())`), Postgres casts the
+// date to `<date> 00:00:00 UTC`. Empirically:
+//   - Cron at 05:00 UTC on day D-1; window = [D-1 05:00 UTC, D 06:00 UTC]
+//     A session on D casts to D 00:00:00 UTC → IN window → reminded.
+//     ~19h notice (or ~21h IL since the email lands at 08:00 IL the
+//     day before a session that has no defined time-of-day).
+//   - Cron at 05:00 UTC on day D; window = [D 05:00 UTC, D+1 06:00 UTC]
+//     A same-day session D casts to D 00:00:00 UTC → NOT in window
+//     (5h before lower bound) → correctly skipped (reminded yesterday).
+// Net: every session is reminded exactly once, the day before, ~19h
+// out. The window math is intentional — see QA debrief 2026-05-03 #6.
+//
+// IMPORTANT: because `session_date` is date-only, the reminder email
+// MUST NOT fabricate a time-of-day. `new Date('YYYY-MM-DD')` parses
+// as midnight UTC, which renders as 02:00/03:00 in Israel locale —
+// garbage. The email body says "see you tomorrow" without a time;
+// trainers coordinate the time-of-day out-of-band (WhatsApp etc.)
+// until a `start_time` column is added system-wide (tracked in QA
+// follow-up — sessions store time-of-day inconsistently elsewhere).
 // ============================================================
 
 const corsHeaders = {
@@ -30,12 +55,15 @@ const escapeHtml = (s: unknown) => {
         .replace(/'/g, '&#039;')
 }
 
-function formatHebrewDate(d: Date): string {
-    return d.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })
-}
-
-function formatHebrewTime(d: Date): string {
-    return d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+// Format a 'YYYY-MM-DD' date string as a Hebrew long-form date label.
+// Built from string parts to avoid `new Date('YYYY-MM-DD')` UTC-midnight
+// parsing, which can shift the displayed weekday by one in IL timezone
+// (UTC date string + UTC parse + IL locale = day-of-week may roll back).
+function formatHebrewDate(dateStr: string): string {
+    const [y, m, d] = dateStr.split('-').map(Number)
+    // Construct in local time at noon to avoid any DST/timezone edge.
+    const dt = new Date(y, (m ?? 1) - 1, d ?? 1, 12, 0, 0)
+    return dt.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
 interface SessionRow {
@@ -120,12 +148,15 @@ serve(async (req: Request) => {
                 const trainerEmail = trainer?.user?.email ?? null
                 const businessName = settings?.business_name || trainer?.user?.user_metadata?.full_name || 'המאלף שלך'
 
-                const sessionDate = new Date(session.session_date)
-                const dateLabel = formatHebrewDate(sessionDate)
-                const timeLabel = formatHebrewTime(sessionDate)
+                // session.session_date is a 'YYYY-MM-DD' string (Postgres `date`
+                // column). Do NOT call `new Date(session.session_date)` and then
+                // format a time — that would render UTC midnight as 02:00/03:00
+                // IL, which is fabricated. Use the date-only formatter and omit
+                // time-of-day from the email body.
+                const dateLabel = formatHebrewDate(session.session_date)
 
                 const subject = `🐾 תזכורת: פגישה מחר עם ${escapeHtml(client.primary_dog_name || client.full_name)}`
-                const html = `<div dir="rtl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px;background:#f7f4ed;max-width:560px;margin:0 auto;"><div style="background:white;padding:24px;border-radius:16px;box-shadow:0 2px 6px rgba(0,0,0,0.05);"><div style="font-size:32px;margin-bottom:8px;">⏰</div><h2 style="color:#4A6741;margin:0 0 16px;">תזכורת לפגישה</h2><p style="color:#444;line-height:1.7;">שלום ${escapeHtml(client.full_name)},<br/><br/>רק תזכורת קצרה — מחר יש לנו פגישה.</p><div style="background:#f3f4f0;padding:16px;border-radius:12px;margin:20px 0;"><p style="margin:0 0 6px;color:#666;font-size:13px;">תאריך</p><p style="margin:0 0 12px;font-weight:bold;font-size:16px;">${escapeHtml(dateLabel)}</p><p style="margin:0 0 6px;color:#666;font-size:13px;">שעה</p><p style="margin:0;font-weight:bold;font-size:16px;">${escapeHtml(timeLabel)}</p></div><p style="color:#444;line-height:1.7;">נתראה ב-${escapeHtml(timeLabel)}!</p><p style="color:#444;line-height:1.7;margin-top:24px;"><strong>${escapeHtml(businessName)}</strong></p></div></div>`
+                const html = `<div dir="rtl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px;background:#f7f4ed;max-width:560px;margin:0 auto;"><div style="background:white;padding:24px;border-radius:16px;box-shadow:0 2px 6px rgba(0,0,0,0.05);"><div style="font-size:32px;margin-bottom:8px;">⏰</div><h2 style="color:#4A6741;margin:0 0 16px;">תזכורת לפגישה</h2><p style="color:#444;line-height:1.7;">שלום ${escapeHtml(client.full_name)},<br/><br/>רק תזכורת קצרה — מחר יש לנו פגישה.</p><div style="background:#f3f4f0;padding:16px;border-radius:12px;margin:20px 0;"><p style="margin:0 0 6px;color:#666;font-size:13px;">תאריך</p><p style="margin:0;font-weight:bold;font-size:16px;">${escapeHtml(dateLabel)}</p></div><p style="color:#444;line-height:1.7;">נתראה מחר!</p><p style="color:#444;line-height:1.7;margin-top:24px;"><strong>${escapeHtml(businessName)}</strong></p></div></div>`
 
                 await resend.emails.send({
                     from: 'Doggo CRM <notifications@resend.dev>',
