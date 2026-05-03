@@ -110,7 +110,7 @@ serve(async (req: Request) => {
         }
 
         if (action === 'create_intake_submission') {
-            const { full_name, phone, dog_name, dog_breed, dog_age, notes, lead_source } = payload || {}
+            const { full_name, phone, dog_name, dog_breed, dog_age, notes, lead_source, behavioral_tags } = payload || {}
             if (!full_name) {
                 return new Response(JSON.stringify({ error: 'full_name is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
             }
@@ -125,6 +125,7 @@ serve(async (req: Request) => {
                     dog_age: dog_age || null,
                     notes: notes || null,
                     lead_source: lead_source || null,
+                    behavioral_tags: Array.isArray(behavioral_tags) ? behavioral_tags : [],
                     status: 'new',
                 })
                 .select('id')
@@ -141,7 +142,7 @@ serve(async (req: Request) => {
             const safeOffset = Math.max(parseInt(String(offset ?? 0), 10) || 0, 0)
             let query = supabaseAdmin
                 .from('clients')
-                .select('id, full_name, email, phone, primary_dog_name, notes, lead_source, is_active, created_at, updated_at', { count: 'exact' })
+                .select('id, full_name, email, phone, primary_dog_name, primary_dog_breed, notes, lead_source, behavioral_tags, is_active, created_at', { count: 'exact' })
                 .eq('user_id', trainerId)
                 .order('created_at', { ascending: false })
                 .range(safeOffset, safeOffset + safeLimit - 1)
@@ -166,7 +167,7 @@ serve(async (req: Request) => {
             }
             const { data, error } = await supabaseAdmin
                 .from('clients')
-                .select('id, full_name, email, phone, primary_dog_name, notes, lead_source, is_active, created_at, updated_at')
+                .select('id, full_name, email, phone, primary_dog_name, primary_dog_breed, notes, lead_source, behavioral_tags, is_active, created_at')
                 .eq('user_id', trainerId)
                 .eq('id', client_id)
                 .maybeSingle()
@@ -187,7 +188,7 @@ serve(async (req: Request) => {
             if (!updates || typeof updates !== 'object') {
                 return new Response(JSON.stringify({ error: 'updates object is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
             }
-            const allowed = ['full_name', 'email', 'phone', 'primary_dog_name', 'notes', 'lead_source', 'is_active']
+            const allowed = ['full_name', 'email', 'phone', 'primary_dog_name', 'primary_dog_breed', 'notes', 'lead_source', 'behavioral_tags', 'is_active']
             const filtered: Record<string, unknown> = {}
             for (const key of allowed) {
                 if (Object.prototype.hasOwnProperty.call(updates, key)) {
@@ -219,7 +220,7 @@ serve(async (req: Request) => {
             const safeOffset = Math.max(parseInt(String(offset ?? 0), 10) || 0, 0)
             let query = supabaseAdmin
                 .from('intake_submissions')
-                .select('id, full_name, phone, dog_name, dog_breed, dog_age, notes, lead_source, status, selected_service_id, created_at', { count: 'exact' })
+                .select('id, full_name, phone, dog_name, dog_breed, dog_age, notes, lead_source, behavioral_tags, status, selected_service_id, created_at', { count: 'exact' })
                 .eq('trainer_id', trainerId)
                 .order('created_at', { ascending: false })
                 .range(safeOffset, safeOffset + safeLimit - 1)
