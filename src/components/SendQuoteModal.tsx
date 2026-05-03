@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Receipt, Send, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Receipt, Send, Loader2, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
 import { useServices, type Service } from '../hooks/useServices';
@@ -29,8 +29,68 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
     const [lines, setLines] = useState<QuoteLine[]>([{ serviceId: null, name: '', quantity: 1, unitPrice: 0 }]);
     const [personalMessage, setPersonalMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [sentSuccess, setSentSuccess] = useState<{ documentNumber: number | undefined; total: number } | null>(null);
 
     if (!isOpen) return null;
+
+    const handleClose = () => {
+        setSentSuccess(null);
+        onClose();
+    };
+
+    if (sentSuccess) {
+        const whatsappMessage = encodeURIComponent(
+            `שלום ${clientName}!\n` +
+            `הרגע שלחתי לך במייל הצעת מחיר${sentSuccess.documentNumber ? ` (#${sentSuccess.documentNumber})` : ''} בסך ₪${sentSuccess.total.toLocaleString()}.\n` +
+            `אם יש שאלות — אני כאן 🐾`
+        );
+        const phoneDigits = (clientPhone || '').replace(/[^\d]/g, '');
+        const waUrl = phoneDigits
+            ? `https://wa.me/${phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits}?text=${whatsappMessage}`
+            : `https://wa.me/?text=${whatsappMessage}`;
+
+        return (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={handleClose}>
+                <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden" onClick={e => e.stopPropagation()}>
+                    <div className="bg-success/5 border-b border-success/20 px-6 py-5 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                            <CheckCircle2 size={28} />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-text-primary">הצעת מחיר נשלחה!</h2>
+                            <p className="text-xs text-text-muted">
+                                {sentSuccess.documentNumber ? `#${sentSuccess.documentNumber} · ` : ''}
+                                ל-{clientEmail}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="p-6 space-y-4">
+                        <p className="text-sm text-text-secondary leading-relaxed">
+                            רוצה לשלוח גם הודעה ב-WhatsApp ללקוח/ה? לפעמים זה מקצר את זמן התגובה.
+                        </p>
+
+                        <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
+                        >
+                            <MessageCircle size={18} />
+                            {phoneDigits ? `שלח/י ל-${phoneDigits}` : 'בחר/י נמען ב-WhatsApp'}
+                        </a>
+
+                        <button
+                            onClick={handleClose}
+                            className="btn btn-secondary w-full"
+                        >
+                            סיום
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     const total = lines.reduce((sum, l) => sum + (l.quantity * l.unitPrice), 0);
 
@@ -91,10 +151,10 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
             await logActivity('client', clientId, 'quote_sent', `הצעת מחיר Sumit #${result.documentNumber ?? result.documentId} נשלחה ב-₪${total.toLocaleString()}`);
 
             showToast(`הצעת מחיר נשלחה ל-${clientEmail} 🐾`, 'success');
+            setSentSuccess({ documentNumber: result.documentNumber, total });
             setLines([{ serviceId: null, name: '', quantity: 1, unitPrice: 0 }]);
             setPersonalMessage('');
             onSent?.();
-            onClose();
         } catch (err) {
             console.error('SendQuote error:', err);
             showToast('שגיאה בשליחת הצעת המחיר', 'error');
