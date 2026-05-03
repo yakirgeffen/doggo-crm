@@ -10,6 +10,8 @@ import { CalendarSyncBanner } from '../components/dashboard/CalendarSyncBanner';
 import { BookSessionModal } from '../components/BookSessionModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../context/auth-context';
+import { useSettings } from '../hooks/useSettings';
+import { applyTemplate } from '../lib/whatsapp-template';
 
 function timeOfDayGreeting(): string {
     const hour = new Date().getHours();
@@ -23,6 +25,7 @@ function timeOfDayGreeting(): string {
 export function Dashboard() {
     const { stats, actionItems, todaysSessions, loading } = useDashboard();
     const { user } = useAuth();
+    const { settings } = useSettings();
     const firstName = (user?.user_metadata?.full_name || user?.user_metadata?.name || '').toString().split(' ')[0];
     const [isBookOpen, setIsBookOpen] = useState(false);
 
@@ -167,16 +170,19 @@ export function Dashboard() {
                                                     const phoneDigits = phone.replace(/\D/g, '');
                                                     const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
                                                     const sessionTime = new Date(session.session_date).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-                                                    const firstName = session.programs.clients.full_name.split(' ')[0];
-                                                    const dogName = session.programs.clients.primary_dog_name;
-                                                    const reminder = encodeURIComponent(
-                                                        `היי ${firstName}!\nתזכורת: מפגש האילוף של ${dogName} היום בשעה ${sessionTime}.\nנתראה 🐾`
+                                                    const clientFirstName = session.programs.clients.full_name.split(' ')[0];
+                                                    const dogName = session.programs.clients.primary_dog_name || '';
+                                                    const reminderText = applyTemplate(
+                                                        settings?.wa_template_reminder ?? null,
+                                                        { firstName: clientFirstName, dogName, timeLabel: sessionTime, dateLabel: 'היום' },
+                                                        `היי ${clientFirstName}!\nתזכורת: מפגש האילוף של ${dogName} היום בשעה ${sessionTime}.\nנתראה 🐾`
                                                     );
+                                                    const reminder = encodeURIComponent(reminderText);
                                                     return (
                                                         <a
                                                             href={`https://wa.me/${intl}?text=${reminder}`}
                                                             target="_blank"
-                                                            rel="noreferrer"
+                                                            rel="noopener noreferrer"
                                                             className="w-8 h-8 rounded-lg bg-success/10 text-success flex items-center justify-center hover:bg-success/20 transition-colors"
                                                             title="תזכורת ב-WhatsApp"
                                                             aria-label={`תזכורת ב-WhatsApp ל-${session.programs.clients.full_name}`}
