@@ -92,6 +92,16 @@ export function StorefrontAdminPage() {
     const sanitizedHandle = handle.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
     const publicUrl = sanitizedHandle && window.location.origin ? `${window.location.origin}/t/${sanitizedHandle}` : null;
 
+    // Dirty check — drives the sticky save bar so users mid-scroll always have
+    // a way to save without scrolling back to the form. Only shows when there
+    // are actual unsaved changes; avoids the "always-on toolbar" noise.
+    const profileDirty = Boolean(settings) && (
+        sanitizedHandle !== (settings?.trainer_handle || '') ||
+        bio.trim() !== (settings?.bio || '') ||
+        businessName.trim() !== (settings?.business_name || '') ||
+        JSON.stringify(specialties) !== JSON.stringify(settings?.specialties || [])
+    );
+
     const copyUrl = async () => {
         if (!publicUrl) return;
         await navigator.clipboard.writeText(publicUrl);
@@ -119,16 +129,9 @@ export function StorefrontAdminPage() {
 
             {/* Public Profile Section */}
             <div className="flat-card p-6 space-y-6">
-                <div className="flex items-center justify-between">
+                <div>
                     <h2 className="text-lg font-semibold text-text-primary">פרופיל ציבורי</h2>
-                    <button
-                        onClick={handleSaveProfile}
-                        disabled={savingProfile}
-                        className="btn btn-primary flex items-center gap-2"
-                    >
-                        {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
-                        {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
-                    </button>
+                    <p className="text-xs text-text-secondary mt-0.5">המידע שיוצג ללקוחות בדף החנות שלך</p>
                 </div>
 
                 {/* Handle & URL */}
@@ -269,6 +272,18 @@ export function StorefrontAdminPage() {
                         className="w-full rounded-xl border border-border bg-background p-3 text-sm text-text-primary focus:ring-2 focus:ring-primary/30 outline-none resize-none min-h-[100px]"
                     />
                 </div>
+
+                {/* Primary save action — placed where the user finishes filling the form, not at the top */}
+                <div className="flex justify-end pt-4 border-t border-border">
+                    <button
+                        onClick={handleSaveProfile}
+                        disabled={savingProfile}
+                        className="btn btn-primary flex items-center gap-2 px-8 shadow-card"
+                    >
+                        {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
+                        {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
+                    </button>
+                </div>
             </div>
 
             {/* Service Catalog Section */}
@@ -361,6 +376,36 @@ export function StorefrontAdminPage() {
                 onSave={handleSaveService}
                 initialData={editingService}
             />
+
+            {/*
+              Sticky save bar — only renders when the profile form has unsaved
+              changes. Lives at the bottom of the scroll container (inside the
+              page wrapper) so it stays visible as users fill the form
+              top-to-bottom. Not a permanent toolbar — appears with intent.
+              Padded to clear the mobile bottom nav (Layout pb-28 lg:pb-10).
+            */}
+            {profileDirty && (
+                <div
+                    className="sticky bottom-2 lg:bottom-4 z-20 -mx-2 lg:mx-0 animate-fade-in"
+                    role="region"
+                    aria-label="שינויים לא שמורים"
+                >
+                    <div className="mx-2 lg:mx-0 flex items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-surface/95 backdrop-blur-md px-4 py-3 shadow-elevated">
+                        <span className="text-sm font-medium text-text-secondary flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-warning animate-pulse" aria-hidden="true" />
+                            יש שינויים שלא נשמרו בפרופיל
+                        </span>
+                        <button
+                            onClick={handleSaveProfile}
+                            disabled={savingProfile}
+                            className="btn btn-primary flex items-center gap-2 px-6"
+                        >
+                            {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
+                            {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
