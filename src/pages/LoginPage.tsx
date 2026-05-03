@@ -30,11 +30,14 @@ export function LoginPage() {
 
             <div className="flat-card w-full max-w-md p-10 bg-surface/80 backdrop-blur-sm shadow-elevated relative z-10">
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 text-4xl">
+                    <Link to="/" className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 text-4xl hover:bg-primary/15 transition-colors" title="חזרה לעמוד הבית">
                         🐾
-                    </div>
+                    </Link>
                     <h1 className="text-[28px] font-bold text-text-primary mb-2">Doggo CRM</h1>
                     <p className="text-text-secondary">מרכז השליטה שלך לאילוף</p>
+                    <p className="text-xs text-text-muted mt-2">
+                        חדשים? <Link to="/" className="text-primary hover:underline">קראו עוד על Doggo CRM</Link>
+                    </p>
                 </div>
 
                 {error && (
