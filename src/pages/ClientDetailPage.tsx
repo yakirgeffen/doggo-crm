@@ -91,7 +91,7 @@ export function ClientDetailPage() {
                         <button
                             onClick={() => setIsQuoteOpen(true)}
                             className="btn btn-secondary text-sm py-2 px-4 flex items-center gap-1"
-                            title="שלח הצעת מחיר ללקוח"
+                            title="שליחת הצעת מחיר ללקוח"
                         >
                             <Receipt size={16} />
                             הצעת מחיר
@@ -131,13 +131,13 @@ export function ClientDetailPage() {
                                 <Plus size={24} />
                             </div>
                             <p className="font-medium">אין תוכניות פעילות</p>
-                            <p className="text-sm mt-1">התחל חבילת אילוף חדשה עבור הכלב</p>
+                            <p className="text-sm mt-1">התחלת חבילת אילוף חדשה עבור הכלב</p>
                             <Link
                                 to={`/programs/new?client_id=${id}`}
                                 className="btn btn-primary mt-4 inline-flex"
                             >
                                 <Plus size={16} className="ms-1" />
-                                הוסף תוכנית
+                                הוספת תוכנית
                             </Link>
                         </div>
                     ) : selectedProgram ? (
@@ -181,8 +181,8 @@ export function ClientDetailPage() {
                                 >
                                     <div>
                                         <p className="font-bold text-text-primary">{program.program_name}</p>
-                                        <p className="text-sm text-text-muted ltr-nums" dir="ltr">
-                                            {program.sessions_completed} / {program.sessions_included || '∞'} sessions
+                                        <p className="text-sm text-text-muted">
+                                            <span className="ltr-nums">{program.sessions_completed} / {program.sessions_included || '∞'}</span> מפגשים
                                         </p>
                                     </div>
                                     <span className={`badge ${program.status === 'completed' ? 'badge-completed' : 'badge-pending'}`}>
