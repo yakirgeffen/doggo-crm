@@ -71,7 +71,7 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
                         {title || 'רשימת מאלפים בישראל'}
                     </h3>
                     <p className="text-sm text-text-secondary mt-1">
-                        {subtitle || 'טיפים שבועיים לניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם, אפשר להסיר רישום בכל שלב.'}
+                        {subtitle || 'טיפים מעת לעת לניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם, אפשר להסיר רישום בכל שלב.'}
                     </p>
                 </div>
             </div>
