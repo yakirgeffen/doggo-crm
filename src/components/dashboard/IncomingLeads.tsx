@@ -184,20 +184,20 @@ export function IncomingLeads() {
                                         onClick={() => handleApprove(lead)}
                                         disabled={actioning === lead.id}
                                         className="btn bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                        title="אשר והוסף כלקוח"
+                                        title="אישור והוספה כלקוח"
                                     >
                                         {actioning === lead.id ? (
                                             <Spinner size="sm" />
                                         ) : (
                                             <UserPlus size={14} />
                                         )}
-                                        <span className="hidden sm:inline">אשר</span>
+                                        <span className="hidden sm:inline">אישור</span>
                                     </button>
                                     <button
                                         onClick={() => handleArchive(lead)}
                                         disabled={actioning === lead.id}
                                         className="btn bg-border/20 text-text-muted border border-border hover:bg-border/30 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                        title="העבר לארכיון"
+                                        title="העברה לארכיון"
                                     >
                                         <Archive size={14} />
                                     </button>

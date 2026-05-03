@@ -217,7 +217,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
                                 className="btn btn-primary text-sm flex items-center gap-1.5"
                             >
                                 {saving ? <Spinner size="sm" /> : <Save size={14} />}
-                                <span>שמור</span>
+                                <span>שמירה</span>
                             </button>
                         </div>
                     ) : (
@@ -240,7 +240,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
                                     className="text-xs font-bold text-white bg-error hover:bg-error/90 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 flex-1"
                                 >
                                     {saving ? <Spinner size="sm" /> : <Trash2 size={14} />}
-                                    <span>אשר ביטול</span>
+                                    <span>אישור ביטול</span>
                                 </button>
                             </div>
                         </div>
