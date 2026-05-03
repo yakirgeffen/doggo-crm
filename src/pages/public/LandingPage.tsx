@@ -15,19 +15,19 @@ export function LandingPage() {
             <section className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-bl from-primary/10 via-transparent to-accent/10 pointer-events-none" />
                 <div className="relative max-w-5xl mx-auto px-6 pt-12 pb-20 md:pt-20 md:pb-28">
-                    <nav className="flex items-center justify-between mb-12">
-                        <div className="flex items-center gap-2">
-                            <div className="text-3xl">🐾</div>
-                            <span className="font-bold text-lg">Doggo CRM</span>
+                    <nav className="flex items-center justify-between mb-12 gap-3">
+                        <div className="flex items-center gap-2 shrink-0">
+                            <div className="text-2xl sm:text-3xl">🐾</div>
+                            <span className="font-bold text-base sm:text-lg">Doggo CRM</span>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <Link to="/pricing" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <Link to="/pricing" className="text-xs sm:text-sm font-medium text-text-secondary hover:text-primary transition-colors">
                                 מחירים
                             </Link>
-                            <Link to="/blog" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
+                            <Link to="/blog" className="text-xs sm:text-sm font-medium text-text-secondary hover:text-primary transition-colors">
                                 בלוג
                             </Link>
-                            <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">
+                            <Link to="/login" className="text-xs sm:text-sm font-medium text-text-secondary hover:text-primary transition-colors">
                                 כניסה
                             </Link>
                         </div>
@@ -195,20 +195,20 @@ export function LandingPage() {
 
             {/* Footer */}
             <footer className="border-t border-border py-8">
-                <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 text-sm text-text-muted">
+                <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-start">
+                    <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-text-muted">
                         <span>🐾</span>
                         <span>Doggo CRM</span>
                         <span className="text-text-muted/60">·</span>
                         <span>נבנה למאלפים בישראל</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-text-muted">
-                        <Link to="/free/cost-calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
-                        <span className="text-text-muted/40">·</span>
+                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-muted">
+                        <Link to="/calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
+                        <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/blog" className="hover:text-primary transition-colors">בלוג</Link>
-                        <span className="text-text-muted/40">·</span>
+                        <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/privacy" className="hover:text-primary transition-colors">מדיניות פרטיות</Link>
-                        <span className="text-text-muted/40">·</span>
+                        <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/terms" className="hover:text-primary transition-colors">תנאי שימוש</Link>
                     </div>
                 </div>

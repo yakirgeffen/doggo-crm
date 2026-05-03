@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Receipt, Send, Loader2, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
@@ -31,12 +31,21 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
     const [submitting, setSubmitting] = useState(false);
     const [sentSuccess, setSentSuccess] = useState<{ documentNumber: number | undefined; total: number } | null>(null);
 
-    if (!isOpen) return null;
-
     const handleClose = () => {
         setSentSuccess(null);
         onClose();
     };
+
+    // Esc-key close — keyboard parity with backdrop click.
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- handleClose is stable enough; only re-bind on isOpen change
+    }, [isOpen]);
+
+    if (!isOpen) return null;
 
     if (sentSuccess) {
         const whatsappMessage = encodeURIComponent(

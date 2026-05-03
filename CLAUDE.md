@@ -22,7 +22,8 @@ A CRM built for dog trainers. Manages clients, their dogs, training programs, se
 | Edge Functions | Deno (in `supabase/functions/`) |
 | Email | Resend API |
 | CAPTCHA | Cloudflare Turnstile |
-| Deployment | Vercel |
+| Deployment | Vercel **Pro** (upgraded 2026-05-03 — see `geffen-studio:tools/vercel-pro-playbook.md` for what's enabled and what we should evaluate) |
+| Public domain | `doggo-crm-test.vercel.app` (live); `doggocrm.app` planned, custom-domain payment is Yakir-actionable |
 
 ## Commands
 
@@ -112,19 +113,26 @@ Toast auto-dismisses after 3500ms. The `ToastContext` is provided at the app roo
 
 **Authenticated routes** (wrapped in `<RequireAuth>`):
 - `/` → Dashboard
-- `/clients`, `/clients/:id`, `/clients/new` — client management
+- `/clients`, `/clients/:id`, `/clients/new` — client management (ClientDetailPage has tabs: details, programs, files)
 - `/programs`, `/programs/:id`, `/programs/new` — training programs
 - `/programs/:programId/sessions/new` — new session creation
 - `/calendar` — scheduling
-- `/settings` — trainer profile/preferences
-- `/storefront` — storefront admin panel
-- `/seed` — dev-only data seeding
+- `/settings` — trainer profile / integrations (Morning, Sumit, Webhook, API token)
+- `/storefront` — storefront admin (profile + services + testimonials manager)
+- `/seed` — dev-only data seeding (gated by `import.meta.env.DEV` AND in-component `<Navigate to="/" />`)
 
 **Public routes** (no auth):
-- `/t/:trainerHandle` — public storefront
-- `/t/:trainerHandle/intake` — public lead intake form
-- `/login` — auth page
-- `/welcome`, `/privacy`, `/terms` — static public pages
+- `/` — landing page
+- `/pricing`, `/blog`, `/blog/:slug`, `/privacy`, `/terms` — static public pages
+- `/calculator` — free cost-calculator lead-gen tool (was `/free/cost-calculator`; vercel.json 308-redirects the old path)
+- `/login` — auth page (Google OAuth)
+- `/t/:trainerHandle` — public storefront (services + published testimonials)
+- `/t/:trainerHandle/intake` — public lead intake form (Turnstile-protected)
+- catch-all `*` → `NotFoundPage` (was `<Navigate to="/" replace />` until iter 69 — silent redirect was hiding broken links from observability)
+
+**Routing safeguards:**
+- `npm run prebuild` runs `scripts/check-routes.mjs` which scans App.tsx Routes vs all `<Link to>` and `navigate()` calls and fails the build on phantom links.
+- `vercel.json` has 308 redirects for legacy URLs (`/free/cost-calculator`, `/welcome`).
 
 ### Component Patterns
 
@@ -187,7 +195,9 @@ Color palette:
 The entire UI is Hebrew RTL (`dir="rtl"` on `<html>`). Prefer Tailwind's `start`/`end` logical properties over `left`/`right`.
 
 ### Database (Supabase / PostgreSQL)
-Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_settings`, `email_templates`, `activity_logs`, `intake_submissions`.
+Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_settings`, `email_templates`, `activity_logs`, `intake_submissions`, `quotes`, `email_send_log`, `webhook_events`, `newsletter_subscribers`, `client_attachments`, `trainer_testimonials`, `sys_integrations_vault`.
+
+**Storage buckets:** `client-attachments` (private; trainer-isolation via `(storage.foldername(name))[1] = auth.uid()::text`).
 
 - All tables have RLS enabled — always query as an authenticated user in tests/seeds.
 - `sessions_completed` on programs is updated automatically via a DB trigger.
@@ -239,13 +249,13 @@ npm run build   # also runs tsc type-check
 - **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
 - **Sumit `DocumentType` enum constants** in `src/hooks/useSumit.ts` — `SUMIT_DOC_TYPE_PRICE_QUOTATION = 6` and `SUMIT_DOC_TYPE_INVOICE = 1` are working assumptions. Verify against Sumit's authoritative enum on first live test (one-line search-replace if different).
 - **`programs.greeninvoice_invoice_number` column** is named for a specific vendor; consider renaming to a vendor-neutral form (e.g., `legacy_morning_invoice_number`) once Sumit becomes the primary billing path.
-- **`/welcome` route** is a misnamed client-intake form (separate from the public `/t/:trainerHandle/intake`). Either rename the file/route to clarify or consolidate with the per-trainer intake flow.
 
 ### Resolved (kept here as a legend; remove next session)
 - ~~`alert()` in `QuickAddClientModal.tsx`~~ — replaced with `showToast()` in soft-launch session.
 - ~~`window.location.reload()` in `EmailComposer.tsx`~~ — refactored to state-based refresh in soft-launch session.
 - ~~Email templates hardcoded in `EmailComposer`~~ — closed by P2-1 (DB-driven with hardcoded fallback for trainers with 0 rows).
 - ~~`logActivity()` coverage incomplete~~ — closed by P1-1 in soft-launch session (StickyNote, ProgramWorkspace inline mutations, useServices, useSettings; ActivityEntityType widened with 'service' + 'settings').
+- ~~`/welcome` misnamed client-intake form~~ — deleted iter 72 (vercel.json redirects `/welcome` → `/`; route + page removed; sitemap/robots updated).
 
 ## CRITICAL: Security & Data Isolation (Multi-Tenancy)
 - **Zero-Trust Multi-Tenancy**: This is a multi-tenant platform. Every user (e.g., trainer) MUST ONLY be able to see their own relevant data.

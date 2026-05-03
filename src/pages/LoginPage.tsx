@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { Spinner } from '../components/Spinner';
 
 export function LoginPage() {
     const [loading, setLoading] = useState(false);
@@ -54,7 +55,7 @@ export function LoginPage() {
                         className="w-full flex items-center justify-center gap-3 bg-surface border border-border hover:bg-surface-warm text-text-primary font-medium py-3.5 px-4 rounded-xl transition-all shadow-soft group"
                     >
                         {loading ? (
-                            <span className="w-5 h-5 border-2 border-border border-t-text-secondary rounded-full animate-spin"></span>
+                            <Spinner size="lg" className="text-text-secondary" />
                         ) : (
                             <>
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">

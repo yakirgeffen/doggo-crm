@@ -75,6 +75,17 @@ export interface IntakeSubmission {
     created_at: string;
 }
 
+export interface ClientAttachment {
+    id: string;
+    client_id: string;
+    user_id: string;
+    storage_path: string;
+    display_name: string;
+    mime_type: string | null;
+    size_bytes: number | null;
+    uploaded_at: string;
+}
+
 export interface UserSettings {
     user_id: string;
     business_name: string | null;
@@ -87,4 +98,16 @@ export interface UserSettings {
     work_hours_end: string; // "17:00"
     webhook_url: string | null;
     api_token_hash: string | null;
+}
+
+export interface TrainerTestimonial {
+    id: string;
+    user_id: string;
+    client_name: string;
+    client_dog_name: string | null;
+    body: string;
+    rating: number | null;
+    is_published: boolean;
+    display_order: number;
+    created_at: string;
 }

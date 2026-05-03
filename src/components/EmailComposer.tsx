@@ -200,13 +200,17 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     };
 
     return createPortal(
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-fade-in">
+        <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-fade-in"
+            onClick={onClose}
+        >
             <div
                 ref={dialogRef}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="email-composer-title"
                 className="bg-surface rounded-xl shadow-elevated w-full max-w-lg overflow-hidden border border-border animate-modal-in"
+                onClick={e => e.stopPropagation()}
             >
 
                 {/* Header */}

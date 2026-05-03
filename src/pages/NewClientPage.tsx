@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/toast-context';
+import { Spinner } from '../components/Spinner';
 
 export function NewClientPage() {
     const navigate = useNavigate();
@@ -132,7 +133,7 @@ export function NewClientPage() {
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">
-                                    <span className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></span>
+                                    <Spinner size="md" className="text-white" />
                                     יוצר...
                                 </span>
                             ) : 'צור לקוח'}

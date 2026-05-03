@@ -13,7 +13,6 @@ import { LandingPage } from './pages/public/LandingPage';
 const PricingPage = lazy(() => import('./pages/public/PricingPage').then(m => ({ default: m.PricingPage })));
 const BlogIndexPage = lazy(() => import('./pages/public/BlogIndexPage').then(m => ({ default: m.BlogIndexPage })));
 const BlogPostPage = lazy(() => import('./pages/public/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
-const WelcomePage = lazy(() => import('./pages/public/WelcomePage').then(m => ({ default: m.WelcomePage })));
 const PrivacyPolicyPage = lazy(() => import('./pages/public/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsOfServicePage = lazy(() => import('./pages/public/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
 const CostCalculatorPage = lazy(() => import('./pages/public/CostCalculatorPage').then(m => ({ default: m.CostCalculatorPage })));
@@ -70,13 +69,12 @@ function App() {
           <Suspense fallback={<RouteSpinner />}>
           <Routes>
             {/* ========== Public Routes ========== */}
-            <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/blog" element={<BlogIndexPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
-            <Route path="/free/cost-calculator" element={<CostCalculatorPage />} />
+            <Route path="/calculator" element={<CostCalculatorPage />} />
             <Route path="/login" element={<LoginPage />} />
 
             {/* Public Storefront & Intake */}

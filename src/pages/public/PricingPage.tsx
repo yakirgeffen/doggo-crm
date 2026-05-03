@@ -115,7 +115,7 @@ export function PricingPage() {
                 </div>
 
                 {/* Tier grid */}
-                <div className="grid md:grid-cols-3 gap-6 mb-12">
+                <div className="grid md:grid-cols-3 gap-8 md:gap-6 mb-12 pt-3">
                     {TIERS.map(tier => (
                         <div
                             key={tier.name}
@@ -131,8 +131,8 @@ export function PricingPage() {
                                 <p className="text-xs text-text-muted">{tier.tagline}</p>
                             </div>
                             <div className="mb-6 pb-6 border-b border-border">
-                                <div className="text-4xl font-black mb-1 ltr-nums">{tier.price}</div>
-                                <p className="text-xs text-text-muted">{tier.priceSubtitle}</p>
+                                <div className={`text-4xl font-black mb-1 ${/^[\d₪]/.test(tier.price) ? 'ltr-nums' : ''}`}>{tier.price}</div>
+                                <p className="text-xs text-text-muted leading-relaxed">{tier.priceSubtitle}</p>
                             </div>
                             <ul className="space-y-2.5 mb-8 flex-1">
                                 {tier.features.map((f, i) => (

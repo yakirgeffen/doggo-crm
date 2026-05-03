@@ -8,7 +8,7 @@ Allow: /blog
 Allow: /blog/
 Allow: /privacy
 Allow: /terms
-Allow: /welcome
+Allow: /calculator
 Allow: /t/
 
 # Authenticated app routes — block crawler indexing

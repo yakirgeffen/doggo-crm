@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { Clock, Users, ArrowLeft } from 'lucide-react';
+import { Clock, Users, ArrowLeft, Star, Quote } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 // G3 data-quality fix: forward marketing params (utm_*, gclid, fbclid, ref)
@@ -26,6 +26,16 @@ interface PublicService {
     sessions_included: number | null;
 }
 
+interface PublicTestimonial {
+    id: string;
+    client_name: string;
+    client_dog_name: string | null;
+    body: string;
+    rating: number | null;
+    display_order: number;
+    created_at: string;
+}
+
 export function PublicStorefrontPage() {
     const { trainerHandle } = useParams<{ trainerHandle: string }>();
     const [searchParams] = useSearchParams();
@@ -41,6 +51,7 @@ export function PublicStorefrontPage() {
     })();
     const [profile, setProfile] = useState<TrainerPublicProfile | null>(null);
     const [services, setServices] = useState<PublicService[]>([]);
+    const [testimonials, setTestimonials] = useState<PublicTestimonial[]>([]);
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
@@ -78,6 +89,17 @@ export function PublicStorefrontPage() {
             .order('price', { ascending: true });
 
         if (servicesData) setServices(servicesData);
+
+        // 3. Fetch published testimonials. RLS allows anon SELECT where is_published=true.
+        const { data: testimonialsData } = await supabase
+            .from('trainer_testimonials')
+            .select('id, client_name, client_dog_name, body, rating, display_order, created_at')
+            .eq('user_id', settingsData.user_id)
+            .eq('is_published', true)
+            .order('display_order', { ascending: true })
+            .order('created_at', { ascending: false });
+
+        if (testimonialsData) setTestimonials(testimonialsData as PublicTestimonial[]);
         setLoading(false);
     }, [trainerHandle]);
 
@@ -208,6 +230,45 @@ export function PublicStorefrontPage() {
                     </div>
                 )}
             </main>
+
+            {/* Testimonials — public social proof, only published rows */}
+            {testimonials.length > 0 && (
+                <section className="bg-surface-warm/40 border-t border-border py-12">
+                    <div className="max-w-3xl mx-auto px-4">
+                        <h2 className="text-xl md:text-2xl font-bold text-center text-text-primary mb-8 flex items-center justify-center gap-2">
+                            <Star size={18} className="text-primary" fill="currentColor" />
+                            לקוחות מספרים
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {testimonials.map(t => (
+                                <article key={t.id} className="flat-card p-5 bg-surface relative">
+                                    <Quote size={16} className="absolute top-3 end-3 text-border" />
+                                    {t.rating && (
+                                        <div className="flex items-center gap-0.5 text-warning mb-2">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    size={12}
+                                                    fill={i < (t.rating || 0) ? 'currentColor' : 'none'}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                    <p className="text-sm text-text-secondary leading-relaxed mb-3 whitespace-pre-line">
+                                        {t.body}
+                                    </p>
+                                    <p className="text-xs font-bold text-text-primary">
+                                        {t.client_name}
+                                        {t.client_dog_name && (
+                                            <span className="text-text-muted font-normal"> · {t.client_dog_name} 🐾</span>
+                                        )}
+                                    </p>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Footer — link to Doggo CRM landing for trainer acquisition */}
             <footer className="text-center pb-8 text-xs text-text-muted">

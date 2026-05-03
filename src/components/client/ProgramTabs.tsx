@@ -1,7 +1,7 @@
-import { ClipboardList, FileSearch, History } from 'lucide-react';
+import { ClipboardList, FileSearch, History, Paperclip } from 'lucide-react';
 import type { Program } from '../../types';
 
-export type TabId = 'active' | 'intake' | 'history';
+export type TabId = 'active' | 'intake' | 'files' | 'history';
 
 interface ProgramTabsProps {
     activeTab: TabId;
@@ -14,6 +14,7 @@ interface ProgramTabsProps {
 const tabs: { id: TabId; label: string; icon: React.ComponentType<{ size?: number }> }[] = [
     { id: 'active', label: 'חבילה פעילה', icon: ClipboardList },
     { id: 'intake', label: 'קבלה', icon: FileSearch },
+    { id: 'files', label: 'קבצים', icon: Paperclip },
     { id: 'history', label: 'היסטוריה', icon: History },
 ];
 

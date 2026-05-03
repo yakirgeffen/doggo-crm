@@ -48,13 +48,17 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in">
+        <div
+            className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-fade-in"
+            onClick={onClose}
+        >
             <div
                 ref={dialogRef}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="extend-program-title"
                 className="bg-surface rounded-xl w-full max-w-sm shadow-elevated overflow-hidden animate-modal-in"
+                onClick={e => e.stopPropagation()}
             >
                 <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
                     <h3 id="extend-program-title" className="font-bold text-lg text-text-primary">הרחבת תוכנית</h3>

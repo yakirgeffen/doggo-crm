@@ -77,7 +77,7 @@ export function NotFoundPage() {
                     </Link>
 
                     <Link
-                        to="/free/cost-calculator"
+                        to="/calculator"
                         className="flat-card p-5 hover:border-primary transition-colors group flex flex-col items-center gap-2"
                     >
                         <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary/15 transition-colors">
