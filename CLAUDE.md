@@ -239,13 +239,13 @@ npm run build   # also runs tsc type-check
 - **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
 - **Sumit `DocumentType` enum constants** in `src/hooks/useSumit.ts` — `SUMIT_DOC_TYPE_PRICE_QUOTATION = 6` and `SUMIT_DOC_TYPE_INVOICE = 1` are working assumptions. Verify against Sumit's authoritative enum on first live test (one-line search-replace if different).
 - **`programs.greeninvoice_invoice_number` column** is named for a specific vendor; consider renaming to a vendor-neutral form (e.g., `legacy_morning_invoice_number`) once Sumit becomes the primary billing path.
-- **`/welcome` route** is a misnamed client-intake form (separate from the public `/t/:trainerHandle/intake`). Either rename the file/route to clarify or consolidate with the per-trainer intake flow.
 
 ### Resolved (kept here as a legend; remove next session)
 - ~~`alert()` in `QuickAddClientModal.tsx`~~ — replaced with `showToast()` in soft-launch session.
 - ~~`window.location.reload()` in `EmailComposer.tsx`~~ — refactored to state-based refresh in soft-launch session.
 - ~~Email templates hardcoded in `EmailComposer`~~ — closed by P2-1 (DB-driven with hardcoded fallback for trainers with 0 rows).
 - ~~`logActivity()` coverage incomplete~~ — closed by P1-1 in soft-launch session (StickyNote, ProgramWorkspace inline mutations, useServices, useSettings; ActivityEntityType widened with 'service' + 'settings').
+- ~~`/welcome` misnamed client-intake form~~ — deleted iter 72 (vercel.json redirects `/welcome` → `/`; route + page removed; sitemap/robots updated).
 
 ## CRITICAL: Security & Data Isolation (Multi-Tenancy)
 - **Zero-Trust Multi-Tenancy**: This is a multi-tenant platform. Every user (e.g., trainer) MUST ONLY be able to see their own relevant data.

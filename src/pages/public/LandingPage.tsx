@@ -203,7 +203,7 @@ export function LandingPage() {
                         <span>נבנה למאלפים בישראל</span>
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-muted">
-                        <Link to="/free/cost-calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
+                        <Link to="/calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
                         <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/blog" className="hover:text-primary transition-colors">בלוג</Link>
                         <span className="text-text-muted/40" aria-hidden="true">·</span>

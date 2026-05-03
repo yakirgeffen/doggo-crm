@@ -1,4 +1,16 @@
 {
+  "redirects": [
+    {
+      "source": "/free/cost-calculator",
+      "destination": "/calculator",
+      "permanent": true
+    },
+    {
+      "source": "/welcome",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
