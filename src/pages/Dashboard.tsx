@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Calendar, AlertCircle, DollarSign, CheckCircle, Plus, ChevronRight, MessageCircle, PartyPopper } from 'lucide-react';
 import { SkeletonKPIGrid } from '../components/Skeleton';
@@ -5,6 +6,7 @@ import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
 import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
 import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
+import { BookSessionModal } from '../components/BookSessionModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../context/auth-context';
 
@@ -21,6 +23,7 @@ export function Dashboard() {
     const { stats, actionItems, todaysSessions, loading } = useDashboard();
     const { user } = useAuth();
     const firstName = (user?.user_metadata?.full_name || user?.user_metadata?.name || '').toString().split(' ')[0];
+    const [isBookOpen, setIsBookOpen] = useState(false);
 
     if (loading) return (
         <div className="space-y-8 animate-fade-in pb-24 lg:pb-12">
@@ -252,6 +255,22 @@ export function Dashboard() {
                     </div>
                 )}
             </div>
+
+            {/* Mobile FAB — quick-book session from anywhere on Dashboard */}
+            <button
+                onClick={() => setIsBookOpen(true)}
+                className="md:hidden fixed bottom-24 end-5 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-card flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
+                title="קבע מפגש חדש"
+                aria-label="קבע מפגש חדש"
+            >
+                <Plus size={24} />
+            </button>
+
+            <BookSessionModal
+                isOpen={isBookOpen}
+                onClose={() => setIsBookOpen(false)}
+                onBooked={() => setIsBookOpen(false)}
+            />
         </div>
     );
 }
