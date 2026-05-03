@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { Spinner } from '../components/Spinner';
 
 /**
  * ProgramDetailPage — redirect wrapper.
@@ -31,7 +32,14 @@ export function ProgramDetailPage() {
         })();
     }, [id]);
 
-    if (loading) return <div className="p-8 text-center text-text-muted">מעביר לדף הלקוח...</div>;
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-16 gap-2 text-text-muted">
+                <Spinner size="sm" />
+                <span className="text-sm">מעבר לדף הלקוח...</span>
+            </div>
+        );
+    }
     if (redirectUrl) return <Navigate to={redirectUrl} replace />;
     return null;
 }

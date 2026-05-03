@@ -68,7 +68,7 @@ export function IntegrationsSettings() {
             showToast('הטוקן הועתק', 'success');
             setTimeout(() => setTokenCopied(false), 2500);
         } catch {
-            showToast('לא ניתן להעתיק. סמני ידנית.', 'error');
+            showToast('לא ניתן להעתיק אוטומטית — סימון ידני נדרש.', 'error');
         }
     };
 
@@ -416,7 +416,7 @@ export function IntegrationsSettings() {
                     Webhook לאוטומציות (G4)
                 </h2>
                 <p className="text-sm text-text-muted">
-                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כך תוכלי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
+                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כדי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
                 </p>
             </div>
 
