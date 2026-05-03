@@ -359,7 +359,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                             <span className="text-sm text-text-primary">
                                 {pendingAction === 'complete'
                                     ? 'האם לסמן את התוכנית כהושלמה?'
-                                    : 'האם אתה בטוח שברצונך לבטל את התוכנית?'}
+                                    : 'לבטל את התוכנית? פעולה זו לא ניתנת לביטול.'}
                             </span>
                             <div className="flex items-center gap-2 ms-auto">
                                 <button
