@@ -177,8 +177,8 @@ export function ClientsPage() {
                         <button
                             onClick={exportToCsv}
                             disabled={clients.length === 0}
-                            className="btn btn-secondary"
-                            title="ייצא את הלקוחות הנבחרים ל-CSV"
+                            className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={clients.length === 0 ? 'אין לקוחות לייצוא' : 'ייצא את הלקוחות הנבחרים ל-CSV'}
                         >
                             <Download size={18} className="ms-2" />
                             ייצא CSV
@@ -321,10 +321,15 @@ export function ClientsPage() {
                                         const phoneDigits = client.phone.replace(/[^\d]/g, '');
                                         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
                                         const firstName = client.full_name.split(' ')[0];
+                                        const dogName = client.primary_dog_name || '';
+                                        // Match ClientHero fallback shape — drop the dog clause when missing.
+                                        const greetingFallback = dogName
+                                            ? `היי ${firstName} 🐾 מה שלומכם ושלום ${dogName}?`
+                                            : `היי ${firstName} 🐾`;
                                         const greetingText = applyTemplate(
                                             settings?.wa_template_greeting ?? null,
-                                            { firstName, dogName: client.primary_dog_name || '' },
-                                            `היי ${firstName} 🐾`
+                                            { firstName, dogName },
+                                            greetingFallback
                                         );
                                         const greeting = encodeURIComponent(greetingText);
                                         return (

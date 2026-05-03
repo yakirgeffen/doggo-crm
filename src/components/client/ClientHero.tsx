@@ -57,10 +57,16 @@ export function ClientHero({ client }: ClientHeroProps) {
                                 const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
                                 const firstName = client.full_name.split(' ')[0];
                                 const dogName = client.primary_dog_name || '';
+                                // Fallback when trainer hasn't customized the greeting template.
+                                // If the dog name is missing, drop the second sentence to avoid
+                                // shipping `מה שלומכם ושלום ?` to the recipient.
+                                const greetingFallback = dogName
+                                    ? `היי ${firstName} 🐾 מה שלומכם ושלום ${dogName}?`
+                                    : `היי ${firstName} 🐾`;
                                 const greetingText = applyTemplate(
                                     settings?.wa_template_greeting ?? null,
                                     { firstName, dogName },
-                                    `שלום ${firstName}! 🐾`
+                                    greetingFallback
                                 );
                                 const greeting = encodeURIComponent(greetingText);
                                 return (

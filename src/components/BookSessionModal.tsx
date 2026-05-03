@@ -341,22 +341,29 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose} className="btn btn-secondary flex-1">
-                            ביטול
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving || !selectedProgramId}
-                            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                        >
-                            {saving ? (
-                                <>
-                                    <Spinner size="md" />
-                                    <span>שומרים...</span>
-                                </>
-                            ) : '🐾 קביעת מפגש'}
-                        </button>
+                    <div className="space-y-2 pt-2">
+                        <div className="flex gap-3">
+                            <button type="button" onClick={onClose} className="btn btn-secondary flex-1">
+                                ביטול
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving || !selectedProgramId}
+                                className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {saving ? (
+                                    <>
+                                        <Spinner size="md" />
+                                        <span>שומרים...</span>
+                                    </>
+                                ) : '🐾 קביעת מפגש'}
+                            </button>
+                        </div>
+                        {!saving && !selectedProgramId && (
+                            <p className="text-xs text-text-muted text-center">
+                                {!selectedClientId ? 'יש לבחור לקוח כדי להמשיך' : 'יש לבחור תוכנית פעילה'}
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>

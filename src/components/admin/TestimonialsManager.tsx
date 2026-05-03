@@ -284,24 +284,31 @@ function TestimonialModal({
                     </label>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 p-4 border-t border-border bg-background">
-                    <button
-                        onClick={onClose}
-                        className="btn btn-ghost text-sm"
-                        type="button"
-                        disabled={saving}
-                    >
-                        ביטול
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={saving || !valid}
-                        className="btn btn-primary text-sm flex items-center gap-1.5"
-                        type="button"
-                    >
-                        {saving && <Spinner size="sm" />}
-                        {saving ? 'שומרים...' : initial ? 'שמירת שינויים' : 'הוספה'}
-                    </button>
+                <div className="border-t border-border bg-background p-4 space-y-2">
+                    <div className="flex items-center justify-end gap-2">
+                        <button
+                            onClick={onClose}
+                            className="btn btn-ghost text-sm"
+                            type="button"
+                            disabled={saving}
+                        >
+                            ביטול
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={saving || !valid}
+                            className="btn btn-primary text-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            type="button"
+                        >
+                            {saving && <Spinner size="sm" />}
+                            {saving ? 'שומרים...' : initial ? 'שמירת שינויים' : 'הוספה'}
+                        </button>
+                    </div>
+                    {!saving && !valid && (
+                        <p className="text-xs text-text-muted text-end">
+                            {clientName.trim().length === 0 ? 'יש להזין שם לקוח' : 'יש להזין תוכן המלצה'}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

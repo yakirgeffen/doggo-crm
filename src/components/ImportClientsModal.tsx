@@ -358,13 +358,18 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                     {step === 'upload' && <span className="text-xs text-text-muted">לבחירת קובץ להמשך</span>}
 
                     {step === 'map' && (
-                        <button
-                            onClick={generatePreview}
-                            disabled={nameColumns.length === 0}
-                            className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            המשך לתצוגה מקדימה
-                        </button>
+                        <div className="flex flex-col items-end gap-1">
+                            <button
+                                onClick={generatePreview}
+                                disabled={nameColumns.length === 0}
+                                className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                המשך לתצוגה מקדימה
+                            </button>
+                            {nameColumns.length === 0 && (
+                                <p className="text-xs text-text-muted">יש לסמן לפחות עמודת שם אחת</p>
+                            )}
+                        </div>
                     )}
 
                     {step === 'preview' && (

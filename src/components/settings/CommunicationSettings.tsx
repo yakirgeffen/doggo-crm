@@ -9,11 +9,17 @@ interface CommunicationSettingsProps {
 // Hardcoded fallback templates surfaced as textarea placeholders so trainers
 // see the default copy they'd be overriding. These mirror the strings used in
 // BookSessionModal / ClientsPage when the corresponding template is unset.
-const PLACEHOLDER_GREETING = 'היי {firstName} 🐾';
+//
+// Hebrew note: prepositions (ל, ב, מ, כ, ש, ו, ה) attach to the next word
+// without a separator. Templates must NEVER use a hyphen between a preposition
+// and a placeholder — write `{dogName}` directly after the preposition, not
+// `ל-{dogName}`. The sanitizer in lib/whatsapp-template.ts will strip stray
+// hyphens defensively, but the placeholders here model the right pattern.
+const PLACEHOLDER_GREETING = 'היי {firstName} 🐾 מה שלומכם ושלום {dogName}?';
 const PLACEHOLDER_BOOKING =
-    'שלום {firstName}!\nמפגש האילוף של {dogName} נקבע ל{date} בשעה {time}.\nנתראה! 🐾';
+    'שלום {firstName}!\nמפגש האילוף של {dogName} נקבע ליום {date} בשעה {time}.\nנתראה! 🐾';
 const PLACEHOLDER_REMINDER =
-    'היי {firstName}!\nתזכורת: מפגש האילוף של {dogName} היום בשעה {time}.\nנתראה 🐾';
+    'היי {firstName}!\nתזכורת קצרה: מפגש האילוף של {dogName} היום בשעה {time}.\nנתראה 🐾';
 
 export function CommunicationSettings({ settings, onChange }: CommunicationSettingsProps) {
     if (!settings) return null;
@@ -88,9 +94,16 @@ export function CommunicationSettings({ settings, onChange }: CommunicationSetti
 
                 <div className="bg-primary/5 text-text-secondary p-4 rounded-xl text-sm flex items-start gap-3 border border-primary/10">
                     <div className="mt-0.5">ℹ️</div>
-                    <p>
-                        ההודעות נפתחות ב-WhatsApp עם המלל המוכן. תמיד אפשר לערוך לפני השליחה.
-                    </p>
+                    <div className="space-y-1.5">
+                        <p>
+                            ההודעות נפתחות ב-WhatsApp עם המלל המוכן. תמיד אפשר לערוך לפני השליחה.
+                        </p>
+                        <p className="text-xs text-text-muted">
+                            טיפ: בעברית, אותיות יחס (ל, ב, מ, כ, ש, ו, ה) מתחברות למילה הבאה ללא מקף.
+                            כתבו <code className="text-text-secondary" dir="ltr">ל{'{dogName}'}</code>{' '}
+                            ולא <code className="text-text-secondary" dir="ltr">ל-{'{dogName}'}</code>.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

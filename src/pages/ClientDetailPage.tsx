@@ -273,7 +273,14 @@ export function ClientDetailPage() {
                         setIsEmailOpen(false);
                         setSearchParams({}, { replace: true });
                     }}
+                    onClientEmailUpdated={(email) => {
+                        // Local optimistic update so the hero/contact card
+                        // reflects the new address immediately. The next full
+                        // fetch will reconcile if anything changed server-side.
+                        setClient(prev => (prev ? { ...prev, email } : prev));
+                    }}
                     clientEmail={client.email || ''}
+                    clientId={client.id}
                     clientName={client.full_name}
                     dogName={client.primary_dog_name || ''}
                     entityType="client"

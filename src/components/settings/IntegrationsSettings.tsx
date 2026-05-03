@@ -262,10 +262,15 @@ export function IntegrationsSettings() {
                     <button
                         onClick={handleSaveKeys}
                         disabled={integrationsLoading || !apiKey || !apiSecret}
-                        className="btn btn-primary w-full flex justify-center items-center gap-2"
+                        className="btn btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {integrationsLoading ? 'מתחבר...' : 'שמור ובדוק חיבור'}
                     </button>
+                    {!integrationsLoading && (!apiKey || !apiSecret) && (
+                        <p className="text-xs text-text-muted text-center">
+                            יש למלא את שני המפתחות כדי לבדוק את החיבור
+                        </p>
+                    )}
 
                     {testCheckResult && (
                         <div className={`text-xs p-3 rounded-lg ${testCheckResult.success ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
@@ -373,10 +378,15 @@ export function IntegrationsSettings() {
                     <button
                         onClick={handleSaveSumitKeys}
                         disabled={sumit.loading || !sumitCompanyId || !sumitApiKey}
-                        className="btn btn-primary w-full flex justify-center items-center gap-2"
+                        className="btn btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {sumit.loading ? 'מתחבר...' : 'שמור ובדוק חיבור'}
                     </button>
+                    {!sumit.loading && (!sumitCompanyId || !sumitApiKey) && (
+                        <p className="text-xs text-text-muted text-center">
+                            יש למלא את שני השדות כדי לבדוק את החיבור
+                        </p>
+                    )}
 
                     {sumitTestResult && (
                         <div className={`text-xs p-3 rounded-lg ${sumitTestResult.success ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
@@ -434,22 +444,28 @@ export function IntegrationsSettings() {
                     <p className="text-[11px] text-text-muted mt-1">חייב להתחיל ב-https://. אנחנו שולחים POST עם payload JSON של הפנייה.</p>
                 </div>
 
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleSaveWebhook}
-                        disabled={webhookSaving}
-                        className="btn btn-primary text-sm flex-1"
-                    >
-                        {webhookSaving ? 'שומרים...' : 'שמירה'}
-                    </button>
-                    <button
-                        onClick={handleTestWebhook}
-                        disabled={webhookTestSending || !webhookUrl.trim()}
-                        className="btn btn-secondary text-sm flex items-center gap-1.5"
-                    >
-                        <Send size={14} />
-                        {webhookTestSending ? 'שולח בדיקה...' : 'שלח בדיקה'}
-                    </button>
+                <div className="space-y-1">
+                    <div className="flex gap-2">
+                        <button
+                            onClick={handleSaveWebhook}
+                            disabled={webhookSaving}
+                            className="btn btn-primary text-sm flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {webhookSaving ? 'שומרים...' : 'שמירה'}
+                        </button>
+                        <button
+                            onClick={handleTestWebhook}
+                            disabled={webhookTestSending || !webhookUrl.trim()}
+                            className="btn btn-secondary text-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={!webhookUrl.trim() ? 'יש להזין כתובת Webhook לפני שליחת בדיקה' : undefined}
+                        >
+                            <Send size={14} />
+                            {webhookTestSending ? 'שולח בדיקה...' : 'שלח בדיקה'}
+                        </button>
+                    </div>
+                    {!webhookTestSending && !webhookUrl.trim() && (
+                        <p className="text-xs text-text-muted">שליחת בדיקה זמינה לאחר הזנת כתובת Webhook</p>
+                    )}
                 </div>
 
                 <details className="text-xs text-text-muted bg-background p-3 rounded-lg">

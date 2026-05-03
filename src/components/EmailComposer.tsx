@@ -12,9 +12,21 @@ interface EmailComposerProps {
     trainerName?: string;
     entityType: 'client' | 'program';
     entityId: string;
+    /**
+     * Always the underlying client.id — used to persist a newly-entered email
+     * back to the clients row even when entityType === 'program' (where
+     * entityId points at the program, not the client).
+     */
+    clientId: string;
     isOpen: boolean;
     onClose: () => void;
     onSuccess?: () => void;
+    /**
+     * Fired when the recipient email is updated and persisted to the client
+     * record. Lets the parent re-fetch its `client.email` so subsequent opens
+     * of the modal pre-populate from DB instead of stale prop.
+     */
+    onClientEmailUpdated?: (newEmail: string) => void;
 }
 
 interface EmailTemplate {
@@ -71,11 +83,30 @@ const FALLBACK_TEMPLATES: EmailTemplate[] = [
     }
 ];
 
-export function EmailComposer({ clientEmail, clientName, dogName, entityType, entityId, trainerName = "המאלף", isOpen, onClose, onSuccess }: EmailComposerProps) {
+// Lightweight RFC-5322-ish check — same shape Gmail and most clients accept.
+// We don't try to validate every legal edge case; we just stop the obvious typos.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function EmailComposer({
+    clientEmail,
+    clientName,
+    dogName,
+    entityType,
+    entityId,
+    clientId,
+    trainerName = "המאלף",
+    isOpen,
+    onClose,
+    onSuccess,
+    onClientEmailUpdated,
+}: EmailComposerProps) {
     const { providerToken } = useAuth();
     const [selectedTemplate, setSelectedTemplate] = useState('');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
+    // Recipient is a controlled input — pre-populated from the client record
+    // and editable. On send we'll persist any new value back to the client.
+    const [recipient, setRecipient] = useState(clientEmail);
     const [templates, setTemplates] = useState<EmailTemplate[]>(FALLBACK_TEMPLATES);
     const [templatesLoading, setTemplatesLoading] = useState(false);
 
@@ -91,6 +122,10 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
             setSelectedTemplate('');
             setSubject('');
             setBody('');
+            // Re-pull the latest client email from the prop on each open so
+            // edits made by the auto-save flow propagate when the parent
+            // re-opens the modal.
+            setRecipient(clientEmail);
             setSuccess(false);
             setError(null);
             setSending(false);
@@ -143,6 +178,13 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
     if (!isOpen) return null;
 
+    const trimmedRecipient = recipient.trim();
+    const recipientValid = EMAIL_RE.test(trimmedRecipient);
+    const recipientIsNew = trimmedRecipient.toLowerCase() !== (clientEmail || '').trim().toLowerCase();
+    const subjectFilled = subject.trim().length > 0;
+    const bodyFilled = body.trim().length > 0;
+    const canSend = recipientValid && subjectFilled && bodyFilled && !sending;
+
     const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const templateId = e.target.value;
         setSelectedTemplate(templateId);
@@ -159,9 +201,33 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
         }
     };
 
+    /**
+     * Persists the entered recipient to clients.email when it differs from
+     * the existing on-file value. Best-effort: we don't block the email send
+     * on the persistence step. If save fails we surface a console warning but
+     * still let the user see the success state for the actual delivery.
+     */
+    const persistRecipientIfNew = async () => {
+        if (!recipientIsNew) return;
+        const { error: updateErr } = await supabase
+            .from('clients')
+            .update({ email: trimmedRecipient })
+            .eq('id', clientId);
+        if (updateErr) {
+            console.warn('Failed to persist new client email:', updateErr);
+            return;
+        }
+        await logActivity('client', clientId, 'updated', `כתובת מייל עודכנה: ${trimmedRecipient}`);
+        onClientEmailUpdated?.(trimmedRecipient);
+    };
+
     const handleSendRealEmail = async () => {
         if (!providerToken) {
             setError("חסר חיבור ל-Google. כדאי להתחבר מחדש.");
+            return;
+        }
+        if (!recipientValid) {
+            setError("כתובת מייל נדרשת");
             return;
         }
 
@@ -170,13 +236,14 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
         try {
             await sendGmail({
-                to: clientEmail,
+                to: trimmedRecipient,
                 subject,
                 body,
                 token: providerToken
             });
 
             await logActivity(entityType, entityId, 'email_sent', `אימייל נשלח דרך Gmail: ${subject}`);
+            await persistRecipientIfNew();
 
             setSuccess(true);
             setTimeout(() => {
@@ -192,12 +259,29 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
     };
 
     const handleFallbackMailto = () => {
-        const mailtoLink = `mailto:${clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        if (!recipientValid) {
+            setError("כתובת מייל נדרשת");
+            return;
+        }
+        const mailtoLink = `mailto:${trimmedRecipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.open(mailtoLink, '_blank');
         logActivity(entityType, entityId, 'email_sent', `נפתח עורך אימייל חיצוני: ${subject}`);
+        // Fire-and-forget the persistence — same rationale as the Gmail path.
+        void persistRecipientIfNew();
         onClose();
         onSuccess?.();
     };
+
+    // Inline explanation surfaced under the disabled send button so trainers
+    // know what's missing. Mirrors the disabled-button audit pattern used in
+    // SendQuoteModal. Returns null when the button is enabled.
+    const disabledReason: string | null = (() => {
+        if (sending) return null;
+        if (!recipientValid) return 'יש להזין כתובת מייל תקינה';
+        if (!subjectFilled) return 'יש להזין נושא';
+        if (!bodyFilled) return 'יש להזין תוכן הודעה';
+        return null;
+    })();
 
     return createPortal(
         <div
@@ -235,6 +319,9 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                             </div>
                             <h3 className="text-xl font-bold text-text-primary">האימייל נשלח בהצלחה!</h3>
                             <p className="text-text-muted">ההודעה תועדה בתיק הלקוח.</p>
+                            {recipientIsNew && (
+                                <p className="text-text-muted text-sm mt-2">כתובת המייל נשמרה בכרטיס הלקוח.</p>
+                            )}
                         </div>
                     ) : (
                         <>
@@ -245,6 +332,29 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                                     <span>{error}</span>
                                 </div>
                             )}
+
+                            {/* Recipient — editable. Pre-populated from client record;
+                                anything new gets saved back on send. */}
+                            <div>
+                                <label htmlFor="email-composer-recipient" className="block text-sm font-medium text-text-primary mb-1.5">
+                                    נמען
+                                </label>
+                                <input
+                                    id="email-composer-recipient"
+                                    type="email"
+                                    dir="ltr"
+                                    className="input-field text-start"
+                                    value={recipient}
+                                    onChange={(e) => setRecipient(e.target.value)}
+                                    placeholder="name@example.com"
+                                    autoComplete="email"
+                                />
+                                {recipientIsNew && recipientValid && (
+                                    <p className="text-xs text-text-muted mt-1">
+                                        הכתובת תישמר בכרטיס הלקוח לאחר השליחה.
+                                    </p>
+                                )}
+                            </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-text-primary mb-1.5">
@@ -291,7 +401,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                             {!providerToken && (
                                 <div className="bg-warning/10 text-warning p-3 rounded-lg text-xs flex gap-2">
                                     <AlertCircle size={16} />
-                                    <p>לתשומת לב: אין כרגע חיבור פעיל ל-Google. השליחה תתבצע דרך תוכנת המייל במחשב ולא תתועד אוטומטית.</p>
+                                    <p>שים לב: אינך מחובר דרך Google. השליחה תתבצע דרך תוכנת המייל במחשב שלך ולא תתועד אוטומטית.</p>
                                 </div>
                             )}
                         </>
@@ -300,39 +410,45 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
                 {/* Footer */}
                 {!success && (
-                    <div className="p-5 border-t border-border flex justify-between gap-3 bg-background">
-                        <button onClick={handleFallbackMailto} className="btn text-text-muted text-sm underline hover:text-primary">
-                            שימוש בתוכנת מייל חיצונית
-                        </button>
-
-                        <div className="flex gap-3">
-                            <button onClick={onClose} className="btn btn-secondary">
-                                ביטול
+                    <div className="p-5 border-t border-border bg-background space-y-2">
+                        <div className="flex justify-between gap-3">
+                            <button onClick={handleFallbackMailto} className="btn text-text-muted text-sm underline hover:text-primary">
+                                שימוש בתוכנת מייל חיצונית
                             </button>
 
-                            {providerToken ? (
-                                <button
-                                    onClick={handleSendRealEmail}
-                                    disabled={sending}
-                                    className="btn btn-primary flex items-center gap-2 min-w-[120px]"
-                                >
-                                    {sending ? 'שולח...' : (
-                                        <>
-                                            <Send size={18} />
-                                            שליחת אימייל
-                                        </>
-                                    )}
+                            <div className="flex gap-3">
+                                <button onClick={onClose} className="btn btn-secondary">
+                                    ביטול
                                 </button>
-                            ) : (
-                                <button
-                                    onClick={handleFallbackMailto}
-                                    className="btn btn-primary flex items-center gap-2"
-                                >
-                                    <ExternalLink size={18} />
-                                    פתח במחשב
-                                </button>
-                            )}
+
+                                {providerToken ? (
+                                    <button
+                                        onClick={handleSendRealEmail}
+                                        disabled={!canSend}
+                                        className="btn btn-primary flex items-center gap-2 min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {sending ? 'שולח...' : (
+                                            <>
+                                                <Send size={18} />
+                                                שלח אימייל
+                                            </>
+                                        )}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleFallbackMailto}
+                                        disabled={!recipientValid}
+                                        className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <ExternalLink size={18} />
+                                        פתח במחשב
+                                    </button>
+                                )}
+                            </div>
                         </div>
+                        {disabledReason && (
+                            <p className="text-xs text-text-muted text-end">{disabledReason}</p>
+                        )}
                     </div>
                 )}
             </div>

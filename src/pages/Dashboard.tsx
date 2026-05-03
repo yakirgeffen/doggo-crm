@@ -172,10 +172,13 @@ export function Dashboard() {
                                                     const sessionTime = new Date(session.session_date).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
                                                     const clientFirstName = session.programs.clients.full_name.split(' ')[0];
                                                     const dogName = session.programs.clients.primary_dog_name || '';
+                                                    // Placeholder names must match the ones documented in CommunicationSettings:
+                                                    // {firstName} {dogName} {time}. Earlier code passed `timeLabel` which left
+                                                    // `{time}` literal in any custom template the trainer had saved.
                                                     const reminderText = applyTemplate(
                                                         settings?.wa_template_reminder ?? null,
-                                                        { firstName: clientFirstName, dogName, timeLabel: sessionTime, dateLabel: 'היום' },
-                                                        `היי ${clientFirstName}!\nתזכורת: מפגש האילוף של ${dogName} היום בשעה ${sessionTime}.\nנתראה 🐾`
+                                                        { firstName: clientFirstName, dogName, time: sessionTime },
+                                                        `היי ${clientFirstName}!\nתזכורת קצרה: מפגש האילוף של ${dogName} היום בשעה ${sessionTime}.\nנתראה 🐾`
                                                     );
                                                     const reminder = encodeURIComponent(reminderText);
                                                     return (

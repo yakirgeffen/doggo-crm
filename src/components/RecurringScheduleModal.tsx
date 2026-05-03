@@ -200,27 +200,34 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                     </div>
                 </div>
 
-                <div className="border-t border-border p-4 bg-surface-warm flex gap-2">
-                    <button onClick={onClose} className="btn btn-secondary flex-1" disabled={submitting}>
-                        ביטול
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={submitting || count < 1 || daysOfWeek.length === 0}
-                        className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                    >
-                        {submitting ? (
-                            <>
-                                <Spinner size="sm" />
-                                <span>קובע...</span>
-                            </>
-                        ) : (
-                            <>
-                                <Calendar size={14} />
-                                <span>קביעת {count} מפגשים</span>
-                            </>
-                        )}
-                    </button>
+                <div className="border-t border-border p-4 bg-surface-warm space-y-2">
+                    <div className="flex gap-2">
+                        <button onClick={onClose} className="btn btn-secondary flex-1" disabled={submitting}>
+                            ביטול
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={submitting || count < 1 || daysOfWeek.length === 0}
+                            className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {submitting ? (
+                                <>
+                                    <Spinner size="sm" />
+                                    <span>קובע...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Calendar size={14} />
+                                    <span>קביעת {count} מפגשים</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                    {!submitting && (count < 1 || daysOfWeek.length === 0) && (
+                        <p className="text-xs text-text-muted text-center">
+                            {count < 1 ? 'מספר המפגשים חייב להיות לפחות 1' : 'יש לבחור לפחות יום אחד בשבוע'}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

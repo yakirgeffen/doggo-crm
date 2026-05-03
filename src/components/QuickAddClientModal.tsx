@@ -123,31 +123,36 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                         />
                     </div>
 
-                    <div className="flex gap-3 pt-2">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="btn btn-secondary"
-                        >
-                            ביטול
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving || !ownerName.trim()}
-                            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                        >
-                            {saving ? (
-                                <>
-                                    <Spinner size="md" />
-                                    <span>שומרים...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Dog size={16} />
-                                    <span>הוספת לקוח</span>
-                                </>
-                            )}
-                        </button>
+                    <div className="space-y-2 pt-2">
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="btn btn-secondary"
+                            >
+                                ביטול
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving || !ownerName.trim()}
+                                className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {saving ? (
+                                    <>
+                                        <Spinner size="md" />
+                                        <span>שומרים...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Dog size={16} />
+                                        <span>הוספת לקוח</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                        {!saving && !ownerName.trim() && (
+                            <p className="text-xs text-text-muted text-end">יש להזין שם בעלים</p>
+                        )}
                     </div>
                 </form>
             </div>

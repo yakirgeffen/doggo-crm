@@ -117,20 +117,27 @@ export function ServicesSettings() {
                                 />
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => setIsAddingService(false)}
-                                className="btn btn-secondary text-xs"
-                            >
-                                ביטול
-                            </button>
-                            <button
-                                onClick={handleAddService}
-                                disabled={!newService.name || !newService.price}
-                                className="btn btn-primary text-xs"
-                            >
-                                שמור שירות
-                            </button>
+                        <div className="flex flex-col items-end gap-1">
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setIsAddingService(false)}
+                                    className="btn btn-secondary text-xs"
+                                >
+                                    ביטול
+                                </button>
+                                <button
+                                    onClick={handleAddService}
+                                    disabled={!newService.name || !newService.price}
+                                    className="btn btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    שמור שירות
+                                </button>
+                            </div>
+                            {(!newService.name || !newService.price) && (
+                                <p className="text-xs text-text-muted">
+                                    {!newService.name ? 'יש להזין שם שירות' : 'יש להזין מחיר'}
+                                </p>
+                            )}
                         </div>
                     </div>
                 )}

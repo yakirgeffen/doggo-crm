@@ -434,6 +434,7 @@ export function PublicIntakePage() {
                             <button
                                 onClick={() => setStep(s => s + 1)}
                                 disabled={step === 1 && !canAdvanceStep1}
+                                title={step === 1 && !canAdvanceStep1 ? 'יש להזין שם מלא כדי להמשיך' : undefined}
                                 className="btn btn-primary flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 הבא
