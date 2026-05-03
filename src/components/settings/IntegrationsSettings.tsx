@@ -362,8 +362,17 @@ export function IntegrationsSettings() {
                 </div>
 
                 <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
-                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">דוגמת payload (intake_submission.created)</summary>
-                    <pre className="overflow-x-auto text-[10px] mt-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`{
+                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">סוגי אירועים שנשלחים</summary>
+                    <ul className="text-[11px] mt-2 space-y-1">
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">intake_submission.created</code> — פנייה חדשה מטופס הפניות</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.created</code> — מפגש חדש נקבע</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.cancelled</code> — מפגש בוטל</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">program.paid</code> — תוכנית סומנה כשולמה</li>
+                    </ul>
+                    <p className="text-[11px] text-text-muted mt-3">לכל אירוע, payload בפורמט JSON עם <code dir="ltr" className="font-mono bg-surface px-1 rounded">"event"</code> וכותרת <code dir="ltr" className="font-mono bg-surface px-1 rounded">X-Doggo-Event</code>.</p>
+                    <details className="mt-3">
+                        <summary className="cursor-pointer text-text-secondary">דוגמת payload (intake_submission.created)</summary>
+                        <pre className="overflow-x-auto text-[10px] mt-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`{
   "event": "intake_submission.created",
   "submission_id": "uuid",
   "trainer_id": "uuid",
@@ -377,6 +386,7 @@ export function IntegrationsSettings() {
   "selected_service_id": "uuid|null",
   "created_at": "2026-05-02T12:34:56Z"
 }`}</pre>
+                    </details>
                 </details>
             </div>
         </div>
