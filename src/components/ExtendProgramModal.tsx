@@ -69,7 +69,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div className="text-sm text-text-muted mb-4 bg-accent/10 text-accent p-3 rounded-xl border border-accent/15">
-                        מוסיף מפגשים לתוכנית <strong>{programName}</strong>.
+                        הוספת מפגשים לתוכנית <strong>{programName}</strong>.
                         <br />
                         ההיסטוריה והנתונים הקיימים יישמרו.
                     </div>
@@ -132,7 +132,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
                             disabled={loading}
                             className="btn btn-primary w-full py-3 shadow-card"
                         >
-                            {loading ? 'מעדכן...' : `הוסף ${sessionsToAdd} מפגשים`}
+                            {loading ? 'שומרים...' : `הוספת ${sessionsToAdd} מפגשים`}
                         </button>
                     </div>
                 </form>
