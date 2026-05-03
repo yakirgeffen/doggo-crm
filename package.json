@@ -10,6 +10,7 @@
     "check:routes": "node scripts/check-routes.mjs",
     "check:vercel": "node scripts/check-vercel.mjs",
     "check:schema": "node scripts/check-schema.mjs",
+    "schema:snapshot": "node scripts/schema-snapshot.mjs",
     "prebuild": "node scripts/check-routes.mjs",
     "preview": "vite preview"
   },
