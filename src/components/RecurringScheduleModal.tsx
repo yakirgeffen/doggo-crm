@@ -217,7 +217,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                         ) : (
                             <>
                                 <Calendar size={14} />
-                                <span>קבע {count} מפגשים</span>
+                                <span>קביעת {count} מפגשים</span>
                             </>
                         )}
                     </button>

@@ -161,7 +161,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
 
     const handleSendRealEmail = async () => {
         if (!providerToken) {
-            setError("חסר חיבור ל-Google. נסה להתחבר מחדש.");
+            setError("חסר חיבור ל-Google. כדאי להתחבר מחדש.");
             return;
         }
 
@@ -256,7 +256,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                                     onChange={handleTemplateChange}
                                     disabled={templatesLoading}
                                 >
-                                    <option value="">{templatesLoading ? 'טוען תבניות...' : 'בחר תבנית...'}</option>
+                                    <option value="">{templatesLoading ? 'טוען תבניות...' : 'בחירת תבנית...'}</option>
                                     {templates.map(t => (
                                         <option key={t.id} value={t.id}>{t.name}</option>
                                     ))}
@@ -284,14 +284,14 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                                     className="input-field min-h-[200px] resize-none"
                                     value={body}
                                     onChange={(e) => setBody(e.target.value)}
-                                    placeholder="כתוב את ההודעה כאן..."
+                                    placeholder="כתיבת ההודעה כאן..."
                                 />
                             </div>
 
                             {!providerToken && (
                                 <div className="bg-warning/10 text-warning p-3 rounded-lg text-xs flex gap-2">
                                     <AlertCircle size={16} />
-                                    <p>שים לב: אינך מחובר דרך Google. השליחה תתבצע דרך תוכנת המייל במחשב שלך ולא תתועד אוטומטית.</p>
+                                    <p>לתשומת לב: אין כרגע חיבור פעיל ל-Google. השליחה תתבצע דרך תוכנת המייל במחשב ולא תתועד אוטומטית.</p>
                                 </div>
                             )}
                         </>
@@ -319,7 +319,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                                     {sending ? 'שולח...' : (
                                         <>
                                             <Send size={18} />
-                                            שלח אימייל
+                                            שליחת אימייל
                                         </>
                                     )}
                                 </button>

@@ -134,7 +134,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
 
         if (error) {
             console.error('Import error:', error);
-            showToast('שגיאה בייבוא הנתונים פנה לתמיכה.', 'error');
+            showToast('שגיאה בייבוא הנתונים. כדאי לפנות לתמיכה.', 'error');
             setStep('preview');
         } else {
             // Log import creation
@@ -192,13 +192,13 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                             <div className="text-center max-w-md">
                                 <h4 className="text-xl font-bold mb-2 text-text-primary">ייבוא מאקסל או CSV</h4>
                                 <p className="text-text-muted">
-                                    העלה קובץ עם רשימת הלקוחות שלך. המערכת תזהה את העמודות באופן אוטומטי.
+                                    אפשר להעלות קובץ עם רשימת הלקוחות. המערכת תזהה את העמודות באופן אוטומטי.
                                 </p>
                             </div>
 
                             <label className="btn btn-primary cursor-pointer shadow-card hover:shadow-elevated transition-all hover:-translate-y-1">
                                 <Upload size={20} className="ms-2" />
-                                בחר קובץ CSV
+                                בחירת קובץ CSV
                                 <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
                             </label>
 
@@ -213,7 +213,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                         <div className="space-y-6">
                             <div className="bg-accent/10 border border-accent/15 p-4 rounded-xl text-sm text-accent">
                                 <p className="font-bold mb-1">💡 זיהינו {parsedData.length} שורות.</p>
-                                אנא בחר איזה עמודה בקובץ מתאימה לכל שדה.
+                                יש לבחור איזו עמודה בקובץ מתאימה לכל שדה.
                             </div>
 
                             {/* Name Mapping */}
@@ -355,7 +355,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
 
                     <div className="flex-1"></div>
 
-                    {step === 'upload' && <span className="text-xs text-text-muted">בחר קובץ להמשך</span>}
+                    {step === 'upload' && <span className="text-xs text-text-muted">לבחירת קובץ להמשך</span>}
 
                     {step === 'map' && (
                         <button
