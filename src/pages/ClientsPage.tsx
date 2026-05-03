@@ -56,10 +56,11 @@ export function ClientsPage() {
             }
             return s;
         };
-        const header = ['שם מלא', 'שם הכלב', 'מייל', 'טלפון', 'מקור הליד', 'הערות', 'סטטוס', 'תאריך הצטרפות'];
+        const header = ['שם מלא', 'שם הכלב', 'גזע', 'מייל', 'טלפון', 'מקור הליד', 'הערות', 'סטטוס', 'תאריך הצטרפות'];
         const rows = filteredClients.map(c => [
             csvEscape(c.full_name),
             csvEscape(c.primary_dog_name),
+            csvEscape(c.primary_dog_breed),
             csvEscape(c.email),
             csvEscape(c.phone),
             csvEscape(c.lead_source),
@@ -91,6 +92,7 @@ export function ClientsPage() {
         const matchesSearch =
             client.full_name.toLowerCase().includes(searchLower) ||
             client.primary_dog_name?.toLowerCase().includes(searchLower) ||
+            client.primary_dog_breed?.toLowerCase().includes(searchLower) ||
             client.email?.toLowerCase().includes(searchLower) || '';
 
         return matchesStatus && matchesSearch;
@@ -114,6 +116,7 @@ export function ClientsPage() {
                         <div className="text-xs font-medium text-text-muted flex items-center gap-1.5 bg-background w-fit px-2 py-0.5 rounded-md mt-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                             {client.primary_dog_name || 'אין כלב'}
+                            {client.primary_dog_breed && <span className="text-text-muted/60">· {client.primary_dog_breed}</span>}
                         </div>
                     </div>
                 </div>
@@ -303,6 +306,7 @@ export function ClientsPage() {
                                                 <div className="flex items-center gap-2 mt-0.5">
                                                     <span className="text-xs bg-background text-text-muted px-2 py-0.5 rounded-md font-medium">
                                                         {client.primary_dog_name || 'אין כלב'}
+                                                        {client.primary_dog_breed && <span className="text-text-muted/60"> · {client.primary_dog_breed}</span>}
                                                     </span>
                                                     {client.is_active && (
                                                         <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
