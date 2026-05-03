@@ -17,6 +17,71 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'tools-trainers-need': {
+        slug: 'tools-trainers-need',
+        title: '5 כלים שמאלפי כלבים מקצועיים לא יכולים בלעדיהם בעבודה היומיומית',
+        description: 'מעבר ל-CRM — אילו כלים פרקטיים מאלפי כלבים בישראל באמת משתמשים בהם בכל יום? הנה רשימה מהשטח, בלי תקציב גדול.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 5,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    מאלף עצמאי מקצועי לא צריך 30 כלים. הוא צריך 5 שעובדים ביחד. הנה הכלים שראינו אצל המאלפים שמרוויחים יותר ועובדים פחות.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. CRM ייעודי</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    זה ה-base. בלי CRM, כל השאר חסר תפקיד. ה-CRM הוא הזיכרון של העסק — לקוחות, תוכניות, מפגשים, חשבוניות, מקור הליד, היסטוריה. Doggo CRM היא דוגמה — חינם להתחיל.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. שירות חשבונית — Sumit או חשבונית ירוקה</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    כל מאלף עצמאי בישראל צריך אחד מהשניים לחשבוניות, קבלות, וחיוב באשראי. בחירה תלויה ברואה החשבון שלך. שניהם מתחברים ל-Doggo CRM ב-2 דקות. (כתבנו על השוואה בין השניים — קישור מתחת.)
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. WhatsApp Business (לא הרגיל)</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    WhatsApp Business (חינמי) נותן לך:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>תיאור עסק + תמונת לוגו (יותר אמין מ-WhatsApp רגיל)</li>
+                    <li>הודעות אוטומטיות מחוץ לשעות עבודה</li>
+                    <li>תיוגי שיחות (חדש / ממתין לתשובה / סגור)</li>
+                    <li>קישור משוטף לאתר שלך</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הקסם: שילוב WhatsApp Business עם ה-Webhook של Doggo CRM (דרך Make) → כל ליד מקבל תגובת WhatsApp תוך שניות. שיעור המרה ב-40% גבוה יותר.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. Google Calendar</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בסיס. כל מפגש שאת קובעת חייב להופיע ביומן שלך אוטומטית. Doggo CRM כבר עושה את זה — אין מצב להחזיק שני יומנים.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. Canva (לא חובה אבל מקצר זמן)</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    תמונות לרשתות חברתיות. דף תוצאות לפני/אחרי. כרטיס ביקור דיגיטלי. גם בתוכנית החינמית — עובד מצוין. אם את משווקת באינסטגרם או טיקטוק — Canva זה הכלי.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">בונוס: מה לא צריך</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>אקסל — ה-CRM החליף אותו</li>
+                    <li>תוכנת חשבונאות יקרה — Sumit/חשבונית ירוקה מספיקות לעוסק עצמאי</li>
+                    <li>אפליקציית הודעות נוספת — WhatsApp + Make מספיק</li>
+                </ul>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM מתחבר לכל הכלים שלמעלה. ב-15 דקות יש לך עסק שמתפקד אוטומטית.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'intake-form-mistakes': {
         slug: 'intake-form-mistakes',
         title: '5 טעויות נפוצות בטופס פניות באתר של מאלפים',
