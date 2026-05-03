@@ -17,6 +17,7 @@ const WelcomePage = lazy(() => import('./pages/public/WelcomePage').then(m => ({
 const PrivacyPolicyPage = lazy(() => import('./pages/public/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
 const TermsOfServicePage = lazy(() => import('./pages/public/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
 const CostCalculatorPage = lazy(() => import('./pages/public/CostCalculatorPage').then(m => ({ default: m.CostCalculatorPage })));
+const NotFoundPage = lazy(() => import('./pages/public/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const PublicStorefrontPage = lazy(() => import('./pages/public/PublicStorefrontPage').then(m => ({ default: m.PublicStorefrontPage })));
 const PublicIntakePage = lazy(() => import('./pages/public/PublicIntakePage').then(m => ({ default: m.PublicIntakePage })));
 const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
@@ -102,8 +103,8 @@ function App() {
               {import.meta.env.DEV && <Route path="seed" element={<SeedPage />} />}
             </Route>
 
-            {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Catch-all — playful 404 instead of silent /-redirect */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
           </Suspense>
         </BrowserRouter>
