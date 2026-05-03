@@ -83,7 +83,7 @@ serve(async (req: Request) => {
         }
 
         if (action === 'create_client') {
-            const { full_name, email, phone, primary_dog_name, notes, lead_source } = payload || {}
+            const { full_name, email, phone, primary_dog_name, primary_dog_breed, notes, lead_source, behavioral_tags } = payload || {}
             if (!full_name) {
                 return new Response(JSON.stringify({ error: 'full_name is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
             }
@@ -95,8 +95,10 @@ serve(async (req: Request) => {
                     email: email || null,
                     phone: phone || null,
                     primary_dog_name: primary_dog_name || null,
+                    primary_dog_breed: primary_dog_breed || null,
                     notes: notes || null,
                     lead_source: lead_source || null,
+                    behavioral_tags: Array.isArray(behavioral_tags) ? behavioral_tags : [],
                     is_active: true,
                 })
                 .select('id')
