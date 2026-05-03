@@ -161,7 +161,7 @@ export function SendInvoiceButton({
                                 <a
                                     href={waUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     onClick={() => setShowWhatsApp(null)}
                                     className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-2.5 rounded-xl transition-colors text-sm"
                                 >

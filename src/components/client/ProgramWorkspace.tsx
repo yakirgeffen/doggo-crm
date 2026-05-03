@@ -205,7 +205,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <a
                             href={programState.invoice_pdf_url}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="btn bg-surface border border-border text-text-primary flex items-center gap-2"
                         >
                             <FileText size={18} />
@@ -232,7 +232,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                     `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${programState.greeninvoice_invoice_number ? ` (חשבונית #${programState.greeninvoice_invoice_number})` : ''}. תודה! 🙏`
                                 )}`}
                                 target="_blank"
-                                rel="noreferrer"
+                                rel="noopener noreferrer"
                                 className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 flex items-center gap-2"
                             >
                                 <MessageCircle size={18} />
@@ -306,7 +306,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                     <a
                                         href={`https://wa.me/?text=${encodeURIComponent(`היי ${clientFirstName}, הנה הקישור לתשלום עבור ${programState.program_name}: ${paymentUrl}`)}`}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="btn bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft flex items-center gap-2"
                                     >
                                         <Share2 size={18} />
@@ -315,7 +315,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                     <a
                                         href={paymentUrl}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="btn btn-secondary border-accent/30 text-accent hover:bg-accent/5"
                                     >
                                         <ExternalLink size={18} />

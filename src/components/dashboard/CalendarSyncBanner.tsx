@@ -143,7 +143,7 @@ export function CalendarSyncBanner() {
                                     <a
                                         href={change.googleHtmlLink}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="w-8 h-8 rounded-lg bg-border/20 text-text-muted flex items-center justify-center hover:bg-border/40 transition-colors"
                                         title="פתיחה ביומן Google"
                                     >

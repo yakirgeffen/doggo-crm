@@ -216,7 +216,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         <a
                             href={waUrl}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             onClick={handleClose}
                             className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
                         >

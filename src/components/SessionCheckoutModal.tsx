@@ -127,7 +127,7 @@ export function SessionCheckoutModal({
                         <a
                             href={`https://wa.me/?text=${whatsappMessage}`}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="btn flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft"
                         >
                             <MessageCircle size={16} />

@@ -287,7 +287,7 @@ export function PublicStorefrontPage() {
                 <a
                     href="/?utm_source=storefront_footer"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="font-medium text-primary hover:underline"
                 >
                     Doggo CRM

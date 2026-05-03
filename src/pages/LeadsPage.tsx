@@ -153,7 +153,7 @@ export function LeadsPage() {
                                                 return `https://wa.me/${intl}?text=${msg}`;
                                             })()}
                                             target="_blank"
-                                            rel="noreferrer"
+                                            rel="noopener noreferrer"
                                             className="text-xs font-medium text-success bg-success/10 hover:bg-success/15 px-2.5 py-1 rounded-lg flex items-center gap-1"
                                         >
                                             <MessageCircle size={12} />

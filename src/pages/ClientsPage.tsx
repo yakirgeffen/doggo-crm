@@ -324,7 +324,7 @@ export function ClientsPage() {
                                                 <a
                                                     href={`https://wa.me/${intl}?text=${greeting}`}
                                                     target="_blank"
-                                                    rel="noreferrer"
+                                                    rel="noopener noreferrer"
                                                     aria-label={`WhatsApp ל${client.full_name}`}
                                                     className="absolute end-20 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-success/10 hover:text-success transition-colors focus-visible:outline-2 focus-visible:outline-primary"
                                                 >

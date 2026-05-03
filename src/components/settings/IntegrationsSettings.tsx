@@ -224,7 +224,7 @@ export function IntegrationsSettings() {
                             איך משיגים מפתחות API?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>להיכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
+                            <li>להיכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
                             <li>בתפריט הצד, ללחוץ על <b>הגדרות</b> (Settings).</li>
                             <li>לבחור באפשרות <b>API & Webhooks</b> או <b>כלים למפתחים</b>.</li>
                             <li>ללחוץ על <b>הוספת מפתח</b> (Add Key) ולהעתיק את הנתונים.</li>
@@ -335,7 +335,7 @@ export function IntegrationsSettings() {
                             איך משיגים CompanyID + APIKey?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>להיכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
+                            <li>להיכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
                             <li>בתפריט הגדרות, לחפש <b>API</b> או <b>מפתחים</b>.</li>
                             <li>להפיק <b>API Key חדש</b> ולהעתיק את <b>CompanyID</b> ואת ה-<b>APIKey</b>.</li>
                         </ol>

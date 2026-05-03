@@ -415,7 +415,7 @@ export function PublicIntakePage() {
                 <a
                     href="/?utm_source=intake_footer"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="font-medium text-primary hover:underline"
                 >
                     Doggo CRM

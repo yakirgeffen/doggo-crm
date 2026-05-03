@@ -172,9 +172,9 @@ export function IncomingLeads() {
                                                 return `https://wa.me/${intl}?text=${msg}`;
                                             })()}
                                             target="_blank"
-                                            rel="noreferrer"
+                                            rel="noopener noreferrer"
                                             className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                            title="שלח/י WhatsApp ראשון"
+                                            title="שליחת WhatsApp ראשון"
                                         >
                                             <MessageCircle size={14} />
                                             <span className="hidden sm:inline">WhatsApp</span>

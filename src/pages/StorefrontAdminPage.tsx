@@ -158,7 +158,7 @@ export function StorefrontAdminPage() {
                                 <a
                                     href={publicUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-mono text-primary hover:underline truncate flex-1"
                                     dir="ltr"
                                 >
@@ -167,7 +167,7 @@ export function StorefrontAdminPage() {
                                 <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
                                     {copied ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
-                                <a href={publicUrl} target="_blank" rel="noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
                                     <ExternalLink size={14} />
                                 </a>
                             </div>
@@ -178,7 +178,7 @@ export function StorefrontAdminPage() {
                                 <a
                                     href={`https://wa.me/?text=${encodeURIComponent(`${businessName ? `שלום! אני ${businessName}, ` : ''}אפשר לקבל אצלי הצעת מחיר לאילוף הכלב שלכם דרך הקישור הזה: ${publicUrl}`)}`}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-medium text-success bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
                                     title="שתף את כתובת החנות בוואטסאפ"
                                 >
@@ -188,7 +188,7 @@ export function StorefrontAdminPage() {
                                 <a
                                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicUrl)}`}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-medium text-[#1877F2] bg-[#1877F2]/10 hover:bg-[#1877F2]/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
                                     title="שתף את כתובת החנות בפייסבוק"
                                 >
