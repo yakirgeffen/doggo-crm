@@ -29,26 +29,33 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
     const { showToast } = useToast();
     const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
     const [time, setTime] = useState('10:00');
-    const [dayOfWeek, setDayOfWeek] = useState<number>(0);
+    const [daysOfWeek, setDaysOfWeek] = useState<number[]>([0]);
     const [count, setCount] = useState<number>(suggestedCount || 8);
     const [submitting, setSubmitting] = useState(false);
 
     if (!isOpen) return null;
 
     const computeSessionDates = (): Date[] => {
+        if (daysOfWeek.length === 0) return [];
         const dates: Date[] = [];
         const start = new Date(`${startDate}T${time}:00`);
-        // Walk forward to first occurrence of dayOfWeek on or after startDate
+        // Walk day-by-day forward; on each matching day-of-week, push a session.
         const cursor = new Date(start);
-        while (cursor.getDay() !== dayOfWeek) {
+        const sortedDays = [...daysOfWeek].sort((a, b) => a - b);
+        // safety cap: walk at most 365 days to find `count` matches
+        let walked = 0;
+        while (dates.length < count && walked < 365) {
+            if (sortedDays.includes(cursor.getDay())) {
+                dates.push(new Date(cursor));
+            }
             cursor.setDate(cursor.getDate() + 1);
-        }
-        for (let i = 0; i < count; i++) {
-            const d = new Date(cursor);
-            dates.push(d);
-            cursor.setDate(cursor.getDate() + 7);
+            walked++;
         }
         return dates;
+    };
+
+    const toggleDay = (day: number) => {
+        setDaysOfWeek(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
     };
 
     const previewDates = computeSessionDates();
@@ -69,7 +76,8 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
             const { data, error } = await supabase.from('sessions').insert(rows).select('id');
             if (error) throw error;
 
-            await logActivity('program', programId, 'sessions_scheduled', `${dates.length} מפגשים נקבעו (${DAYS_OF_WEEK.find(d => d.value === dayOfWeek)?.label} ${time})`);
+            const dayLabels = daysOfWeek.map(d => DAYS_OF_WEEK.find(x => x.value === d)?.label).filter(Boolean).join('+');
+            await logActivity('program', programId, 'sessions_scheduled', `${dates.length} מפגשים נקבעו (${dayLabels} ${time})`);
 
             // Sync to Google Calendar (best-effort, fire-and-forget per session)
             if (providerToken && data) {
@@ -140,14 +148,14 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                     </div>
 
                     <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">יום בשבוע</label>
+                        <label className="block text-xs font-medium text-text-muted mb-1">ימים בשבוע (אפשר לבחור מספר)</label>
                         <div className="grid grid-cols-7 gap-1">
                             {DAYS_OF_WEEK.map(d => (
                                 <button
                                     key={d.value}
                                     type="button"
-                                    onClick={() => setDayOfWeek(d.value)}
-                                    className={`text-xs py-2 rounded-lg transition-colors ${dayOfWeek === d.value ? 'bg-primary text-white' : 'bg-background text-text-secondary hover:bg-surface-warm'}`}
+                                    onClick={() => toggleDay(d.value)}
+                                    className={`text-xs py-2 rounded-lg transition-colors ${daysOfWeek.includes(d.value) ? 'bg-primary text-white' : 'bg-background text-text-secondary hover:bg-surface-warm'}`}
                                 >
                                     {d.label}
                                 </button>
@@ -189,7 +197,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={submitting || count < 1}
+                        disabled={submitting || count < 1 || daysOfWeek.length === 0}
                         className="btn btn-primary flex-1 flex items-center justify-center gap-2"
                     >
                         {submitting ? (
