@@ -114,7 +114,7 @@
         { "name": "status", "type": "text", "nullable": false, "default": "'active'::text" },
         { "name": "assigned_trainer", "type": "uuid", "nullable": true, "default": null },
         { "name": "payment_status", "type": "text", "nullable": true, "default": "'pending'::text" },
-        { "name": "greeninvoice_invoice_number", "type": "text", "nullable": true, "default": null },
+        { "name": "legacy_morning_invoice_number", "type": "text", "nullable": true, "default": null },
         { "name": "start_date", "type": "date", "nullable": true, "default": null },
         { "name": "end_date", "type": "date", "nullable": true, "default": null },
         { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },

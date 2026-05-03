@@ -228,9 +228,15 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                     {programState.payment_status !== 'paid' && (
                         <div className="flex items-center gap-2 flex-wrap">
                             <a
-                                href={`https://wa.me/?text=${encodeURIComponent(
-                                    `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${programState.greeninvoice_invoice_number ? ` (חשבונית #${programState.greeninvoice_invoice_number})` : ''}. תודה! 🙏`
-                                )}`}
+                                href={(() => {
+                                    const invoiceRef = programState.sumit_invoice_document_number
+                                        ? ` (חשבונית #${programState.sumit_invoice_document_number})`
+                                        : programState.legacy_morning_invoice_number
+                                            ? ` (חשבונית #${programState.legacy_morning_invoice_number})`
+                                            : '';
+                                    const text = `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${invoiceRef}. תודה! 🙏`;
+                                    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+                                })()}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 flex items-center gap-2"
