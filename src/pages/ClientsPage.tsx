@@ -282,38 +282,40 @@ export function ClientsPage() {
                         {/* Mobile View - Cards */}
                         <div className="md:hidden grid gap-0 divide-y divide-border-light">
                             {filteredClients.map((client) => (
-                                <Link
-                                    key={client.id}
-                                    to={`/clients/${client.id}`}
-                                    className="p-4 flex items-center justify-between active:bg-surface-warm transition-colors"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg font-bold border border-primary/20">
-                                            {client.full_name.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-text-primary text-base">{client.full_name}</h3>
-                                            <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-xs bg-background text-text-muted px-2 py-0.5 rounded-md font-medium">
-                                                    {client.primary_dog_name || 'אין כלב'}
-                                                </span>
-                                                {client.is_active && (
-                                                    <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                                                )}
+                                <div key={client.id} className="relative">
+                                    <Link
+                                        to={`/clients/${client.id}`}
+                                        className="p-4 flex items-center justify-between active:bg-surface-warm transition-colors pe-20"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg font-bold border border-primary/20">
+                                                {client.full_name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-text-primary text-base">{client.full_name}</h3>
+                                                <div className="flex items-center gap-2 mt-0.5">
+                                                    <span className="text-xs bg-background text-text-muted px-2 py-0.5 rounded-md font-medium">
+                                                        {client.primary_dog_name || 'אין כלב'}
+                                                    </span>
+                                                    {client.is_active && (
+                                                        <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="flex items-center gap-1 text-text-muted">
-                                        <div className="p-2 rounded-lg hover:bg-background" onClick={(e) => {
-                                            e.preventDefault();
-                                            window.location.href = `tel:${client.phone}`;
-                                        }}>
+                                        <ChevronRight size={20} className="opacity-50 absolute end-4 top-1/2 -translate-y-1/2 text-text-muted" />
+                                    </Link>
+                                    {client.phone && (
+                                        <a
+                                            href={`tel:${client.phone}`}
+                                            aria-label={`התקשרות ל${client.full_name}`}
+                                            className="absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-background hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary"
+                                        >
                                             <Phone size={18} />
-                                        </div>
-                                        <ChevronRight size={20} className="opacity-50" />
-                                    </div>
-                                </Link>
+                                        </a>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </>

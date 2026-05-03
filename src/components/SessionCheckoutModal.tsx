@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { MessageCircle, CheckCircle, Calendar, X } from 'lucide-react';
 import type { Session } from '../types';
 
@@ -22,6 +23,14 @@ export function SessionCheckoutModal({
     sessionNumber,
     totalSessions,
 }: SessionCheckoutModalProps) {
+    // Esc-key close — keyboard parity with backdrop click.
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     const progressLabel = totalSessions

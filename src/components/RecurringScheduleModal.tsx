@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar, Loader2, X, Check } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
@@ -32,6 +32,14 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
     const [daysOfWeek, setDaysOfWeek] = useState<number[]>([0]);
     const [count, setCount] = useState<number>(suggestedCount || 8);
     const [submitting, setSubmitting] = useState(false);
+
+    // Esc-key close — keyboard parity with backdrop click.
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 

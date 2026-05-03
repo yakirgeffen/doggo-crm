@@ -89,6 +89,14 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         if (isOpen) fetchClients();
     }, [isOpen, fetchClients]);
 
+    // Esc-key close — keyboard parity with backdrop click.
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [isOpen, onClose]);
+
     const selectedClient = clients.find(c => c.id === selectedClientId);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -201,7 +209,11 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                             לקוח *
                         </label>
                         {loadingClients ? (
-                            <div className="input-field text-sm text-text-muted animate-pulse">טוען לקוחות...</div>
+                            <div className="input-field py-3 space-y-2" role="status" aria-label="טוען לקוחות">
+                                <div className="h-3 w-3/4 bg-border/40 rounded-md skeleton-shimmer" />
+                                <div className="h-3 w-1/2 bg-border/30 rounded-md skeleton-shimmer" />
+                                <div className="h-3 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
+                            </div>
                         ) : (
                             <select
                                 required

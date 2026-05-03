@@ -8,7 +8,7 @@ import { useToast } from '../../context/toast-context';
 export function IntegrationsSettings() {
     const { isConnected, vaultData, saveKeys, testConnection, loading: integrationsLoading } = useIntegrations();
     const sumit = useSumit();
-    const { settings, updateLocalSettings, saveSettings } = useSettings();
+    const { settings, loading: settingsLoading, updateLocalSettings, saveSettings } = useSettings();
     const { showToast } = useToast();
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
@@ -165,6 +165,27 @@ export function IntegrationsSettings() {
         const result = await sumit.testConnection();
         setSumitTestResult(result);
     };
+
+    if (settingsLoading) {
+        return (
+            <div className="flat-card p-6 md:p-8 animate-fade-in space-y-8" role="status" aria-label="טוען הגדרות אינטגרציות">
+                {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="space-y-4" style={{ animationDelay: `${i * 80}ms` }}>
+                        <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-md bg-border/40 skeleton-shimmer" />
+                            <div className="h-5 w-1/3 bg-border/40 rounded-md skeleton-shimmer" />
+                        </div>
+                        <div className="h-3 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
+                        <div className="p-4 rounded-xl border border-border bg-background flex items-center gap-3">
+                            <div className="w-3 h-3 rounded-full bg-border/40 skeleton-shimmer" />
+                            <div className="h-4 w-1/4 bg-border/30 rounded-md skeleton-shimmer" />
+                        </div>
+                        {i < 3 && <div className="border-t border-border" />}
+                    </div>
+                ))}
+            </div>
+        );
+    }
 
     return (
         <div className="flat-card p-6 md:p-8 animate-fade-in space-y-8">

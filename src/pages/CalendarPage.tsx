@@ -173,7 +173,7 @@ export function CalendarPage() {
         <div className="animate-fade-in max-w-6xl mx-auto pb-12">
 
             {/* Header / Toolbar */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 gap-4">
                 <div>
                     <h1 className="text-[28px] font-bold text-text-primary mb-1">לוח זמנים</h1>
                     <div className="flex items-center gap-4 mt-2">
@@ -195,7 +195,7 @@ export function CalendarPage() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-4">
                     {/* Smart Filters */}
                     <div className="flex items-center gap-2 bg-surface p-1 rounded-lg border border-border shadow-soft">
                         <button
@@ -223,7 +223,7 @@ export function CalendarPage() {
                         </button>
                     </div>
 
-                    <div className="h-6 w-px bg-border mx-2"></div>
+                    <div className="h-6 w-px bg-border hidden lg:block"></div>
 
                     <div className="bg-background p-1 rounded-lg border border-border flex">
                         <button
@@ -246,8 +246,9 @@ export function CalendarPage() {
                         onClick={fetchAgenda}
                         className="btn btn-secondary text-sm"
                         disabled={loading}
+                        aria-label="רענון"
                     >
-                        <RefreshCw size={16} className={`ms-2 ${loading ? 'animate-spin' : ''}`} />
+                        <RefreshCw size={16} className={`${loading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
             </div>
