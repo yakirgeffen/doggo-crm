@@ -6,9 +6,21 @@ import { IncomingLeads } from '../components/dashboard/IncomingLeads';
 import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
 import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
 import { useDashboard } from '../hooks/useDashboard';
+import { useAuth } from '../context/auth-context';
+
+function timeOfDayGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 5) return 'לילה טוב';
+    if (hour < 12) return 'בוקר טוב';
+    if (hour < 17) return 'צהריים טובים';
+    if (hour < 21) return 'ערב טוב';
+    return 'לילה טוב';
+}
 
 export function Dashboard() {
     const { stats, actionItems, todaysSessions, loading } = useDashboard();
+    const { user } = useAuth();
+    const firstName = (user?.user_metadata?.full_name || user?.user_metadata?.name || '').toString().split(' ')[0];
 
     if (loading) return (
         <div className="space-y-8 animate-fade-in pb-24 lg:pb-12">
@@ -37,8 +49,10 @@ export function Dashboard() {
             <div>
                 <header className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-[28px] font-bold text-text-primary mb-1">לוח בקרה</h1>
-                        <p className="text-text-secondary text-sm">ברוך הבא! הנה מה שקורה היום.</p>
+                        <h1 className="text-[28px] font-bold text-text-primary mb-1">
+                            {timeOfDayGreeting()}{firstName ? `, ${firstName}` : ''} 👋
+                        </h1>
+                        <p className="text-text-secondary text-sm">הנה מה שקורה היום.</p>
                     </div>
                 </header>
 
