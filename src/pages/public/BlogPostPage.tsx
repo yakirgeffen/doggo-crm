@@ -17,6 +17,70 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'intake-form-mistakes': {
+        slug: 'intake-form-mistakes',
+        title: '5 טעויות נפוצות בטופס פניות באתר של מאלפים',
+        description: 'הטופס שלך נראה טוב — אבל לא מקבל פניות? הנה חמש טעויות שמורידות שיעור המרה בטופס פניות, ומה לעשות במקומן.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 5,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    אם יש לך אתר ויש לך טופס פניות, ועדיין הפניות לא מגיעות — הבעיה לא בהכרח בתנועה. בעיה בתפקוד הטופס.
+                    הנה חמש טעויות שראינו בעשרות אתרים של מאלפי כלבים, ומה לעשות במקומן.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. טופס ארוך מדי</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שמת 12 שדות חובה כדי "לסנן רציניים". הסיכון: 80% נוטשים לפני סיום. בעיקר במובייל, שם רוב הפניות מגיעות.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    <strong>מה לעשות במקום:</strong> 4 שדות מקסימום בשלב הראשון. שם, טלפון, שם הכלב, מה רוצים לפתור. את שאר הפרטים תאספי בשיחה הראשונה.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. אין הבטחה ברורה למה יקרה אחרי השליחה</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הלקוח שולח פנייה ולא יודע מה הצעד הבא. תוך 24 שעות? 3 ימים? תקראו לו? תשלחו מייל? <br/>
+                    <strong>מה לעשות במקום:</strong> ליד כפתור השליחה, או מיד אחרי, "נחזור אליך תוך 24 שעות בוואטסאפ". הסטה לערוץ ספציפי + לוח זמנים.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. אין הוכחה חברתית ליד הטופס</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    טופס בלי המלצה אחת או תמונה אחת של לקוח שעבדת איתו זה טופס מסוכן.
+                    <strong>מה לעשות במקום:</strong> ציטוט אחד מלקוחה (אפילו ללא שם — "אמא של רקס") + תמונה של כלב מאומן. אמינות לפני התחייבות.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. אין מעקב מקור</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    מאיפה הליד הגיע? ידעת שזה היה ה-Reel באינסטגרם? או ה-3,000 שקל שהשקעת בקמפיין Google? בלי מעקב — את לא יודעת.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    <strong>מה לעשות במקום:</strong> UTM פרמטרים בכל קישור שאת מפיצה. אחרי 60 יום תדעי מי המקור הכי משתלם, ותכווני שם את המאמץ הבא.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. אין הגנת ספאם</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    טופס פתוח בלי CAPTCHA הופך לשפך לבוטים תוך שבוע. את מקבלת 50 הודעות "Hey, my dog needs help" מאינדונזיה. לא רציני, גוזל זמן, מסתיר לידים אמיתיים.
+                    <strong>מה לעשות במקום:</strong> Cloudflare Turnstile (חינמי ובלתי-פולשני) או reCAPTCHA. דקה להתקין.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">בונוס: מקבלים ליד? מהירות תגובה היא הכל</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    מחקרים מראים: שיעור ההמרה לעסקה גבוה ב-40-60% כשמגיבים תוך 5 דקות מקבלת הליד. מעל 30 דקות — שיעור ההמרה צונח. אוטומציה (הודעת WhatsApp אוטומטית בשנייה הראשונה) זה Gold Standard.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM מציע טופס פניות מוכן עם CAPTCHA, מעקב UTM אוטומטי, וטריגר Webhook לאוטומציות שלך — הכל בחינם.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'quote-writing-guide': {
         slug: 'quote-writing-guide',
         title: 'המדריך השלם להצעת מחיר ללקוח אילוף',
