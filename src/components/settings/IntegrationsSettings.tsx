@@ -1,17 +1,78 @@
-import { useState } from 'react';
-import { Globe, Lock, CheckCircle2, Receipt } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Globe, Lock, CheckCircle2, Receipt, Webhook, Send } from 'lucide-react';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import { useSumit } from '../../hooks/useSumit';
+import { useSettings } from '../../hooks/useSettings';
+import { useToast } from '../../context/toast-context';
 
 export function IntegrationsSettings() {
     const { isConnected, vaultData, saveKeys, testConnection, loading: integrationsLoading } = useIntegrations();
     const sumit = useSumit();
+    const { settings, updateLocalSettings, saveSettings } = useSettings();
+    const { showToast } = useToast();
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
     const [testCheckResult, setTestCheckResult] = useState<{ success: boolean; message: string } | null>(null);
     const [sumitCompanyId, setSumitCompanyId] = useState('');
     const [sumitApiKey, setSumitApiKey] = useState('');
     const [sumitTestResult, setSumitTestResult] = useState<{ success: boolean; message: string } | null>(null);
+    const [webhookUrl, setWebhookUrl] = useState('');
+    const [webhookSaving, setWebhookSaving] = useState(false);
+    const [webhookTestSending, setWebhookTestSending] = useState(false);
+
+    useEffect(() => {
+        if (settings?.webhook_url) setWebhookUrl(settings.webhook_url);
+    }, [settings?.webhook_url]);
+
+    const isValidWebhookUrl = (url: string) => /^https:\/\//i.test(url.trim());
+
+    const handleSaveWebhook = async () => {
+        const trimmed = webhookUrl.trim();
+        if (trimmed && !isValidWebhookUrl(trimmed)) {
+            showToast('כתובת ה-Webhook חייבת להתחיל ב-https://', 'error');
+            return;
+        }
+        setWebhookSaving(true);
+        try {
+            updateLocalSettings({ webhook_url: trimmed || null });
+            await saveSettings({ webhook_url: trimmed || null });
+            showToast(trimmed ? 'Webhook נשמר' : 'Webhook הוסר', 'success');
+        } catch {
+            showToast('שגיאה בשמירת Webhook', 'error');
+        } finally {
+            setWebhookSaving(false);
+        }
+    };
+
+    const handleTestWebhook = async () => {
+        const trimmed = webhookUrl.trim();
+        if (!trimmed || !isValidWebhookUrl(trimmed)) {
+            showToast('הכניסי כתובת https:// תקינה', 'error');
+            return;
+        }
+        setWebhookTestSending(true);
+        try {
+            const res = await fetch(trimmed, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Doggo-Event': 'test' },
+                body: JSON.stringify({
+                    event: 'test',
+                    message: 'Doggo CRM webhook test from Settings',
+                    timestamp: new Date().toISOString(),
+                }),
+            });
+            if (res.ok) {
+                showToast(`Webhook נבדק בהצלחה (${res.status}) 🟢`, 'success');
+            } else {
+                showToast(`כתובת ה-Webhook החזירה ${res.status}`, 'error');
+            }
+        } catch (err) {
+            showToast('Webhook לא הגיב — בדקי שהכתובת זמינה', 'error');
+            console.error('Webhook test error:', err);
+        } finally {
+            setWebhookTestSending(false);
+        }
+    };
 
     const handleSaveKeys = async () => {
         if (!apiKey || !apiSecret) return;
@@ -257,6 +318,67 @@ export function IntegrationsSettings() {
                     )}
                 </div>
             )}
+
+            <div className="border-t border-border pt-8">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
+                    <Webhook className="text-primary" />
+                    Webhook לאוטומציות (G4)
+                </h2>
+                <p className="text-sm text-text-muted">
+                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כך תוכלי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
+                </p>
+            </div>
+
+            <div className="space-y-4 max-w-lg p-6 bg-surface border border-border rounded-xl shadow-soft">
+                <div>
+                    <label className="block text-xs font-medium text-text-muted mb-1">Webhook URL</label>
+                    <input
+                        type="url"
+                        className="input-field dir-ltr font-mono text-sm"
+                        value={webhookUrl}
+                        onChange={(e) => setWebhookUrl(e.target.value)}
+                        placeholder="https://hook.eu1.make.com/..."
+                        dir="ltr"
+                    />
+                    <p className="text-[11px] text-text-muted mt-1">חייב להתחיל ב-https://. אנחנו שולחים POST עם payload JSON של הפנייה.</p>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleSaveWebhook}
+                        disabled={webhookSaving}
+                        className="btn btn-primary text-sm flex-1"
+                    >
+                        {webhookSaving ? 'שומר...' : 'שמור'}
+                    </button>
+                    <button
+                        onClick={handleTestWebhook}
+                        disabled={webhookTestSending || !webhookUrl.trim()}
+                        className="btn btn-secondary text-sm flex items-center gap-1.5"
+                    >
+                        <Send size={14} />
+                        {webhookTestSending ? 'שולח בדיקה...' : 'שלח בדיקה'}
+                    </button>
+                </div>
+
+                <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
+                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">דוגמת payload (intake_submission.created)</summary>
+                    <pre className="overflow-x-auto text-[10px] mt-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`{
+  "event": "intake_submission.created",
+  "submission_id": "uuid",
+  "trainer_id": "uuid",
+  "full_name": "string",
+  "phone": "string|null",
+  "dog_name": "string|null",
+  "dog_breed": "string|null",
+  "dog_age": "string|null",
+  "notes": "string|null",
+  "lead_source": "string|null",
+  "selected_service_id": "uuid|null",
+  "created_at": "2026-05-02T12:34:56Z"
+}`}</pre>
+                </details>
+            </div>
         </div>
     );
 }

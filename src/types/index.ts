@@ -84,4 +84,5 @@ export interface UserSettings {
     work_days: number[]; // 0-6
     work_hours_start: string; // "09:00"
     work_hours_end: string; // "17:00"
+    webhook_url: string | null;
 }
