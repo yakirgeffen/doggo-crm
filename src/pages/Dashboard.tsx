@@ -6,6 +6,7 @@ import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
 import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
 import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
+import { CalendarSyncBanner } from '../components/dashboard/CalendarSyncBanner';
 import { BookSessionModal } from '../components/BookSessionModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../context/auth-context';
@@ -58,6 +59,9 @@ export function Dashboard() {
                         <p className="text-text-secondary text-sm">הנה מה שקורה היום.</p>
                     </div>
                 </header>
+
+                {/* CTO iter 78 — two-way Google Calendar sync banner (auto-hides when no drift) */}
+                <CalendarSyncBanner />
 
                 {/* G1 — first-run UX setup checklist (auto-hides when complete) */}
                 <TrainerSetupChecklist />
