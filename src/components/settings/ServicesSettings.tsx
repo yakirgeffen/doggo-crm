@@ -43,9 +43,23 @@ export function ServicesSettings() {
 
             <div className="space-y-3">
                 {servicesLoading ? (
-                    <p className="text-sm text-text-muted">טוען שירותים...</p>
+                    <div className="space-y-3" role="status" aria-label="טוען שירותים">
+                        {[0, 1, 2].map(i => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-between p-4 rounded-xl border border-border-light bg-surface animate-fade-in"
+                                style={{ animationDelay: `${i * 60}ms` }}
+                            >
+                                <div className="space-y-2 flex-1">
+                                    <div className="h-4 w-1/3 bg-border/40 rounded-md skeleton-shimmer" />
+                                    <div className="h-3 w-1/4 bg-border/30 rounded-md skeleton-shimmer" />
+                                </div>
+                                <div className="h-4 w-16 bg-border/30 rounded-md skeleton-shimmer" />
+                            </div>
+                        ))}
+                    </div>
                 ) : services.length === 0 && !isAddingService ? (
-                    <p className="text-sm text-text-muted italic">אין שירותים מוגדרים עדיין. הוסף את השירות הראשון שלך!</p>
+                    <p className="text-sm text-text-muted italic">אין שירותים מוגדרים עדיין. אפשר להוסיף את השירות הראשון.</p>
                 ) : (
                     services.map(service => (
                         <div key={service.id} className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary transition-all bg-surface group">

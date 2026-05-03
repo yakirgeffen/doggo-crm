@@ -147,7 +147,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
             <div
-                className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden"
+                className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden animate-modal-in"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}

@@ -161,7 +161,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="import-clients-title"
-                className="bg-surface rounded-xl w-full max-w-2xl h-[90vh] flex flex-col shadow-elevated overflow-hidden"
+                className="bg-surface rounded-xl w-full max-w-2xl h-[90vh] flex flex-col shadow-elevated overflow-hidden animate-modal-in"
             >
                 {/* Header */}
                 <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">

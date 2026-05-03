@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, Phone, Dog, Clock, MessageCircle, Loader2 } from 'lucide-react';
+import { Inbox, Phone, Dog, Clock, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
 import { PageHeader } from '../components/PageHeader';
 import { EmptyState } from '../components/EmptyState';
+import { SkeletonRow } from '../components/Skeleton';
 import type { IntakeSubmission } from '../types';
 
 function timeAgo(dateStr: string): string {
@@ -86,8 +87,10 @@ export function LeadsPage() {
             </div>
 
             {loading ? (
-                <div className="flat-card p-8 text-center">
-                    <Loader2 size={20} className="animate-spin mx-auto text-primary" />
+                <div className="flat-card p-0 overflow-hidden" role="status" aria-label="טוען פניות">
+                    {[0, 1, 2, 3].map(i => (
+                        <SkeletonRow key={i} />
+                    ))}
                 </div>
             ) : leads.length === 0 ? (
                 <EmptyState

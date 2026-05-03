@@ -88,8 +88,27 @@ export function PublicStorefrontPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="animate-pulse text-text-muted text-sm">טוען...</div>
+            <div className="min-h-screen bg-background" role="status" aria-label="טוען עמוד מאלף">
+                <header className="bg-gradient-to-bl from-primary/10 via-accent/5 to-background">
+                    <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+                        <div className="h-8 w-48 bg-border/40 rounded-md skeleton-shimmer mb-3" />
+                        <div className="h-4 w-3/4 bg-border/30 rounded-md skeleton-shimmer mb-2" />
+                        <div className="h-4 w-1/2 bg-border/30 rounded-md skeleton-shimmer" />
+                    </div>
+                </header>
+                <div className="max-w-3xl mx-auto px-4 py-8 space-y-4">
+                    {[0, 1, 2].map(i => (
+                        <div
+                            key={i}
+                            className="flat-card p-6 space-y-3 animate-fade-in"
+                            style={{ animationDelay: `${i * 80}ms` }}
+                        >
+                            <div className="h-5 w-1/3 bg-border/40 rounded-md skeleton-shimmer" />
+                            <div className="h-4 w-full bg-border/30 rounded-md skeleton-shimmer" />
+                            <div className="h-4 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }

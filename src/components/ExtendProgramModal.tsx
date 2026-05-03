@@ -54,7 +54,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="extend-program-title"
-                className="bg-surface rounded-xl w-full max-w-sm shadow-elevated overflow-hidden"
+                className="bg-surface rounded-xl w-full max-w-sm shadow-elevated overflow-hidden animate-modal-in"
             >
                 <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
                     <h3 id="extend-program-title" className="font-bold text-lg text-text-primary">הרחבת תוכנית</h3>

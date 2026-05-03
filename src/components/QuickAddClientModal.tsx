@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Dog, User, Phone } from 'lucide-react';
+import { X, Dog, User, Phone, Loader2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
@@ -54,12 +54,12 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className="relative flat-card w-full max-w-md p-6 shadow-elevated animate-fade-in">
+            <div className="relative flat-card w-full max-w-md p-6 shadow-elevated animate-modal-in">
                 <div className="flex justify-between items-center mb-5">
                     <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                         <Dog size={20} className="text-primary" />
@@ -74,65 +74,78 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                            <Dog size={14} className="inline me-1" />
+                    <div className="space-y-1.5">
+                        <label htmlFor="qac-dog-name" className="block text-sm font-medium text-text-primary flex items-center gap-1.5">
+                            <Dog size={14} className="text-text-muted" />
                             שם הכלב
                         </label>
                         <input
+                            id="qac-dog-name"
                             type="text"
                             value={dogName}
                             onChange={(e) => setDogName(e.target.value)}
                             placeholder="למשל: רקסי"
-                            className="w-full rounded-xl border border-border bg-background p-3 text-text-primary focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                            className="input-field"
                             autoFocus
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                            <User size={14} className="inline me-1" />
-                            שם הבעלים *
+                    <div className="space-y-1.5">
+                        <label htmlFor="qac-owner-name" className="block text-sm font-medium text-text-primary flex items-center gap-1.5">
+                            <User size={14} className="text-text-muted" />
+                            שם הבעלים <span className="text-error">*</span>
                         </label>
                         <input
+                            id="qac-owner-name"
                             type="text"
                             value={ownerName}
                             onChange={(e) => setOwnerName(e.target.value)}
                             placeholder="ישראל ישראלי"
-                            className="w-full rounded-xl border border-border bg-background p-3 text-text-primary focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                            className="input-field"
                             required
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                            <Phone size={14} className="inline me-1" />
+                    <div className="space-y-1.5">
+                        <label htmlFor="qac-phone" className="block text-sm font-medium text-text-primary flex items-center gap-1.5">
+                            <Phone size={14} className="text-text-muted" />
                             טלפון
                         </label>
                         <input
+                            id="qac-phone"
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder="050-1234567"
-                            className="w-full rounded-xl border border-border bg-background p-3 text-text-primary focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                            className="input-field ltr-nums"
                             dir="ltr"
                         />
                     </div>
 
                     <div className="flex gap-3 pt-2">
                         <button
-                            type="submit"
-                            disabled={saving || !ownerName.trim()}
-                            className="btn btn-primary flex-1 disabled:opacity-50"
-                        >
-                            {saving ? 'שומר...' : '🐾 הוסף לקוח'}
-                        </button>
-                        <button
                             type="button"
                             onClick={onClose}
-                            className="btn bg-surface border border-border text-text-secondary hover:bg-surface-warm"
+                            className="btn btn-secondary"
                         >
                             ביטול
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={saving || !ownerName.trim()}
+                            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
+                        >
+                            {saving ? (
+                                <>
+                                    <Loader2 size={16} className="animate-spin" />
+                                    <span>שומר...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Dog size={16} />
+                                    <span>הוסף לקוח</span>
+                                </>
+                            )}
                         </button>
                     </div>
                 </form>

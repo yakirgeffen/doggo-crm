@@ -5,6 +5,7 @@ import { type Program } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
 import { EmptyState } from '../components/EmptyState';
 import { PageHeader } from '../components/PageHeader';
+import { SkeletonCard } from '../components/Skeleton';
 
 interface ProgramWithClient extends Program {
     clients: {
@@ -77,26 +78,28 @@ export function ProgramsPage() {
 
             {/* Content */}
             {loading ? (
-                <div className="text-center py-24 text-text-muted">
-                    <div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 opacity-50"></div>
-                    <p className="font-medium">טוען תוכניות...</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-label="טוען תוכניות">
+                    {[0, 1, 2, 3, 4, 5].map(i => (
+                        <SkeletonCard key={i} />
+                    ))}
                 </div>
             ) : filteredPrograms.length === 0 ? (
                 <EmptyState
                     icon={Layers}
                     title="לא נמצאו תוכניות"
-                    description={filter === 'all' ? "התחל את המסע על ידי יצירת תוכנית אילוף ראשונה." : `לא נמצאו תוכניות בסטטוס '${filter === 'active' ? 'פעיל' : 'הושלם'}'.`}
+                    description={filter === 'all' ? "אפשר להתחיל ביצירת תוכנית האילוף הראשונה." : `לא נמצאו תוכניות בסטטוס '${filter === 'active' ? 'פעיל' : 'הושלם'}'.`}
                     actionLabel={filter === 'all' ? "צור תוכנית ראשונה" : undefined}
                     onAction={filter === 'all' ? () => navigate('/programs/new') : undefined}
                     color="primary"
                 />
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredPrograms.map((program) => (
+                    {filteredPrograms.map((program, idx) => (
                         <Link
                             key={program.id}
                             to={`/programs/${program.id}`}
-                            className={`flat-card p-6 transition-all group flex flex-col justify-between ${program.payment_status === 'unpaid'
+                            style={{ animationDelay: `${idx * 40}ms` }}
+                            className={`flat-card p-6 transition-all hover-lift group flex flex-col justify-between animate-fade-in ${program.payment_status === 'unpaid'
                                 ? 'border-error/40 bg-error/5'
                                 : 'hover:border-primary'
                                 }`}
