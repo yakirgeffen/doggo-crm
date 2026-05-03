@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase, type ActivityLog } from '../lib/supabase';
-import { FileText, CheckCircle, BookOpen } from 'lucide-react';
+import { FileText, CheckCircle, BookOpen, ChevronDown } from 'lucide-react';
 import { SkeletonTimeline } from './Skeleton';
 
 interface ActivityTimelineProps {
@@ -10,11 +10,13 @@ interface ActivityTimelineProps {
     programIds?: string[];
 }
 
-export function ActivityTimeline({ entityType, entityId, limit = 10, programIds }: ActivityTimelineProps) {
+export function ActivityTimeline({ entityType, entityId, limit: initialLimit = 10, programIds }: ActivityTimelineProps) {
     const [logs, setLogs] = useState<ActivityLog[]>([]);
     const [loading, setLoading] = useState(true);
+    const [pageSize, setPageSize] = useState(initialLimit);
+    const [hasMore, setHasMore] = useState(true);
 
-    const fetchLogs = useCallback(async () => {
+    const fetchLogs = useCallback(async (limit: number) => {
         setLoading(true);
 
         let mainQuery = supabase
@@ -51,16 +53,19 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
         const uniqueLogs = Array.from(new Map(allLogs.map(item => [item.id, item])).values());
         uniqueLogs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        setLogs(uniqueLogs.slice(0, limit));
+        const sliced = uniqueLogs.slice(0, limit);
+        setLogs(sliced);
+        // If we got fewer rows than asked for, no more available
+        setHasMore(sliced.length === limit);
         setLoading(false);
-    }, [entityType, entityId, limit, programIds]);
+    }, [entityType, entityId, programIds]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
-        fetchLogs();
-    }, [fetchLogs]);
+        fetchLogs(pageSize);
+    }, [fetchLogs, pageSize]);
 
-    if (loading) return <SkeletonTimeline count={3} />;
+    if (loading && logs.length === 0) return <SkeletonTimeline count={3} />;
     if (logs.length === 0) return <div className="text-sm text-text-muted italic p-4">אין פעילות מתועדת עדיין.</div>;
 
     return (
@@ -88,6 +93,19 @@ export function ActivityTimeline({ entityType, entityId, limit = 10, programIds 
                     </div>
                 </div>
             ))}
+
+            {hasMore && (
+                <div className="flex justify-center pt-2">
+                    <button
+                        onClick={() => setPageSize(p => p + 10)}
+                        disabled={loading}
+                        className="text-xs font-medium text-primary hover:underline flex items-center gap-1.5 px-3 py-1.5 disabled:opacity-50"
+                    >
+                        <ChevronDown size={14} />
+                        {loading ? 'טוען...' : 'טען עוד'}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
