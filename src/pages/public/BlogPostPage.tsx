@@ -17,6 +17,100 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'crm-buying-guide': {
+        slug: 'crm-buying-guide',
+        title: 'המדריך לבחירת CRM למאלף כלבים עצמאי',
+        description: 'איך בוחרים CRM נכון בלי ליפול במלכודות הקלאסיות. שש שאלות לבדוק לפני שמשלמים על תוכנה — ולמה רוב ה-CRM-ים בשוק לא מתאימים למאלפי כלבים.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 7,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    אם אי-פעם פתחת השוואה של "10 ה-CRM-ים הטובים ביותר", גילית מהר שהם נבנו לסוכני נדל"ן, יועצים פיננסיים, או עובדי B2B עם צוות מכירות.
+                    מאלף כלבים עצמאי ישראלי? לא קהל היעד שלהם.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הנה שש שאלות שיעזרו לך לבחור CRM שבאמת מתאים, ולעבור את כל מבחני ההיגיון בלי לבזבז כסף ושבועות.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. עברית מלאה, או רק תרגום מסך?</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הבדל חשוב: CRM שתורגם לעברית מצוות תמיכה לא ישראלי הופך מהר לעבודה. הודעות מערכת לא ברורות, RTL שבור, תאריכים בפורמט אמריקאי.
+                    שאלי באתר: "האם המערכת בעברית מלאה?" אם הם משתמשים בביטוי "Hebrew translation available" — זה תרגום, לא עברית.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. האם המערכת מבינה את התחום שלך?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    מאלפי כלבים זקוקים לדברים שונים מסוכן נדל"ן. CRM כללי יציע לך:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
+                    <li>"Deal stage" — משהו על סוכן מכירות. לא רלוונטי לחבילת אילוף.</li>
+                    <li>"Contact tags" — אבל לא "כלב ראשי" או "תכונות התנהגותיות".</li>
+                    <li>"Calendar booking" — אבל לא תזכורות אוטומטיות 24 שעות לפני המפגש.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    מערכת שמבינה את התחום שלך אומרת "תוכנית אילוף", "מפגש", "כלב", "סיכום מפגש". לא "deal", "task", "lead pipeline".
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. עם מי המערכת מתחברת?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    בדקי שני סוגי חיבורים:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>חיוב + חשבונית</strong> — Sumit, חשבונית ירוקה (Morning), או שתיהן. אם המערכת אומרת "ייצוא ל-CSV ולחבר ידנית" — זה לא מספיק.</li>
+                    <li><strong>יומן</strong> — Google Calendar בלי הקלדה כפולה. כל מפגש שאת קובעת במערכת חייב להופיע ביומן שלך אוטומטית.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בונוס: חיבור ל-Make / Zapier / Webhooks — חשוב למאלפים שרוצים לחבר WhatsApp או SMS.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. כמה זה עולה — באמת?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    "החל מ-99 ש"ח לחודש" יכול להיות מטעה. בדקי:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
+                    <li>מה <strong>בתוכנית הבסיסית</strong>? לעיתים האימייל-מרקטינג או החיבור לחשבונית הם בתוכנית יקרה יותר.</li>
+                    <li>האם יש <strong>הגבלת לקוחות / משתמשים / שירותים</strong>? אצל מאלפים שגדלים, התקרה מגיעה מהר.</li>
+                    <li>מה התשלום <strong>השנתי</strong>? לעיתים יש הנחה משמעותית.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. כמה זמן לוקח להתקין?</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    אם ההתקנה לוקחת יותר משעה — זו דגל אדום. מערכות מקצועיות אמיתיות לעסק קטן צריכות:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>הרשמה דרך Google בלי טפסים — דקה.</li>
+                    <li>הוספת לקוח ראשון — 5 דקות.</li>
+                    <li>הוספת שירות וחיבור חשבונית — 10 דקות.</li>
+                    <li>כתובת חנות פומבית פעילה — דקה.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    סך הכל פחות מ-20 דקות. אם המערכת דורשת "שיחת אונבורדינג של שעה עם נציג" כדי להתחיל — היא נבנתה למישהו אחר.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">6. תמיכה — וההפך מתמיכה</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בדקי איך התמיכה עובדת. מייל זה סטנדרט. וואטסאפ או צ'אט בעברית — בונוס משמעותי. תמיכה רק באנגלית במייל אחרי 48 שעות — זה איטי לעסק קטן.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה רוב ה-CRM-ים בשוק לא יעבדו לך</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    כי הם נבנו ל"מנהל מכירות שמנהל פייפליין". את לא בדיוק זה. את עוסק עצמאי שעוזר לכלב אחד בכל פעם.
+                    תחום החשיבה שונה: לא "deal stage", אלא "חבילה". לא "contact", אלא "לקוח + כלב". לא "task", אלא "מפגש" עם סיכום ושיעורי בית.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM נבנה במיוחד למאלפי כלבים עצמאיים בישראל. כל ששת השאלות עוברות ב"כן" — עברית מלאה, מבין את התחום, מתחבר ל-Sumit + Google + Webhook, חינם להתחיל, התקנה ב-15 דקות.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        ראי איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'excel-to-crm': {
         slug: 'excel-to-crm',
         title: 'מתי כדאי לעבור מאקסל ל-CRM ייעודי?',
