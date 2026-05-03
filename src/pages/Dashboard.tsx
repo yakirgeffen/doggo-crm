@@ -6,6 +6,7 @@ import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
 import { TrainerSetupChecklist } from '../components/dashboard/TrainerSetupChecklist';
 import { LeadSourceReport } from '../components/dashboard/LeadSourceReport';
+import { CalendarSyncBanner } from '../components/dashboard/CalendarSyncBanner';
 import { BookSessionModal } from '../components/BookSessionModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../context/auth-context';
@@ -58,6 +59,9 @@ export function Dashboard() {
                         <p className="text-text-secondary text-sm">הנה מה שקורה היום.</p>
                     </div>
                 </header>
+
+                {/* CTO iter 78 — two-way Google Calendar sync banner (auto-hides when no drift) */}
+                <CalendarSyncBanner />
 
                 {/* G1 — first-run UX setup checklist (auto-hides when complete) */}
                 <TrainerSetupChecklist />
@@ -159,18 +163,29 @@ export function Dashboard() {
                                                 </div>
                                             </Link>
                                             <div className="flex items-center gap-2 shrink-0">
-                                                {phone && !past && (
-                                                    <a
-                                                        href={`https://wa.me/${phone.replace(/\D/g, '')}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="w-8 h-8 rounded-lg bg-success/10 text-success flex items-center justify-center hover:bg-success/20 transition-colors"
-                                                        title="שלח הודעת WhatsApp"
-                                                        onClick={e => e.stopPropagation()}
-                                                    >
-                                                        <MessageCircle size={14} />
-                                                    </a>
-                                                )}
+                                                {phone && !past && (() => {
+                                                    const phoneDigits = phone.replace(/\D/g, '');
+                                                    const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
+                                                    const sessionTime = new Date(session.session_date).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+                                                    const firstName = session.programs.clients.full_name.split(' ')[0];
+                                                    const dogName = session.programs.clients.primary_dog_name;
+                                                    const reminder = encodeURIComponent(
+                                                        `היי ${firstName}!\nתזכורת: מפגש האילוף של ${dogName} היום בשעה ${sessionTime}.\nנתראה 🐾`
+                                                    );
+                                                    return (
+                                                        <a
+                                                            href={`https://wa.me/${intl}?text=${reminder}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="w-8 h-8 rounded-lg bg-success/10 text-success flex items-center justify-center hover:bg-success/20 transition-colors"
+                                                            title="תזכורת ב-WhatsApp"
+                                                            aria-label={`תזכורת ב-WhatsApp ל-${session.programs.clients.full_name}`}
+                                                            onClick={e => e.stopPropagation()}
+                                                        >
+                                                            <MessageCircle size={14} />
+                                                        </a>
+                                                    );
+                                                })()}
                                                 <Link to={`/clients/${clientId}?program=${session.programs.id}`} className="text-text-muted">
                                                     <ChevronRight size={18} />
                                                 </Link>
