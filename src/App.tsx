@@ -31,6 +31,7 @@ const ProgramDetailPage = lazy(() => import('./pages/ProgramDetailPage').then(m 
 const NewSessionPage = lazy(() => import('./pages/NewSessionPage').then(m => ({ default: m.NewSessionPage })));
 const SeedPage = lazy(() => import('./pages/SeedPage').then(m => ({ default: m.SeedPage })));
 const StorefrontAdminPage = lazy(() => import('./pages/StorefrontAdminPage').then(m => ({ default: m.StorefrontAdminPage })));
+const LeadsPage = lazy(() => import('./pages/LeadsPage').then(m => ({ default: m.LeadsPage })));
 const CalendarPage = lazy(() => import('./pages/CalendarPage').then(m => ({ default: m.CalendarPage })));
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 
@@ -85,6 +86,7 @@ function App() {
               <Route path="clients" element={<ClientsPage />} />
               <Route path="clients/new" element={<NewClientPage />} />
               <Route path="clients/:id" element={<ClientDetailPage />} />
+              <Route path="leads" element={<LeadsPage />} />
               <Route path="storefront" element={<StorefrontAdminPage />} />
 
               {/* Programs — kept for backwards compat, will fold into clients in Phase 2 */}

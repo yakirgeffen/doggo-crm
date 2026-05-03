@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen } from 'lucide-react';
+import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen, Inbox } from 'lucide-react';
 import { useAuth } from '../context/auth-context';
 
 const navItems = [
     { to: "/", label: "בית", icon: Home },
     { to: "/clients", label: "לקוחות", icon: Users },
+    { to: "/leads", label: "לידים", icon: Inbox },
     { to: "/storefront", label: "החנות שלי", icon: Store },
     { to: "/calendar", label: "יומן", icon: Calendar },
 ];
