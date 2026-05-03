@@ -178,6 +178,37 @@
     transform: scale(0.98);
   }
 
+  /* Outline variant — quieter than secondary, used for tertiary actions */
+  .btn-outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  .btn-outline:active {
+    transform: scale(0.98);
+  }
+
+  .btn-outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Small button modifier — keeps min-height comfortable for touch (40px)
+     while reducing padding for inline / dense placements (e.g. empty-state CTAs). */
+  .btn-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    min-height: 40px;
+    border-radius: var(--radius-md);
+  }
+
   /* Status Badges */
   .badge {
     display: inline-flex;
@@ -297,6 +328,24 @@
 
 .animate-scale-in {
   animation: scaleIn 0.25s ease-out forwards;
+}
+
+/* Modal entrance — slight rise + scale, mirrors ToS for consistency.
+   Apply to the inner panel; the backdrop typically uses animate-fade-in. */
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-modal-in {
+  animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes slideInRight {

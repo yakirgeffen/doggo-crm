@@ -279,7 +279,27 @@ export function CalendarPage() {
             ) : (
                 /* Grouped List View */
                 <div className="space-y-8 max-w-4xl mx-auto">
-                    {filteredItems.length === 0 && !loading ? (
+                    {loading ? (
+                        <div className="space-y-3" role="status" aria-label="טוען אירועים">
+                            {[0, 1, 2, 3].map(i => (
+                                <div
+                                    key={i}
+                                    className="flat-card p-4 flex items-stretch gap-4 animate-fade-in"
+                                    style={{ animationDelay: `${i * 60}ms` }}
+                                >
+                                    <div className="w-14 shrink-0 flex flex-col items-center justify-center gap-1">
+                                        <div className="h-5 w-10 bg-border/40 rounded-md skeleton-shimmer" />
+                                        <div className="h-3 w-8 bg-border/30 rounded-md skeleton-shimmer" />
+                                    </div>
+                                    <div className="w-1 rounded-full bg-border/30" />
+                                    <div className="flex-1 space-y-2 py-1">
+                                        <div className="h-4 w-1/2 bg-border/40 rounded-md skeleton-shimmer" />
+                                        <div className="h-3 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : filteredItems.length === 0 ? (
                         <div className="flat-card p-12 text-center text-text-muted">
                             <CalendarIcon size={32} className="mx-auto mb-4 opacity-50" />
                             <p>אין אירועים בטווח המוצג</p>

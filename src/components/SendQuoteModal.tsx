@@ -51,7 +51,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
 
         return (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={handleClose}>
-                <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden" onClick={e => e.stopPropagation()}>
+                <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden animate-modal-in" onClick={e => e.stopPropagation()}>
                     <div className="bg-success/5 border-b border-success/20 px-6 py-5 flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
                             <CheckCircle2 size={28} />
@@ -165,7 +165,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
-            <div className="bg-surface rounded-2xl shadow-card w-full max-w-2xl border border-border overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="bg-surface rounded-2xl shadow-card w-full max-w-2xl border border-border overflow-hidden max-h-[90vh] flex flex-col animate-modal-in" onClick={e => e.stopPropagation()}>
                 {/* Header */}
                 <div className="bg-primary/5 border-b border-border px-6 py-5 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">

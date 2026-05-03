@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
-import { Save, Building2, Calendar, Tag, Globe, Check } from 'lucide-react';
+import { Save, Building2, Calendar, Tag, Globe, Check, Loader2 } from 'lucide-react';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ScheduleSettings } from '../components/settings/ScheduleSettings';
 import { ServicesSettings } from '../components/settings/ServicesSettings';
 import { IntegrationsSettings } from '../components/settings/IntegrationsSettings';
+import { SkeletonCard } from '../components/Skeleton';
 
 export function SettingsPage() {
     const { settings, updateLocalSettings, saveSettings, loading } = useSettings();
@@ -26,15 +27,34 @@ export function SettingsPage() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-text-muted">טוען הגדרות...</div>;
+    if (loading) return (
+        <div className="max-w-4xl mx-auto animate-fade-in pb-12" role="status" aria-label="טוען הגדרות">
+            <div className="h-9 w-48 bg-border/40 rounded-md skeleton-shimmer mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
+                <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible -mx-1 px-1">
+                    {[0, 1, 2, 3].map(i => (
+                        <div key={i} className="h-12 w-32 md:w-full shrink-0 bg-border/30 rounded-lg skeleton-shimmer" />
+                    ))}
+                </div>
+                <div className="space-y-6">
+                    <SkeletonCard />
+                    <SkeletonCard />
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="max-w-4xl mx-auto animate-fade-in pb-12">
-            <h1 className="text-[28px] font-bold text-text-primary mb-8">הגדרות מערכת</h1>
+            <h1 className="text-2xl md:text-[28px] font-bold text-text-primary mb-6 md:mb-8">הגדרות מערכת</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
-                {/* Sidebar Navigation */}
-                <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 md:gap-8">
+                {/* Sidebar Navigation — horizontal scroll on mobile, vertical column on md+ */}
+                <div
+                    className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 pb-1 md:pb-0 no-scrollbar"
+                    role="tablist"
+                    aria-label="ניווט הגדרות"
+                >
                     {([
                         { key: 'profile', icon: Building2, label: 'פרופיל עסק' },
                         { key: 'schedule', icon: Calendar, label: 'שעות פעילות' },
@@ -44,10 +64,12 @@ export function SettingsPage() {
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
-                            className={`text-right px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3
+                            role="tab"
+                            aria-selected={activeTab === tab.key}
+                            className={`shrink-0 md:shrink whitespace-nowrap text-right px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3
                                 ${activeTab === tab.key
-                                    ? 'bg-surface shadow-soft text-primary'
-                                    : 'text-text-muted hover:bg-surface-warm'
+                                    ? 'bg-surface shadow-soft text-primary border border-primary/20 md:border-transparent'
+                                    : 'text-text-muted hover:bg-surface-warm border border-transparent'
                                 }`}
                         >
                             <tab.icon size={20} />
@@ -83,7 +105,7 @@ export function SettingsPage() {
                                 className="btn btn-primary flex items-center gap-2 px-8"
                             >
                                 {saving ? (
-                                    <span className="animate-spin text-white">⌛</span>
+                                    <Loader2 size={18} className="animate-spin" />
                                 ) : (
                                     <Save size={18} />
                                 )}

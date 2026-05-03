@@ -138,7 +138,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
-            <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden animate-modal-in" onClick={e => e.stopPropagation()}>
                 <div className="bg-primary/5 border-b border-border px-6 py-4 flex justify-between items-center">
                     <h2 className="text-lg font-bold text-text-primary">עריכת מפגש</h2>
                     <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1">

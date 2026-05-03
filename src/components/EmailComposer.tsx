@@ -206,7 +206,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="email-composer-title"
-                className="bg-surface rounded-xl shadow-elevated w-full max-w-lg overflow-hidden border border-border"
+                className="bg-surface rounded-xl shadow-elevated w-full max-w-lg overflow-hidden border border-border animate-modal-in"
             >
 
                 {/* Header */}
