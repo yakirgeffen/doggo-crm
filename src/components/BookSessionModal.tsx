@@ -251,7 +251,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-text-primary">קביעת מפגש</h2>
-                            <p className="text-xs text-text-muted">בחר לקוח ותוכנית לקביעת מפגש חדש</p>
+                            <p className="text-xs text-text-muted">בחירת לקוח ותוכנית לקביעת מפגש חדש</p>
                         </div>
                     </div>
                 </div>
@@ -309,7 +309,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                     setSelectedProgramId('');
                                 }}
                             >
-                                <option value="">בחר לקוח...</option>
+                                <option value="">בחירת לקוח...</option>
                                 {clients.map(c => (
                                     <option key={c.id} value={c.id}>
                                         {c.full_name} • {c.primary_dog_name}
@@ -332,7 +332,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                 value={selectedProgramId}
                                 onChange={e => setSelectedProgramId(e.target.value)}
                             >
-                                <option value="">בחר תוכנית...</option>
+                                <option value="">בחירת תוכנית...</option>
                                 {selectedClient.programs.map(p => (
                                     <option key={p.id} value={p.id}>{p.program_name}</option>
                                 ))}
