@@ -86,4 +86,5 @@ export interface UserSettings {
     work_hours_start: string; // "09:00"
     work_hours_end: string; // "17:00"
     webhook_url: string | null;
+    api_token_hash: string | null;
 }

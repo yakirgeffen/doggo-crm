@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Globe, Lock, CheckCircle2, Receipt, Webhook, Send } from 'lucide-react';
+import { Globe, Lock, CheckCircle2, Receipt, Webhook, Send, Key, Copy, RefreshCw, AlertTriangle } from 'lucide-react';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import { useSumit } from '../../hooks/useSumit';
 import { useSettings } from '../../hooks/useSettings';
@@ -19,10 +19,80 @@ export function IntegrationsSettings() {
     const [webhookUrl, setWebhookUrl] = useState('');
     const [webhookSaving, setWebhookSaving] = useState(false);
     const [webhookTestSending, setWebhookTestSending] = useState(false);
+    const [generatedToken, setGeneratedToken] = useState<string | null>(null);
+    const [tokenGenerating, setTokenGenerating] = useState(false);
+    const [tokenCopied, setTokenCopied] = useState(false);
 
     useEffect(() => {
         if (settings?.webhook_url) setWebhookUrl(settings.webhook_url);
     }, [settings?.webhook_url]);
+
+    const apiBaseUrl = `${(import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '')}/functions/v1/api-v1`;
+    const hasActiveToken = Boolean(settings?.api_token_hash);
+
+    const sha256Hex = async (input: string): Promise<string> => {
+        const buf = new TextEncoder().encode(input);
+        const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    };
+
+    const handleGenerateToken = async () => {
+        if (hasActiveToken) {
+            const ok = window.confirm('יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שתעדכני אותן. להמשיך?');
+            if (!ok) return;
+        }
+        setTokenGenerating(true);
+        setTokenCopied(false);
+        try {
+            const bytes = new Uint8Array(32);
+            crypto.getRandomValues(bytes);
+            const plaintext = 'dggo_' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+            const hash = await sha256Hex(plaintext);
+            await saveSettings({ api_token_hash: hash });
+            setGeneratedToken(plaintext);
+            updateLocalSettings({ api_token_hash: hash });
+            showToast('טוקן API נוצר בהצלחה', 'success');
+        } catch (err) {
+            console.error('Token generation error:', err);
+            showToast('שגיאה ביצירת טוקן', 'error');
+        } finally {
+            setTokenGenerating(false);
+        }
+    };
+
+    const handleCopyToken = async () => {
+        if (!generatedToken) return;
+        try {
+            await navigator.clipboard.writeText(generatedToken);
+            setTokenCopied(true);
+            showToast('הטוקן הועתק', 'success');
+            setTimeout(() => setTokenCopied(false), 2500);
+        } catch {
+            showToast('לא ניתן להעתיק. סמני ידנית.', 'error');
+        }
+    };
+
+    const handleRevokeToken = async () => {
+        const ok = window.confirm('ביטול הטוקן יפסיק מיד את כל האינטגרציות שמשתמשות בו. להמשיך?');
+        if (!ok) return;
+        try {
+            await saveSettings({ api_token_hash: null });
+            updateLocalSettings({ api_token_hash: null });
+            setGeneratedToken(null);
+            showToast('הטוקן בוטל', 'success');
+        } catch {
+            showToast('שגיאה בביטול הטוקן', 'error');
+        }
+    };
+
+    const handleCopyEndpoint = async () => {
+        try {
+            await navigator.clipboard.writeText(apiBaseUrl);
+            showToast('כתובת ה-API הועתקה', 'success');
+        } catch {
+            showToast('לא ניתן להעתיק', 'error');
+        }
+    };
 
     const isValidWebhookUrl = (url: string) => /^https:\/\//i.test(url.trim());
 
@@ -387,6 +457,133 @@ export function IntegrationsSettings() {
   "created_at": "2026-05-02T12:34:56Z"
 }`}</pre>
                     </details>
+                </details>
+            </div>
+
+            <div className="border-t border-border pt-8">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
+                    <Key className="text-primary" />
+                    טוקן API נכנס (G5 — Make/Zapier inbound)
+                </h2>
+                <p className="text-sm text-text-muted">
+                    טוקן זה מאפשר למערכות חיצוניות (Make, Zapier, טפסים מותאמים) ליצור לקוחות ופניות חדשות ב-Doggo CRM. שילוב דו-כיווני: Webhook (יציאה) + API נכנס.
+                </p>
+            </div>
+
+            <div className="space-y-4 max-w-lg p-6 bg-surface border border-border rounded-xl shadow-soft">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${hasActiveToken ? 'bg-success/10 border-success/20' : 'bg-background border-border'}`}>
+                    <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${hasActiveToken ? 'bg-success animate-pulse' : 'bg-text-muted'}`}></div>
+                        <p className={`font-bold text-sm ${hasActiveToken ? 'text-success' : 'text-text-secondary'}`}>
+                            {hasActiveToken ? 'טוקן API פעיל' : 'לא הוגדר טוקן'}
+                        </p>
+                    </div>
+                    {hasActiveToken && <CheckCircle2 className="text-success" size={18} />}
+                </div>
+
+                <div>
+                    <label className="block text-xs font-medium text-text-muted mb-1">כתובת ה-API</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            readOnly
+                            value={apiBaseUrl}
+                            className="input-field dir-ltr font-mono text-xs flex-1"
+                            dir="ltr"
+                            onFocus={(e) => e.currentTarget.select()}
+                        />
+                        <button
+                            onClick={handleCopyEndpoint}
+                            className="btn btn-secondary text-xs flex items-center gap-1 px-3"
+                            type="button"
+                        >
+                            <Copy size={12} />
+                            העתק
+                        </button>
+                    </div>
+                </div>
+
+                {generatedToken && (
+                    <div className="p-4 rounded-xl border-2 border-warning/40 bg-warning/5 space-y-3 animate-fade-in">
+                        <div className="flex items-start gap-2">
+                            <AlertTriangle className="text-warning shrink-0 mt-0.5" size={16} />
+                            <p className="text-xs text-text-primary font-medium">
+                                שמרי את הטוקן הזה במקום בטוח. <b>לא נציג אותו שוב.</b> אם תאבדי אותו, תצטרכי ליצור טוקן חדש.
+                            </p>
+                        </div>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                readOnly
+                                value={generatedToken}
+                                className="input-field dir-ltr font-mono text-xs flex-1"
+                                dir="ltr"
+                                onFocus={(e) => e.currentTarget.select()}
+                            />
+                            <button
+                                onClick={handleCopyToken}
+                                className="btn btn-primary text-xs flex items-center gap-1 px-3"
+                                type="button"
+                            >
+                                <Copy size={12} />
+                                {tokenCopied ? 'הועתק ✓' : 'העתק'}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleGenerateToken}
+                        disabled={tokenGenerating}
+                        className="btn btn-primary text-sm flex items-center gap-1.5 flex-1 justify-center"
+                    >
+                        <RefreshCw size={14} className={tokenGenerating ? 'animate-spin' : ''} />
+                        {tokenGenerating ? 'יוצר...' : (hasActiveToken ? 'צור טוקן חדש (יבטל את הקיים)' : 'צור טוקן חדש')}
+                    </button>
+                    {hasActiveToken && (
+                        <button
+                            onClick={handleRevokeToken}
+                            className="btn btn-secondary text-sm"
+                            type="button"
+                        >
+                            בטל טוקן
+                        </button>
+                    )}
+                </div>
+
+                <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
+                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">דוגמת קריאה (Make / Zapier / curl)</summary>
+                    <pre className="overflow-x-auto text-[10px] mt-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`POST ${apiBaseUrl}
+Headers:
+  Content-Type: application/json
+  X-Doggo-Token: <your-token>
+
+Body — create a client:
+{
+  "action": "create_client",
+  "payload": {
+    "full_name": "ישראל ישראלי",
+    "email": "israel@example.com",
+    "phone": "050-1234567",
+    "primary_dog_name": "רקס",
+    "lead_source": "facebook"
+  }
+}
+
+Body — create an intake submission:
+{
+  "action": "create_intake_submission",
+  "payload": {
+    "full_name": "ישראל ישראלי",
+    "phone": "050-1234567",
+    "dog_name": "רקס",
+    "dog_breed": "לברדור",
+    "dog_age": "3",
+    "lead_source": "google-form"
+  }
+}`}</pre>
+                    <p className="text-[11px] text-text-muted mt-3">תגובה: <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "success": true, "client_id": "<uuid>" }'}</code> או <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "error": "..." }'}</code> עם status 4xx/5xx.</p>
                 </details>
             </div>
         </div>
