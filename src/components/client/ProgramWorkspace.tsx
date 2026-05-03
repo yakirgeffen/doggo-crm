@@ -12,6 +12,7 @@ import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
 import { SendInvoiceButton } from './SendInvoiceButton';
 import { RecurringScheduleModal } from '../RecurringScheduleModal';
+import { ProgramNote } from './ProgramNote';
 
 interface ProgramWorkspaceProps {
     program: Program;
@@ -399,6 +400,9 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                     )}
                 </div>
             )}
+
+            {/* Program Notes */}
+            <ProgramNote programId={programState.id} initialNote={programState.notes} />
 
             {/* Sessions List */}
             <div>
