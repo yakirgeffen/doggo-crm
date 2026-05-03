@@ -27,8 +27,8 @@ export function SessionCard({ session, clientFirstName, programName, onChanged }
             <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-4">
                     <div className="text-center w-12 shrink-0">
-                        <div className="text-xs font-medium text-text-muted uppercase leading-none mb-1">
-                            {new Date(session.session_date).toLocaleDateString('en-US', { month: 'short' })}
+                        <div className="text-xs font-medium text-text-muted leading-none mb-1">
+                            {new Date(session.session_date).toLocaleDateString('he-IL', { month: 'short' })}
                         </div>
                         <div className="text-xl font-bold text-text-primary leading-none ltr-nums">
                             {new Date(session.session_date).getDate()}
@@ -74,7 +74,7 @@ export function SessionCard({ session, clientFirstName, programName, onChanged }
                     <button
                         onClick={() => setIsEditing(true)}
                         className="text-xs font-medium text-text-secondary hover:text-primary flex items-center gap-1.5 bg-background hover:bg-surface-warm px-3 py-1.5 rounded-lg transition-colors"
-                        title="ערוך מפגש"
+                        title="עריכת מפגש"
                     >
                         <Pencil size={14} />
                         עריכה
@@ -83,11 +83,11 @@ export function SessionCard({ session, clientFirstName, programName, onChanged }
                 <a
                     href={`https://wa.me/?text=${whatsappSummary}`}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-xs font-medium text-success hover:text-success flex items-center gap-1.5 bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors"
                 >
                     <MessageCircle size={14} />
-                    שתף בוואטסאפ
+                    שיתוף בוואטסאפ
                 </a>
             </div>
 
