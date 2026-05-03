@@ -15,6 +15,7 @@ export function ActivityTimeline({ entityType, entityId, limit: initialLimit = 1
     const [loading, setLoading] = useState(true);
     const [pageSize, setPageSize] = useState(initialLimit);
     const [hasMore, setHasMore] = useState(true);
+    const [filter, setFilter] = useState<string>('all');
 
     const fetchLogs = useCallback(async (limit: number) => {
         setLoading(true);
@@ -65,12 +66,36 @@ export function ActivityTimeline({ entityType, entityId, limit: initialLimit = 1
         fetchLogs(pageSize);
     }, [fetchLogs, pageSize]);
 
+    const FILTERS: { value: string; label: string }[] = [
+        { value: 'all', label: 'הכל' },
+        { value: 'session', label: 'מפגשים' },
+        { value: 'program', label: 'תוכניות' },
+        { value: 'client', label: 'לקוחות' },
+        { value: 'email', label: 'מיילים' },
+    ];
+    const visibleLogs = filter === 'all' ? logs : logs.filter(l => l.entity_type === filter);
+
     if (loading && logs.length === 0) return <SkeletonTimeline count={3} />;
     if (logs.length === 0) return <div className="text-sm text-text-muted italic p-4">אין פעילות מתועדת עדיין.</div>;
 
     return (
         <div className="space-y-6 p-4">
-            {logs.map((log) => (
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-1.5 mb-2">
+                {FILTERS.map(f => (
+                    <button
+                        key={f.value}
+                        onClick={() => setFilter(f.value)}
+                        className={`text-xs px-2.5 py-1 rounded-full transition-colors ${filter === f.value ? 'bg-primary text-white' : 'bg-background text-text-secondary hover:bg-surface-warm'}`}
+                    >
+                        {f.label}
+                    </button>
+                ))}
+            </div>
+
+            {visibleLogs.length === 0 ? (
+                <p className="text-sm text-text-muted italic">אין פעילות בקטגוריה הזו.</p>
+            ) : visibleLogs.map((log) => (
                 <div key={log.id} className="relative flex gap-4">
                     <div className="flex flex-col items-center">
                         <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center border border-border z-10">
@@ -94,7 +119,7 @@ export function ActivityTimeline({ entityType, entityId, limit: initialLimit = 1
                 </div>
             ))}
 
-            {hasMore && (
+            {hasMore && filter === 'all' && (
                 <div className="flex justify-center pt-2">
                     <button
                         onClick={() => setPageSize(p => p + 10)}
