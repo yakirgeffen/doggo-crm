@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2, MessageCircle } from 'lucide-react';
+import { Inbox, UserPlus, Archive, Phone, Dog, Clock, MessageCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
+import { Spinner } from '../Spinner';
 
 import type { IntakeSubmission } from '../../types';
 
@@ -186,7 +187,7 @@ export function IncomingLeads() {
                                         title="אשר והוסף כלקוח"
                                     >
                                         {actioning === lead.id ? (
-                                            <Loader2 size={14} className="animate-spin" />
+                                            <Spinner size="sm" />
                                         ) : (
                                             <UserPlus size={14} />
                                         )}

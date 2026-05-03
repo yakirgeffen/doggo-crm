@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote, Loader2 } from 'lucide-react';
+import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote } from 'lucide-react';
 import { supabase, updateProgramStatus, logActivity } from '../../lib/supabase';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
 import { EmptyState } from '../EmptyState';
 import { SkeletonSessionList } from '../Skeleton';
+import { Spinner } from '../Spinner';
 import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
@@ -258,7 +259,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 <Banknote size={18} />
                                 {markingPaid ? (
                                     <>
-                                        <Loader2 size={14} className="animate-spin" />
+                                        <Spinner size="sm" />
                                         <span>שומר...</span>
                                     </>
                                 ) : 'שולם (Bit/מזומן)'}

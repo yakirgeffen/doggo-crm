@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
-import { Save, Building2, Calendar, Tag, Globe, Check, Loader2, MessageCircle } from 'lucide-react';
+import { Save, Building2, Calendar, Tag, Globe, Check, MessageCircle } from 'lucide-react';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ScheduleSettings } from '../components/settings/ScheduleSettings';
 import { ServicesSettings } from '../components/settings/ServicesSettings';
 import { IntegrationsSettings } from '../components/settings/IntegrationsSettings';
 import { CommunicationSettings } from '../components/settings/CommunicationSettings';
 import { SkeletonCard } from '../components/Skeleton';
+import { Spinner } from '../components/Spinner';
 
 export function SettingsPage() {
     const { settings, updateLocalSettings, saveSettings, loading } = useSettings();
@@ -111,7 +112,7 @@ export function SettingsPage() {
                                 className="btn btn-primary flex items-center gap-2 px-8"
                             >
                                 {saving ? (
-                                    <Loader2 size={18} className="animate-spin" />
+                                    <Spinner size="lg" />
                                 ) : (
                                     <Save size={18} />
                                 )}

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { CalendarSync, Check, X, ExternalLink, Loader2, AlertTriangle } from 'lucide-react';
+import { CalendarSync, Check, X, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useToast } from '../../context/toast-context';
 import { useCalendarSync, type CalendarSyncChange } from '../../hooks/useCalendarSync';
+import { Spinner } from '../Spinner';
 
 // CTO iter 78 — Dashboard surface for two-way Google Calendar sync.
 //
@@ -109,7 +110,7 @@ export function CalendarSyncBanner() {
                         className="btn btn-primary text-xs flex items-center gap-1.5 shrink-0"
                         title="החלת כל השינויים על המפגשים במערכת"
                     >
-                        {applyingAll ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                        {applyingAll ? <Spinner size="sm" /> : <Check size={14} />}
                         <span>החלת הכל</span>
                     </button>
                 )}
@@ -156,7 +157,7 @@ export function CalendarSyncBanner() {
                                     title="החלת השינוי על המפגש במערכת"
                                 >
                                     {isBusy ? (
-                                        <Loader2 size={14} className="animate-spin" />
+                                        <Spinner size="sm" />
                                     ) : (
                                         <Check size={14} />
                                     )}

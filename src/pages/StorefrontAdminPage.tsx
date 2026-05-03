@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
 import { useServices, type Service } from '../hooks/useServices';
-import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook, Loader2 } from 'lucide-react';
+import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook } from 'lucide-react';
 import { ServiceModal } from '../components/admin/ServiceModal';
 import { TestimonialsManager } from '../components/admin/TestimonialsManager';
+import { Spinner } from '../components/Spinner';
 import { useToast } from '../context/toast-context';
 
 export function StorefrontAdminPage() {
@@ -125,7 +126,7 @@ export function StorefrontAdminPage() {
                         disabled={savingProfile}
                         className="btn btn-primary flex items-center gap-2"
                     >
-                        {savingProfile ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                        {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
                         {savingProfile ? 'שומר...' : 'שמור שינויים'}
                     </button>
                 </div>
