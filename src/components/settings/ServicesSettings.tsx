@@ -79,7 +79,7 @@ export function ServicesSettings() {
                             <button
                                 onClick={() => deleteService(service.id)}
                                 className="p-2 text-error/60 hover:text-error hover:bg-error/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                                title="מחק שירות"
+                                title="מחיקת שירות"
                             >
                                 <Trash2 size={18} />
                             </button>

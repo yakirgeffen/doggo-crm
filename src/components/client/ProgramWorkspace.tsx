@@ -160,7 +160,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <button
                             onClick={() => setIsExtendModalOpen(true)}
                             className="absolute top-3 start-3 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary/20 hover:scale-110 shadow-soft"
-                            title="הוסף מפגשים"
+                            title="הוספת מפגשים"
                         >
                             <Plus size={16} />
                         </button>

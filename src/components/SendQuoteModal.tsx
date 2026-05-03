@@ -234,7 +234,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                                             ))}
                                         </select>
                                         {lines.length > 1 && (
-                                            <button onClick={() => removeLine(idx)} className="text-text-muted hover:text-error p-2" title="מחק שורה">
+                                            <button onClick={() => removeLine(idx)} className="text-text-muted hover:text-error p-2" title="מחיקת שורה">
                                                 <Trash2 size={16} />
                                             </button>
                                         )}

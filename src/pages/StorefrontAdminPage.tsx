@@ -164,7 +164,7 @@ export function StorefrontAdminPage() {
                                 >
                                     {publicUrl}
                                 </a>
-                                <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
+                                <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתקה">
                                     {copied ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
                                 <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתיחה">
@@ -335,14 +335,14 @@ export function StorefrontAdminPage() {
                                             setIsServiceModalOpen(true);
                                         }}
                                         className="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                                        title="ערוך"
+                                        title="עריכה"
                                     >
                                         <Edit2 size={16} />
                                     </button>
                                     <button
                                         onClick={() => handleDeleteService(service.id)}
                                         className="p-2 text-text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors"
-                                        title="מחק"
+                                        title="מחיקה"
                                     >
                                         <Trash2 size={16} />
                                     </button>
