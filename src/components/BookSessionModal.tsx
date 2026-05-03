@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, User, BookOpen, Loader2 } from 'lucide-react';
+import { Calendar, Clock, User, BookOpen, Loader2, MessageCircle } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
@@ -9,6 +9,7 @@ interface ClientOption {
     id: string;
     full_name: string;
     primary_dog_name: string;
+    phone: string | null;
     programs: { id: string; program_name: string; status: string }[];
 }
 
@@ -30,6 +31,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
     const [time, setTime] = useState(prefillTime || '10:00');
     const [saving, setSaving] = useState(false);
     const [loadingClients, setLoadingClients] = useState(true);
+    const [bookedSuccess, setBookedSuccess] = useState<{ client: ClientOption; sessionDate: string } | null>(null);
 
     // Sync prefill props when they change
     const [prevPrefillDate, setPrevPrefillDate] = useState(prefillDate);
@@ -48,7 +50,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         setLoadingClients(true);
         const { data, error } = await supabase
             .from('clients')
-            .select('id, full_name, primary_dog_name, programs(id, program_name, status)')
+            .select('id, full_name, primary_dog_name, phone, programs(id, program_name, status)')
             .eq('user_id', user.id)
             .eq('status', 'active')
             .order('full_name');
@@ -60,6 +62,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                 id: string;
                 full_name: string;
                 primary_dog_name: string;
+                phone: string | null;
                 programs: { id: string; program_name: string; status: string }[];
             };
 
@@ -143,14 +146,81 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                     body: { action: 'send_booking_confirmation', session_id: data[0].id }
                 }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
             }
-            showToast('המפגש נקבע בהצלחה! 🐾', 'success');
             onBooked();
-            onClose();
+            // Show WhatsApp prompt instead of immediate close — trainers in IL
+            // often want to send a WhatsApp confirmation in addition to the email.
+            if (selectedClient) {
+                setBookedSuccess({ client: selectedClient, sessionDate });
+            } else {
+                showToast('המפגש נקבע בהצלחה! 🐾', 'success');
+                onClose();
+            }
         }
         setSaving(false);
     };
 
+    const handleClose = () => {
+        setBookedSuccess(null);
+        onClose();
+    };
+
     if (!isOpen) return null;
+
+    if (bookedSuccess) {
+        const { client, sessionDate } = bookedSuccess;
+        const dateObj = new Date(sessionDate);
+        const dateLabel = dateObj.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', weekday: 'long' });
+        const timeLabel = dateObj.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+        const phoneDigits = (client.phone || '').replace(/[^\d]/g, '');
+        const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
+        const message = encodeURIComponent(
+            `שלום ${client.full_name.split(' ')[0]}!\n` +
+            `מפגש האילוף של ${client.primary_dog_name} נקבע ליום ${dateLabel} בשעה ${timeLabel}.\n` +
+            `נתראה! 🐾`
+        );
+        const waUrl = phoneDigits ? `https://wa.me/${intl}?text=${message}` : `https://wa.me/?text=${message}`;
+
+        return (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={handleClose}>
+                <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden animate-modal-in" onClick={e => e.stopPropagation()}>
+                    <div className="bg-success/5 border-b border-success/20 px-6 py-5 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                            <Calendar size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-text-primary">המפגש נקבע!</h2>
+                            <p className="text-xs text-text-muted">{dateLabel} · {timeLabel}</p>
+                        </div>
+                    </div>
+
+                    <div className="p-6 space-y-4">
+                        <p className="text-sm text-text-secondary leading-relaxed">
+                            לשלוח אישור גם ב-WhatsApp ל-{client.full_name}? ההודעה כבר מוכנה.
+                        </p>
+
+                        <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={handleClose}
+                            className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
+                        >
+                            <MessageCircle size={18} />
+                            {phoneDigits ? `שליחה ל-${phoneDigits}` : 'בחירת נמען ב-WhatsApp'}
+                        </a>
+
+                        <button
+                            onClick={handleClose}
+                            type="button"
+                            className="btn btn-secondary w-full"
+                        >
+                            סיום בלי הודעה
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
