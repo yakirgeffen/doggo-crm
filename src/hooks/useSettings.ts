@@ -42,6 +42,7 @@ export function useSettings() {
                     wa_template_greeting: null,
                     wa_template_booking: null,
                     wa_template_reminder: null,
+                    intro_pages_seen: [],
                 };
                 // Auto-create? Or just wait for save? Let's wait for save to avoid junk.
                 setSettings(defaults);

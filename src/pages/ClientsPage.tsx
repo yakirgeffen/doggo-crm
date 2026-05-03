@@ -11,6 +11,9 @@ import { DataTable, type DataTableColumn } from '../components/DataTable';
 import { SkeletonRow } from '../components/Skeleton';
 import { useSettings } from '../hooks/useSettings';
 import { applyTemplate } from '../lib/whatsapp-template';
+import { useIntro } from '../hooks/useIntro';
+import { IntroModal } from '../components/IntroModal';
+import { PAGE_INTROS } from '../lib/intro-content';
 
 export function ClientsPage() {
     const navigate = useNavigate();
@@ -22,6 +25,7 @@ export function ClientsPage() {
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+    const intro = useIntro('clients');
 
     const fetchClients = useCallback(async () => {
         setLoading(true);
@@ -346,6 +350,14 @@ export function ClientsPage() {
                     </>
                 )}
             </div>
+
+            <IntroModal
+                isOpen={intro.shouldShow}
+                intro={PAGE_INTROS.clients}
+                onDismiss={intro.dismiss}
+                onSkip={intro.dismiss}
+                onBackdropClose={intro.closeForSession}
+            />
         </div>
     );
 }

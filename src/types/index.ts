@@ -101,6 +101,7 @@ export interface UserSettings {
     wa_template_greeting: string | null;
     wa_template_booking: string | null;
     wa_template_reminder: string | null;
+    intro_pages_seen: string[];
 }
 
 export interface TrainerTestimonial {
