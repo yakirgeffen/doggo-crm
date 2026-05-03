@@ -98,6 +98,9 @@ export interface UserSettings {
     work_hours_end: string; // "17:00"
     webhook_url: string | null;
     api_token_hash: string | null;
+    wa_template_greeting: string | null;
+    wa_template_booking: string | null;
+    wa_template_reminder: string | null;
 }
 
 export interface TrainerTestimonial {

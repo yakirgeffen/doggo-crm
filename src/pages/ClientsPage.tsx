@@ -9,9 +9,12 @@ import { ImportClientsModal } from '../components/ImportClientsModal';
 import { QuickAddClientModal } from '../components/QuickAddClientModal';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import { SkeletonRow } from '../components/Skeleton';
+import { useSettings } from '../hooks/useSettings';
+import { applyTemplate } from '../lib/whatsapp-template';
 
 export function ClientsPage() {
     const navigate = useNavigate();
+    const { settings } = useSettings();
     const [clients, setClients] = useState<Client[]>([]);
     const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('active');
     const [search, setSearch] = useState('');
@@ -309,7 +312,13 @@ export function ClientsPage() {
                                     {client.phone && (() => {
                                         const phoneDigits = client.phone.replace(/[^\d]/g, '');
                                         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
-                                        const greeting = encodeURIComponent(`היי ${client.full_name.split(' ')[0]} 🐾`);
+                                        const firstName = client.full_name.split(' ')[0];
+                                        const greetingText = applyTemplate(
+                                            settings?.wa_template_greeting ?? null,
+                                            { firstName, dogName: client.primary_dog_name || '' },
+                                            `היי ${firstName} 🐾`
+                                        );
+                                        const greeting = encodeURIComponent(greetingText);
                                         return (
                                             <>
                                                 <a

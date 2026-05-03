@@ -39,6 +39,9 @@ export function useSettings() {
                     work_hours_end: '17:00',
                     webhook_url: null,
                     api_token_hash: null,
+                    wa_template_greeting: null,
+                    wa_template_booking: null,
+                    wa_template_reminder: null,
                 };
                 // Auto-create? Or just wait for save? Let's wait for save to avoid junk.
                 setSettings(defaults);

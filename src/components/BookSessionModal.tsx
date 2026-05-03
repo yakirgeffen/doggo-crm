@@ -4,6 +4,8 @@ import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
 import { createCalendarEvent } from '../lib/calendar';
+import { useSettings } from '../hooks/useSettings';
+import { applyTemplate } from '../lib/whatsapp-template';
 
 interface ClientOption {
     id: string;
@@ -24,6 +26,7 @@ interface BookSessionModalProps {
 export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefillTime }: BookSessionModalProps) {
     const { user, providerToken } = useAuth();
     const { showToast } = useToast();
+    const { settings } = useSettings();
     const [clients, setClients] = useState<ClientOption[]>([]);
     const [selectedClientId, setSelectedClientId] = useState('');
     const [selectedProgramId, setSelectedProgramId] = useState('');
@@ -173,11 +176,22 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         const timeLabel = dateObj.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
         const phoneDigits = (client.phone || '').replace(/[^\d]/g, '');
         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
-        const message = encodeURIComponent(
-            `שלום ${client.full_name.split(' ')[0]}!\n` +
+        const firstName = client.full_name.split(' ')[0];
+        const fallback =
+            `שלום ${firstName}!\n` +
             `מפגש האילוף של ${client.primary_dog_name} נקבע ליום ${dateLabel} בשעה ${timeLabel}.\n` +
-            `נתראה! 🐾`
+            `נתראה! 🐾`;
+        const messageText = applyTemplate(
+            settings?.wa_template_booking ?? null,
+            {
+                firstName,
+                dogName: client.primary_dog_name,
+                date: dateLabel,
+                time: timeLabel,
+            },
+            fallback
         );
+        const message = encodeURIComponent(messageText);
         const waUrl = phoneDigits ? `https://wa.me/${intl}?text=${message}` : `https://wa.me/?text=${message}`;
 
         return (
