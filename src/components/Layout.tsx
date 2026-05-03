@@ -84,9 +84,9 @@ export function Layout() {
                     <a
                         href="/blog"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
-                        title="תכנים ומדריכים למאלפי כלבים"
+                        title="תכנים ומדריכים בנושא אילוף כלבים"
                     >
                         <BookOpen size={20} />
                         בלוג
@@ -96,7 +96,7 @@ export function Layout() {
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
                     >
                         <LogOut size={20} className="rtl:rotate-180" />
-                        התנתק
+                        יציאה
                     </button>
                     <div className="text-[11px] text-center text-text-muted/60 pt-2 pb-1 font-medium">
                         גרסה 2.0 • Doggo CRM
@@ -178,7 +178,7 @@ export function Layout() {
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background transition-colors"
                     >
                         <LogOut size={20} className="rtl:rotate-180" />
-                        התנתק
+                        יציאה
                     </button>
                 </div>
             </div>
