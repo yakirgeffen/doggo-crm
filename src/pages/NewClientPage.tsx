@@ -15,6 +15,7 @@ export function NewClientPage() {
         email: '',
         phone: '',
         primary_dog_name: '',
+        primary_dog_breed: '',
         notes: '',
     });
 
@@ -22,7 +23,15 @@ export function NewClientPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { data, error } = await supabase.from('clients').insert([formData]).select();
+        const payload = {
+            full_name: formData.full_name,
+            email: formData.email || null,
+            phone: formData.phone || null,
+            primary_dog_name: formData.primary_dog_name || null,
+            primary_dog_breed: formData.primary_dog_breed || null,
+            notes: formData.notes || null,
+        };
+        const { data, error } = await supabase.from('clients').insert([payload]).select();
 
         if (error) {
             showToast('שגיאה ביצירת לקוח: ' + error.message, 'error');
@@ -91,18 +100,33 @@ export function NewClientPage() {
                         </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                        <label htmlFor="nc-dog-name" className="block text-sm font-medium text-text-primary">
-                            שם הכלב
-                        </label>
-                        <input
-                            id="nc-dog-name"
-                            type="text"
-                            placeholder="לדוגמה: רקסי"
-                            className="input-field"
-                            value={formData.primary_dog_name}
-                            onChange={(e) => setFormData({ ...formData, primary_dog_name: e.target.value })}
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1.5">
+                            <label htmlFor="nc-dog-name" className="block text-sm font-medium text-text-primary">
+                                שם הכלב
+                            </label>
+                            <input
+                                id="nc-dog-name"
+                                type="text"
+                                placeholder="לדוגמה: רקסי"
+                                className="input-field"
+                                value={formData.primary_dog_name}
+                                onChange={(e) => setFormData({ ...formData, primary_dog_name: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label htmlFor="nc-dog-breed" className="block text-sm font-medium text-text-primary">
+                                גזע (אופציונלי)
+                            </label>
+                            <input
+                                id="nc-dog-breed"
+                                type="text"
+                                placeholder="לדוגמה: לברדור, מעורב"
+                                className="input-field"
+                                value={formData.primary_dog_breed}
+                                onChange={(e) => setFormData({ ...formData, primary_dog_breed: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     <div className="space-y-1.5">
