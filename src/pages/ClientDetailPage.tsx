@@ -195,8 +195,8 @@ export function ClientDetailPage() {
                         <div className="space-y-3">
                             <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">הצעות מחיר</h3>
                             {quotes.map((q) => (
-                                <div key={q.id} className="flat-card p-4 flex justify-between items-center">
-                                    <div>
+                                <div key={q.id} className="flat-card p-4 flex justify-between items-center gap-3">
+                                    <div className="flex-1 min-w-0">
                                         <p className="font-bold text-text-primary">
                                             הצעת מחיר {q.sumit_document_number ? `#${q.sumit_document_number}` : ''}
                                         </p>
@@ -205,14 +205,31 @@ export function ClientDetailPage() {
                                             {q.total_amount && ` · ₪${Number(q.total_amount).toLocaleString()}`}
                                         </p>
                                     </div>
-                                    <span className={`badge ${q.status === 'accepted' ? 'badge-completed' : q.status === 'declined' || q.status === 'expired' ? 'badge-pending' : 'badge-active'}`}>
-                                        {q.status === 'sent' ? 'נשלחה' :
-                                         q.status === 'viewed' ? 'נצפתה' :
-                                         q.status === 'accepted' ? 'אושרה ✓' :
-                                         q.status === 'declined' ? 'נדחתה' :
-                                         q.status === 'expired' ? 'פגה' :
-                                         q.status === 'draft' ? 'טיוטה' : q.status}
-                                    </span>
+                                    <select
+                                        className={`text-xs font-medium px-2 py-1 rounded-lg border bg-surface ${
+                                            q.status === 'accepted' ? 'text-success border-success/30' :
+                                            q.status === 'declined' || q.status === 'expired' ? 'text-text-muted border-border' :
+                                            'text-primary border-primary/30'
+                                        }`}
+                                        value={q.status}
+                                        onChange={async (e) => {
+                                            const newStatus = e.target.value;
+                                            const { error } = await supabase
+                                                .from('quotes')
+                                                .update({ status: newStatus })
+                                                .eq('id', q.id);
+                                            if (!error) {
+                                                setQuotes(prev => prev.map(x => x.id === q.id ? { ...x, status: newStatus } : x));
+                                            }
+                                        }}
+                                    >
+                                        <option value="sent">נשלחה</option>
+                                        <option value="viewed">נצפתה</option>
+                                        <option value="accepted">אושרה ✓</option>
+                                        <option value="declined">נדחתה</option>
+                                        <option value="expired">פגה</option>
+                                        <option value="draft">טיוטה</option>
+                                    </select>
                                 </div>
                             ))}
                         </div>
