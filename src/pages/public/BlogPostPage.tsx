@@ -56,12 +56,12 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. Google Calendar</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    בסיס. כל מפגש שאת קובעת חייב להופיע ביומן שלך אוטומטית. Doggo CRM כבר עושה את זה — אין מצב להחזיק שני יומנים.
+                    בסיס. כל מפגש שנקבע חייב להופיע ביומן שלך אוטומטית. Doggo CRM כבר עושה את זה — אין מצב להחזיק שני יומנים.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. Canva (לא חובה אבל מקצר זמן)</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    תמונות לרשתות חברתיות. דף תוצאות לפני/אחרי. כרטיס ביקור דיגיטלי. גם בתוכנית החינמית — עובד מצוין. אם את משווקת באינסטגרם או טיקטוק — Canva זה הכלי.
+                    תמונות לרשתות חברתיות. דף תוצאות לפני/אחרי. כרטיס ביקור דיגיטלי. גם בתוכנית החינמית — עובד מצוין. למי שמשווק באינסטגרם או טיקטוק — Canva זה הכלי.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">בונוס: מה לא צריך</h2>
@@ -76,7 +76,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM מתחבר לכל הכלים שלמעלה. ב-15 דקות יש לך עסק שמתפקד אוטומטית.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -101,7 +101,7 @@ const POSTS: Record<string, Post> = {
                     שמת 12 שדות חובה כדי "לסנן רציניים". הסיכון: 80% נוטשים לפני סיום. בעיקר במובייל, שם רוב הפניות מגיעות.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    <strong>מה לעשות במקום:</strong> 4 שדות מקסימום בשלב הראשון. שם, טלפון, שם הכלב, מה רוצים לפתור. את שאר הפרטים תאספי בשיחה הראשונה.
+                    <strong>מה לעשות במקום:</strong> 4 שדות מקסימום בשלב הראשון. שם, טלפון, שם הכלב, מה רוצים לפתור. את שאר הפרטים אפשר לאסוף בשיחה הראשונה.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. אין הבטחה ברורה למה יקרה אחרי השליחה</h2>
@@ -118,15 +118,15 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. אין מעקב מקור</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    מאיפה הליד הגיע? ידעת שזה היה ה-Reel באינסטגרם? או ה-3,000 שקל שהשקעת בקמפיין Google? בלי מעקב — את לא יודעת.
+                    מאיפה הליד הגיע? ידעת שזה היה ה-Reel באינסטגרם? או ה-3,000 שקל שהושקעו בקמפיין Google? בלי מעקב — אי אפשר לדעת.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    <strong>מה לעשות במקום:</strong> UTM פרמטרים בכל קישור שאת מפיצה. אחרי 60 יום תדעי מי המקור הכי משתלם, ותכווני שם את המאמץ הבא.
+                    <strong>מה לעשות במקום:</strong> UTM פרמטרים בכל קישור שמופץ. אחרי 60 יום אפשר לדעת מי המקור הכי משתלם, ולכוון שם את המאמץ הבא.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. אין הגנת ספאם</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    טופס פתוח בלי CAPTCHA הופך לשפך לבוטים תוך שבוע. את מקבלת 50 הודעות "Hey, my dog needs help" מאינדונזיה. לא רציני, גוזל זמן, מסתיר לידים אמיתיים.
+                    טופס פתוח בלי CAPTCHA הופך לשפך לבוטים תוך שבוע. אז מגיעות 50 הודעות "Hey, my dog needs help" מאינדונזיה. לא רציני, גוזל זמן, מסתיר לידים אמיתיים.
                     <strong>מה לעשות במקום:</strong> Cloudflare Turnstile (חינמי ובלתי-פולשני) או reCAPTCHA. דקה להתקין.
                 </p>
 
@@ -140,7 +140,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM מציע טופס פניות מוכן עם CAPTCHA, מעקב UTM אוטומטי, וטריגר Webhook לאוטומציות שלך — הכל בחינם.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -180,9 +180,9 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה לעשות אחרי שליחת ההצעה</h2>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
-                    <li><strong>שלחי גם הודעת WhatsApp</strong> — "שלום, הרגע שלחתי לך הצעת מחיר במייל. אם יש שאלות אני כאן." זמן תגובה ראשונה לפי 5 דקות = שיעור המרה גבוה ב-40%.</li>
-                    <li><strong>אל תפחדי לחזור</strong> — אם הלקוח לא הגיב תוך 3 ימים, שלחי הודעה: "רציתי לבדוק אם קיבלת את ההצעה ואם יש שאלות". זה לא לחץ — זה שירות.</li>
-                    <li><strong>אבל לא יותר מ-3 פולואפים</strong> — אם הלקוח לא הגיב אחרי 3 ניסיונות בפער של שבוע, אל תשקיעי יותר. הוא לא קונה.</li>
+                    <li><strong>לשלוח גם הודעת WhatsApp</strong> — "שלום, הרגע שלחתי לך הצעת מחיר במייל. אם יש שאלות אני כאן." זמן תגובה ראשונה לפי 5 דקות = שיעור המרה גבוה ב-40%.</li>
+                    <li><strong>לא לפחד לחזור</strong> — אם הלקוח לא הגיב תוך 3 ימים, שולחים הודעה: "רציתי לבדוק אם קיבלת את ההצעה ואם יש שאלות". זה לא לחץ — זה שירות.</li>
+                    <li><strong>אבל לא יותר מ-3 פולואפים</strong> — אם הלקוח לא הגיב אחרי 3 ניסיונות בפער של שבוע, אין טעם להשקיע יותר. הוא לא קונה.</li>
                 </ul>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">דוגמת הצעה שעובדת (תבנית)</h2>
@@ -205,8 +205,8 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה Doggo CRM מקלה על הצעות מחיר</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    בלחיצה אחת ב-Doggo CRM את בוחרת את החבילה מהקטלוג, מקבלת הצעת מחיר עם PDF, מספר מסמך מ-Sumit, ומעקב סטטוס.
-                    הלקוח מקבל מייל מקצועי ולחיצה אחת על "אישור". את עוקבת בלי לחפש בוואטסאפ.
+                    בלחיצה אחת ב-Doggo CRM בוחרים את החבילה מהקטלוג, מקבלים הצעת מחיר עם PDF, מספר מסמך מ-Sumit, ומעקב סטטוס.
+                    הלקוח מקבל מייל מקצועי ולחיצה אחת על "אישור". המעקב נעשה במערכת, בלי לחפש בוואטסאפ.
                 </p>
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
@@ -214,7 +214,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM מפיק לך הצעות מחיר ב-30 שניות, עם PDF נשלח ישירות מהמערכת. ניסיון 30 יום חינם.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        התחילי עכשיו
+                        להתחיל עכשיו
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -230,13 +230,13 @@ const POSTS: Record<string, Post> = {
         body: () => (
             <>
                 <p className="text-text-secondary text-lg leading-relaxed mb-6">
-                    אם רוב התקשורת שלך עם הלקוחות עוברת ב-WhatsApp — את לא לבד. בישראל, 95% מהמאלפים העצמאיים מנהלים את היומיום בוואטסאפ.
+                    אם רוב התקשורת שלך עם הלקוחות עוברת ב-WhatsApp — זו לא תופעה יחידאית. בישראל, 95% מהמאלפים העצמאיים מנהלים את היומיום בוואטסאפ.
                     זה לא בעיה. זה גם לא הפתרון השלם.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה WhatsApp עושה מצוין</h2>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
-                    <li>תקשורת מהירה — לקוח שולח, את עונה תוך דקות</li>
+                    <li>תקשורת מהירה — לקוח שולח, התשובה מגיעה תוך דקות</li>
                     <li>שיתוף מדיה — תמונות וסרטונים של התקדמות הכלב</li>
                     <li>נוכחות בערוץ הטבעי של הלקוח (95% מהישראלים פתוחים בוואטסאפ ביום)</li>
                     <li>חינמי, ללא אינטגרציה</li>
@@ -259,18 +259,18 @@ const POSTS: Record<string, Post> = {
                     החיבור הנכון:
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
-                    <li>הלקוח שולח הודעה ב-WhatsApp → את עונה ב-WhatsApp.</li>
-                    <li>אחרי השיחה, את מסכמת ב-CRM (נקודה חשובה, החלטה, צעד הבא).</li>
-                    <li>כשמגיע הזמן לשלוח הצעת מחיר / חשבונית — את לוחצת כפתור ב-CRM. הלקוח מקבל מייל + WhatsApp עם הקישור.</li>
+                    <li>הלקוח שולח הודעה ב-WhatsApp → התשובה חוזרת ב-WhatsApp.</li>
+                    <li>אחרי השיחה, סיכום ב-CRM (נקודה חשובה, החלטה, צעד הבא).</li>
+                    <li>כשמגיע הזמן לשלוח הצעת מחיר / חשבונית — לחיצת כפתור ב-CRM. הלקוח מקבל מייל + WhatsApp עם הקישור.</li>
                     <li>תזכורות 24 שעות לפני המפגש — אוטומטיות מה-CRM למייל הלקוח.</li>
                 </ul>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איך לעשות את המעבר בלי כאב</h2>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
-                    <li><strong>שבוע 1</strong> — הוסיפי כל לקוח חדש ל-CRM. את הלקוחות הישנים, לא תכניסי בבת אחת. ככל שהם פונים — תעדכני.</li>
-                    <li><strong>שבוע 2</strong> — תתחילי לסכם כל שיחה משמעותית בכרטיס הלקוח. דקה לסיכום בסוף השיחה.</li>
-                    <li><strong>שבוע 3</strong> — תשתמשי בכפתור ההצעות / חשבוניות במקום לכתוב הכל ידנית.</li>
-                    <li><strong>שבוע 4</strong> — תפעילי תזכורות אוטומטיות. אחרי חודש, תראי הבדל.</li>
+                    <li><strong>שבוע 1</strong> — להוסיף כל לקוח חדש ל-CRM. את הלקוחות הישנים, אין צורך להכניס בבת אחת. ככל שהם פונים — לעדכן.</li>
+                    <li><strong>שבוע 2</strong> — להתחיל לסכם כל שיחה משמעותית בכרטיס הלקוח. דקה לסיכום בסוף השיחה.</li>
+                    <li><strong>שבוע 3</strong> — להשתמש בכפתור ההצעות / חשבוניות במקום לכתוב הכל ידנית.</li>
+                    <li><strong>שבוע 4</strong> — להפעיל תזכורות אוטומטיות. אחרי חודש — ההבדל ניכר.</li>
                 </ol>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה קורה אחרי</h2>
@@ -282,7 +282,7 @@ const POSTS: Record<string, Post> = {
                     <li>שיעור חבילה-שלמה גבוה ב-15-25% (תזכורות מקטינות מבוטלות-ברגע-האחרון)</li>
                 </ul>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    WhatsApp נשאר. ה-CRM מתחבר אליו (פיצ'ר עתידי בקרוב — בינתיים: הקישורים בכתב). העסק שלך גדל בלי שאת עובדת יותר.
+                    WhatsApp נשאר. ה-CRM מתחבר אליו (פיצ'ר עתידי בקרוב — בינתיים: הקישורים בכתב). העסק שלך גדל בלי תוספת שעות עבודה.
                 </p>
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
@@ -290,7 +290,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM נבנה לעבוד לצד WhatsApp, לא להחליף אותו. כפתורי שיתוף ב-WhatsApp מובנים בכל מסך. ניסיון 30 יום חינם.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        התחילי בחינם
+                        להתחיל בחינם
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -322,37 +322,37 @@ const POSTS: Record<string, Post> = {
                     <li>כלי שליחת WhatsApp — אופציות פופולריות בישראל: <strong>Whapi.cloud</strong>, <strong>GreenAPI</strong>, או <strong>WhatsApp Business API</strong> רשמי דרך Meta</li>
                 </ul>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 1 — צרי Webhook ב-Make</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 1 — יצירת Webhook ב-Make</h2>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
-                    <li>הירשמי ל-Make.com (חינם).</li>
-                    <li>צרי Scenario חדש.</li>
-                    <li>לחצי על "+" והוסיפי מודול <strong>Webhooks → Custom Webhook</strong>.</li>
-                    <li>לחצי "Add" ותני שם (לדוגמה: "Doggo CRM Lead Webhook"). העתיקי את ה-URL שמופיע — תזדקקי לו בשלב הבא.</li>
+                    <li>להירשם ל-Make.com (חינם).</li>
+                    <li>ליצור Scenario חדש.</li>
+                    <li>ללחוץ על "+" ולהוסיף מודול <strong>Webhooks → Custom Webhook</strong>.</li>
+                    <li>ללחוץ "Add" ולתת שם (לדוגמה: "Doggo CRM Lead Webhook"). להעתיק את ה-URL שמופיע — הוא יידרש בשלב הבא.</li>
                 </ol>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 2 — חברי את Webhook ל-Doggo CRM</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 2 — חיבור Webhook ל-Doggo CRM</h2>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
-                    <li>היכנסי ל-Doggo CRM → הגדרות → אינטגרציות.</li>
-                    <li>גללי לסעיף "Webhook לאוטומציות".</li>
-                    <li>הדביקי את ה-URL מ-Make לתוך השדה "Webhook URL".</li>
-                    <li>לחצי "שמור".</li>
-                    <li>לחצי "שלח בדיקה" — תקבלי אישור ירוק שהבדיקה הצליחה.</li>
+                    <li>להיכנס ל-Doggo CRM → הגדרות → אינטגרציות.</li>
+                    <li>לגלול לסעיף "Webhook לאוטומציות".</li>
+                    <li>להדביק את ה-URL מ-Make לתוך השדה "Webhook URL".</li>
+                    <li>ללחוץ "שמור".</li>
+                    <li>ללחוץ "שלח בדיקה" — יופיע אישור ירוק שהבדיקה הצליחה.</li>
                 </ol>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    מצאי שלא — חזרי ל-Make. ב-Scenario תראי שהפעולה הראשונה כבר אכלסה data. זה ה-payload של בדיקה.
+                    אם לא — חזרה ל-Make. ב-Scenario תופיע בפעולה הראשונה data שכבר אכלסה. זה ה-payload של בדיקה.
                 </p>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 3 — הוסיפי שליחת WhatsApp ב-Make</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 3 — הוספת שליחת WhatsApp ב-Make</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    זה הצעד שדורש קצת עבודה. הוא תלוי בכלי ה-WhatsApp שבחרת. דוגמה ל-<strong>Whapi.cloud</strong>:
+                    זה הצעד שדורש קצת עבודה. הוא תלוי בכלי ה-WhatsApp הנבחר. דוגמה ל-<strong>Whapi.cloud</strong>:
                 </p>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
-                    <li>הירשמי ל-Whapi (יש תוכנית חינמית מוגבלת).</li>
-                    <li>חברי את WhatsApp שלך (הסריקה לוקחת 30 שניות).</li>
-                    <li>קבלי <strong>Token</strong> מהדשבורד.</li>
-                    <li>חזרי ל-Make → Scenario → לחצי "+" אחרי ה-Webhook.</li>
-                    <li>חפשי "HTTP" → "Make a request".</li>
-                    <li>הגדירי:
+                    <li>להירשם ל-Whapi (יש תוכנית חינמית מוגבלת).</li>
+                    <li>לחבר את WhatsApp שלך (הסריקה לוקחת 30 שניות).</li>
+                    <li>לקבל <strong>Token</strong> מהדשבורד.</li>
+                    <li>לחזור ל-Make → Scenario → ללחוץ "+" אחרי ה-Webhook.</li>
+                    <li>לחפש "HTTP" → "Make a request".</li>
+                    <li>להגדיר:
                         <ul className="mr-4 list-disc list-inside">
                             <li>URL: <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">https://gate.whapi.cloud/messages/text</code></li>
                             <li>Method: POST</li>
@@ -366,19 +366,19 @@ const POSTS: Record<string, Post> = {
                             </li>
                         </ul>
                     </li>
-                    <li>הפעילי את ה-Scenario (כפתור "Run once" לבדיקה, אחר כך הפעילי באופן קבוע).</li>
+                    <li>להפעיל את ה-Scenario (כפתור "Run once" לבדיקה, אחר כך להפעיל באופן קבוע).</li>
                 </ol>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 4 — בדיקה אמיתית</h2>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
-                    <li>היכנסי לדף החנות שלך (<code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">doggocrm.app/t/your-handle</code>).</li>
-                    <li>מלאי טופס פניות בעצמך (הזיני מספר WhatsApp שלך).</li>
-                    <li>תוך 30 שניות, את צריכה לקבל הודעת WhatsApp.</li>
+                    <li>להיכנס לדף החנות שלך (<code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">doggocrm.app/t/your-handle</code>).</li>
+                    <li>למלא טופס פניות בעצמך (להזין מספר WhatsApp שלך).</li>
+                    <li>תוך 30 שניות צריכה להגיע הודעת WhatsApp.</li>
                 </ol>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">רעיונות נוספים שאת יכולה לבנות</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">רעיונות נוספים לבנייה</h2>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
-                    <li><strong>הודעה למאלף עצמו</strong> — פנייה חדשה? קבלי גם הודעת WhatsApp לעצמך עם פרטי הליד.</li>
+                    <li><strong>הודעה למאלף עצמו</strong> — פנייה חדשה? לקבל גם הודעת WhatsApp עצמית עם פרטי הליד.</li>
                     <li><strong>תזכורת תשלום</strong> — אירוע <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">program.paid</code> מחבר ל-WhatsApp תודה ללקוח.</li>
                     <li><strong>סנכרון ל-Google Sheets</strong> — כל ליד נכנס לאקסל לגיבוי + ניתוח.</li>
                     <li><strong>שליחה למייל-מרקטינג</strong> — Mailchimp / Brevo. הליד נוסף אוטומטית לרשימת תפוצה.</li>
@@ -386,7 +386,7 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סוגי האירועים שזמינים</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    כשאת מחברת Webhook ל-Doggo CRM, ארבעה סוגי אירועים נשלחים אליו אוטומטית:
+                    בחיבור Webhook ל-Doggo CRM, ארבעה סוגי אירועים נשלחים אליו אוטומטית:
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
                     <li><code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">intake_submission.created</code> — פנייה חדשה</li>
@@ -400,10 +400,10 @@ const POSTS: Record<string, Post> = {
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
                     <p className="text-text-secondary mb-4">
-                        Doggo CRM כבר תומך ב-Webhook לאוטומציות (G4) — בלי תוספת תשלום בכל התוכניות. חברי Make / Zapier / Whapi / כל כלי שמדבר HTTP.
+                        Doggo CRM כבר תומך ב-Webhook לאוטומציות (G4) — בלי תוספת תשלום בכל התוכניות. אפשר לחבר Make / Zapier / Whapi / כל כלי שמדבר HTTP.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        התחילי עכשיו
+                        להתחיל עכשיו
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -429,7 +429,7 @@ const POSTS: Record<string, Post> = {
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. עברית מלאה, או רק תרגום מסך?</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     הבדל חשוב: CRM שתורגם לעברית מצוות תמיכה לא ישראלי הופך מהר לעבודה. הודעות מערכת לא ברורות, RTL שבור, תאריכים בפורמט אמריקאי.
-                    שאלי באתר: "האם המערכת בעברית מלאה?" אם הם משתמשים בביטוי "Hebrew translation available" — זה תרגום, לא עברית.
+                    כדאי לשאול באתר: "האם המערכת בעברית מלאה?" אם הם משתמשים בביטוי "Hebrew translation available" — זה תרגום, לא עברית.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. האם המערכת מבינה את התחום שלך?</h2>
@@ -447,11 +447,11 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. עם מי המערכת מתחברת?</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    בדקי שני סוגי חיבורים:
+                    כדאי לבדוק שני סוגי חיבורים:
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
                     <li><strong>חיוב + חשבונית</strong> — Sumit, חשבונית ירוקה (Morning), או שתיהן. אם המערכת אומרת "ייצוא ל-CSV ולחבר ידנית" — זה לא מספיק.</li>
-                    <li><strong>יומן</strong> — Google Calendar בלי הקלדה כפולה. כל מפגש שאת קובעת במערכת חייב להופיע ביומן שלך אוטומטית.</li>
+                    <li><strong>יומן</strong> — Google Calendar בלי הקלדה כפולה. כל מפגש שנקבע במערכת חייב להופיע ביומן שלך אוטומטית.</li>
                 </ul>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     בונוס: חיבור ל-Make / Zapier / Webhooks — חשוב למאלפים שרוצים לחבר WhatsApp או SMS.
@@ -459,7 +459,7 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. כמה זה עולה — באמת?</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    "החל מ-99 ש"ח לחודש" יכול להיות מטעה. בדקי:
+                    "החל מ-99 ש"ח לחודש" יכול להיות מטעה. כדאי לבדוק:
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
                     <li>מה <strong>בתוכנית הבסיסית</strong>? לעיתים האימייל-מרקטינג או החיבור לחשבונית הם בתוכנית יקרה יותר.</li>
@@ -483,12 +483,12 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">6. תמיכה — וההפך מתמיכה</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    בדקי איך התמיכה עובדת. מייל זה סטנדרט. וואטסאפ או צ'אט בעברית — בונוס משמעותי. תמיכה רק באנגלית במייל אחרי 48 שעות — זה איטי לעסק קטן.
+                    כדאי לבדוק איך התמיכה עובדת. מייל זה סטנדרט. וואטסאפ או צ'אט בעברית — בונוס משמעותי. תמיכה רק באנגלית במייל אחרי 48 שעות — זה איטי לעסק קטן.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה רוב ה-CRM-ים בשוק לא יעבדו לך</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    כי הם נבנו ל"מנהל מכירות שמנהל פייפליין". את לא בדיוק זה. את עוסק עצמאי שעוזר לכלב אחד בכל פעם.
+                    כי הם נבנו ל"מנהל מכירות שמנהל פייפליין". זה לא המקרה כאן — מאלף עצמאי עוזר לכלב אחד בכל פעם.
                     תחום החשיבה שונה: לא "deal stage", אלא "חבילה". לא "contact", אלא "לקוח + כלב". לא "task", אלא "מפגש" עם סיכום ושיעורי בית.
                 </p>
 
@@ -497,7 +497,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM נבנה במיוחד למאלפי כלבים עצמאיים בישראל. כל ששת השאלות עוברות ב"כן" — עברית מלאה, מבין את התחום, מתחבר ל-Sumit + Google + Webhook, חינם להתחיל, התקנה ב-15 דקות.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -525,13 +525,13 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 2: שכחת לחזור ללקוח</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    בעבר היה לך פתק. עכשיו יש 4 פתקים, 3 הודעות וואטסאפ, ואחד-שניים שאת זוכרת רק כי הם רושמים-מודעות בפייסבוק.
+                    בעבר היה לך פתק. עכשיו יש 4 פתקים, 3 הודעות וואטסאפ, ואחד-שניים שעולים בזיכרון רק כי הם רושמים-מודעות בפייסבוק.
                     כשמבקשים ממאלפים לתאר את "הרגע שעברתי ל-CRM", זו הסיבה הכי שכיחה: לקוח אחד נשמט, וזה הספיק.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 3: יש לך נתונים שאי אפשר לשאול אותם</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    בקובץ אקסל, אם תרצי לדעת:
+                    בקובץ אקסל, כשרוצים לדעת:
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
                     <li>כמה לידים קיבלת בחודש האחרון מאינסטגרם?</li>
@@ -539,13 +539,13 @@ const POSTS: Record<string, Post> = {
                     <li>כמה לקוחות חזרו לחבילה שנייה?</li>
                 </ul>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    אקסל יודע לגלגל מספרים, אבל רק אם תקצי את הנתונים מראש בצורה שמאפשרת את זה. ב-CRM ייעודי, השאלות האלו פתוחות ב-3 לחיצות.
+                    אקסל יודע לגלגל מספרים, אבל רק אם הנתונים מסודרים מראש בצורה שמאפשרת את זה. ב-CRM ייעודי, השאלות האלו פתוחות ב-3 לחיצות.
                     זה ההבדל בין לעבוד ב-עסק לבין לעבוד עליו.
                 </p>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 4: את שולחת הצעות מחיר וחשבוניות בכלים נפרדים</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סימן 4: שליחת הצעות מחיר וחשבוניות בכלים נפרדים</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    אם הצעת המחיר ב-Word, החשבונית ב-Sumit/חשבונית ירוקה, ההסכם ב-PDF במייל, וההיסטוריה ב-WhatsApp — את עובדת ב-4 כלים שלא מדברים ביניהם.
+                    אם הצעת המחיר ב-Word, החשבונית ב-Sumit/חשבונית ירוקה, ההסכם ב-PDF במייל, וההיסטוריה ב-WhatsApp — העבודה מתפצלת ל-4 כלים שלא מדברים ביניהם.
                     CRM ייעודי מחבר אותם. אותו לקוח, אותה תוכנית, הצעת מחיר → חשבונית → אישור → תזכורות אוטומטיות. הכל קשור.
                 </p>
 
@@ -559,7 +559,7 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שורה תחתונה</h2>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    אקסל הוא לא הבעיה. הבעיה היא לעבוד עם 4 כלים שלא מדברים. כשהזמן שאת מבזבזת על אדמין עולה על שעה ביום — זה הגיע הזמן.
+                    אקסל הוא לא הבעיה. הבעיה היא לעבוד עם 4 כלים שלא מדברים. כשהזמן שמבוזבז על אדמין עולה על שעה ביום — זה הגיע הזמן.
                 </p>
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
@@ -567,7 +567,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM נבנה מאלפים, לא לסוכני נדל"ן. עברית מלאה, חיבור ל-Sumit + Google + Gmail, ניסיון 30 יום חינם.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -587,18 +587,18 @@ const POSTS: Record<string, Post> = {
                     אין תשובה אחת נכונה, אבל יש מסגרת פרקטית שעוזרת להגיע למחיר הוגן וריווחי. הנה מה שלמדנו מראיונות עם מאלפים בישראל.
                 </p>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. התחילי מהעלות-לדקה שלך, לא מהמחיר של המתחרים</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">1. להתחיל מהעלות-לדקה שלך, לא מהמחיר של המתחרים</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    הטעות הנפוצה: לבדוק 3 מאלפים בסביבה ולקבוע מחיר באמצע. בעיה: זה לא מבטיח שאת מרוויחה.
+                    הטעות הנפוצה: לבדוק 3 מאלפים בסביבה ולקבוע מחיר באמצע. הבעיה: זה לא מבטיח רווחיות.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    החישוב הנכון: כמה את עובדת בחודש? נסיעות + מפגשים + תיעוד + שיחות וואטסאפ אחרי? קבלי שעות. חלקי במשכורת שאת רוצה לקחת הביתה (ברוטו).
+                    החישוב הנכון: כמה שעות עבודה בחודש? נסיעות + מפגשים + תיעוד + שיחות וואטסאפ אחרי? לסכם שעות. לחלק במשכורת שרוצים לקחת הביתה (ברוטו).
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    דוגמה: 120 שעות עבודה בחודש, רוצה 12,000 ש"ח ברוטו → 100 ש"ח לשעה כעלות-לדקה. עכשיו תכפילי במספר השעות הריאלי שתוכנית אילוף לוקחת ממך, וזה רצפת המחיר.
+                    דוגמה: 120 שעות עבודה בחודש, יעד 12,000 ש"ח ברוטו → 100 ש"ח לשעה כעלות-לדקה. עכשיו אפשר להכפיל במספר השעות הריאלי שתוכנית אילוף לוקחת — וזו רצפת המחיר.
                 </p>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. תמחר/י לפי תוצאה, לא לפי מפגש</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">2. תמחור לפי תוצאה, לא לפי מפגש</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
                     שתי תוכניות "אילוף בייסיק 8 מפגשים":
                 </p>
@@ -618,7 +618,7 @@ const POSTS: Record<string, Post> = {
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. חבילות במקום מפגש בודד</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
                     מאלפים שמוכרים מפגשים בודדים תמיד נאבקים במחזור-תזרים. חבילה של 8 מפגשים מראש פותרת את זה: התשלום מגיע בהתחלה, ההכנסה צפויה,
-                    הלקוח מחויב להגיע (כי כבר שילם), ואת לא צריכה לשכנע אותו לכל מפגש.
+                    הלקוח מחויב להגיע (כי כבר שילם), ואין צורך לשכנע אותו לכל מפגש.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     טיפ: 3 חבילות בלבד. בייסיק (4-6 מפגשים) / סטנדרט (8-10) / פרימיום (12+). יותר אופציות = פחות החלטות = שיתוק לקוח.
@@ -630,7 +630,7 @@ const POSTS: Record<string, Post> = {
                 </p>
                 <ul className="text-text-secondary leading-relaxed mb-4 list-disc list-inside space-y-2 mr-4">
                     <li><strong>מפגש היכרות חינם</strong> — מושך הרבה לידים, חלקם לא רציניים. הופך את החודש שלך ל-15 פגישות-היכרות + 5 לקוחות אמיתיים.</li>
-                    <li><strong>מפגש היכרות בתשלום (250-350 ש"ח)</strong> — מסנן רציניים. שיעור ההמרה ללקוח גבוה משמעותית. גם בלי חבילה — שולמת על הזמן שלך.</li>
+                    <li><strong>מפגש היכרות בתשלום (250-350 ש"ח)</strong> — מסנן רציניים. שיעור ההמרה ללקוח גבוה משמעותית. גם בלי חבילה — מקבלים תשלום על הזמן שלך.</li>
                 </ul>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     ההמלצה: השני. המפגש בתשלום הוא בעצם הצעת מחיר אצלך בבית, וזה מתפקד כסינון איכותי.
@@ -638,7 +638,7 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">5. הצעת מחיר ב-30 שניות, לא ב-30 דקות</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    אחרי שהגדרת את החבילות שלך — את כבר לא מחשבת מחיר לכל לקוח. את לוחצת "הצעת מחיר", בוחרת את החבילה, שולחת.
+                    אחרי שהחבילות שלך מוגדרות — אין צורך לחשב מחיר לכל לקוח מחדש. לחיצה על "הצעת מחיר", בחירת החבילה, שליחה.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     זה ההבדל בין מאלף שמתמחר במהירות ושולח 5 הצעות בערב, לבין מאלף שמתחיל ל"חשב את המחיר" ושולח אחת — אחרי שהלקוח כבר פנה למתחרה.
@@ -658,7 +658,7 @@ const POSTS: Record<string, Post> = {
                         Doggo CRM יודע את החבילות שלך. הצעת מחיר ללקוח חדש לוקחת 30 שניות, לא 30 דקות.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -691,7 +691,7 @@ const POSTS: Record<string, Post> = {
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איפה Sumit מובילה</h2>
                 <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2">
                     <li><strong>הצעות מחיר נטיבית</strong> — Sumit מאפשרת להפיק "הצעת מחיר" כסוג מסמך נפרד, עם מעקב סטטוס. בחשבונית ירוקה זה דורש עבודה צד.</li>
-                    <li><strong>חיוב מתחדש (Recurring)</strong> — אם תרצי לעבור פעם למודל מנוי (לדוגמה, "תוכנית אילוף אונליין חודשית"), Sumit כבר תומכת בזה. בחשבונית ירוקה זו עבודה.</li>
+                    <li><strong>חיוב מתחדש (Recurring)</strong> — למעבר עתידי למודל מנוי (לדוגמה, "תוכנית אילוף אונליין חודשית"), Sumit כבר תומכת בזה. בחשבונית ירוקה זו עבודה.</li>
                     <li><strong>ממשק UI מודרני יותר</strong> — סובייקטיבי, אבל הרבה מאלפים שדיברנו איתם מציינים את זה.</li>
                 </ul>
 
@@ -702,19 +702,19 @@ const POSTS: Record<string, Post> = {
                     <li><strong>תמחור פשוט יותר לעוסק פטור/מורשה</strong> — נקודת מבט שצריך לבדוק עם רואה חשבון, אבל נשמע פעמים רבות כשיקול.</li>
                 </ul>
 
-                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">השאלה האמיתית: כמה זמן את חוסכת בכל חשבונית?</h2>
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">השאלה האמיתית: כמה זמן חוסכים בכל חשבונית?</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
                     שני השירותים מצוינים בלהפיק חשבונית מהממשק שלהם. הבעיה: אצל מאלף שיש לו מערכת לקוחות (CRM) נפרדת, התהליך הוא:
                 </p>
                 <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-1 mr-4">
-                    <li>פתחי את ה-CRM, מצאי את הלקוח</li>
-                    <li>פתחי את חשבונית ירוקה / Sumit במסך נפרד</li>
-                    <li>הקלידי את שם הלקוח, מייל, פרטי השירות, סכום</li>
-                    <li>שלחי</li>
-                    <li>חזרי ל-CRM, רשמי שהחשבונית נשלחה</li>
+                    <li>לפתוח את ה-CRM, למצוא את הלקוח</li>
+                    <li>לפתוח את חשבונית ירוקה / Sumit במסך נפרד</li>
+                    <li>להקליד את שם הלקוח, מייל, פרטי השירות, סכום</li>
+                    <li>לשלוח</li>
+                    <li>לחזור ל-CRM, לרשום שהחשבונית נשלחה</li>
                 </ol>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    זה 3-5 דקות לכל חשבונית. אם את שולחת 30 חשבוניות בחודש — זה שעתיים. במצב טוב 4 שעות.
+                    זה 3-5 דקות לכל חשבונית. בנפח של 30 חשבוניות בחודש — זה שעתיים. במצב טוב 4 שעות.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה Doggo CRM מתחבר לשניהם</h2>
@@ -724,24 +724,24 @@ const POSTS: Record<string, Post> = {
                     או חשבונית ירוקה <strong>שלך</strong>. לא דרך החשבון שלנו, לא עם עמלת תיווך — דרך החשבון שלך, באמצעות מפתחות ה-API שלך.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    התוצאה: אם את עובדת עם Sumit, ההצעות והחשבוניות שלך יופיעו בדשבורד של Sumit כרגיל.
-                    אם את עובדת עם חשבונית ירוקה, אותו דבר. את לא משנה את המערכת החשבונאית שלך — את רק מפסיקה להקליד את אותם נתונים פעמיים.
+                    התוצאה: בעבודה עם Sumit, ההצעות והחשבוניות שלך יופיעו בדשבורד של Sumit כרגיל.
+                    בעבודה עם חשבונית ירוקה, אותו דבר. אין שינוי במערכת החשבונאית — רק הפסקה של הקלדת אותם נתונים פעמיים.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">המלצה</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    אם את רק מתחילה ואין לך חשבון בכלל — Sumit. הצעות המחיר הנטיביות וה-UI המודרני שווים את זה.
+                    בתחילת הדרך, בלי חשבון קיים — Sumit. הצעות המחיר הנטיביות וה-UI המודרני שווים את זה.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    אם רואה החשבון שלך עובד עם חשבונית ירוקה כבר — אין צורך לעבור. את יכולה להמשיך עם Morning ולחבר אותה ל-Doggo CRM באותה קלות.
+                    כשרואה החשבון שלך עובד עם חשבונית ירוקה כבר — אין צורך לעבור. אפשר להמשיך עם Morning ולחבר אותה ל-Doggo CRM באותה קלות.
                 </p>
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
                     <p className="text-text-secondary mb-4">
-                        Doggo CRM מתחבר לשני השירותים. בלי להחליף, בלי להקליד פעמיים. רואי שזה עובד.
+                        Doggo CRM מתחבר לשני השירותים. בלי להחליף, בלי להקליד פעמיים.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        ראי איך זה עובד
+                        לראות איך זה עובד
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
@@ -778,13 +778,13 @@ const POSTS: Record<string, Post> = {
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     <strong>מה לעשות במקום:</strong> תהליך אוטומטי שיוצא מהמערכת שלך 24 שעות לפני כל מפגש. מייל מספיק. וואטסאפ עוד יותר טוב.
-                    העיקר: לא תלוי בזה שתזכרי לשלוח.
+                    העיקר: לא תלוי בזיכרון אנושי.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">3. הצעת מחיר ב-Word, חשבונית בנפרד, מעקב בראש</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    תהליך טיפוסי: לקוח חדש פונה. את שולחת הצעת מחיר ב-Word שכתבת לפני שנה. הלקוח אומר כן. את פותחת חשבונית ירוקה (או Sumit), מקלידה הכל מחדש, שולחת.
-                    אחרי שבועיים: "סליחה, מה היה המחיר?" — את לא זוכרת אם זה היה 2,400 או 2,800. וגם אין מקום שאת יכולה לחזור אליו.
+                    תהליך טיפוסי: לקוח חדש פונה. הצעת מחיר ב-Word שנכתבה לפני שנה נשלחת אליו. הלקוח אומר כן. פתיחה של חשבונית ירוקה (או Sumit), הקלדה מחדש של הכל, שליחה.
+                    אחרי שבועיים: "סליחה, מה היה המחיר?" — לא ברור אם זה היה 2,400 או 2,800. וגם אין מקום אחיד לחזור אליו.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
                     <strong>מה לעשות במקום:</strong> הצעת מחיר נשלחת ישירות מהמערכת — עם PDF, מספר מסמך, ומעקב סטטוס (נשלחה / נצפתה / אושרה).
@@ -793,7 +793,7 @@ const POSTS: Record<string, Post> = {
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">4. שיחה עם לקוח שאי-אפשר לאתר חצי שנה אחרי</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    הלקוח חוזר אחרי שמונה חודשים. "מה אמרת בפעם הקודמת על האילוף עם הסבא של הכלב?" את לא זוכרת.
+                    הלקוח חוזר אחרי שמונה חודשים. "מה אמרת בפעם הקודמת על האילוף עם הסבא של הכלב?" — אין דרך להיזכר.
                     שיחות וואטסאפ מתערבבות, מיילים נמחקים, פתקיות נעלמות. ההיסטוריה של הקשר עם הלקוח חיה בראש שלך — זה לא בר-קיימא.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
@@ -807,12 +807,12 @@ const POSTS: Record<string, Post> = {
                     אם הליד הגיע מ-Google, מהאקאונט באינסטגרם, או ממודעת פייסבוק שהשקעת בה 800 שקל.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    <strong>מה לעשות במקום:</strong> דף חנות אישי + טופס פניות עם מעקב מקור (UTM). תוך חודש תדעי בדיוק איזו השקעה משתלמת.
+                    <strong>מה לעשות במקום:</strong> דף חנות אישי + טופס פניות עם מעקב מקור (UTM). תוך חודש יתברר בדיוק איזו השקעה משתלמת.
                 </p>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">החיבור בין החמש</h2>
                 <p className="text-text-secondary leading-relaxed mb-4">
-                    כל אחת מהחמש לבד היא בעיה קלה. הקסם הוא שהן מתחברות: לקוח באקסל אחד, מפגש שלא תועד, הצעת מחיר ב-Word, חשבונית בידנית, וטופס פניות שלא יודע מאיפה הליד הגיע — זה לא חמישה קבצים נפרדים. זו חצי שעה ביום שאת מאבדת.
+                    כל אחת מהחמש לבד היא בעיה קלה. הקסם הוא שהן מתחברות: לקוח באקסל אחד, מפגש שלא תועד, הצעת מחיר ב-Word, חשבונית בידנית, וטופס פניות שלא יודע מאיפה הליד הגיע — זה לא חמישה קבצים נפרדים. זו חצי שעה ביום שהולכת לאיבוד.
                 </p>
                 <p className="text-text-secondary leading-relaxed mb-4">
                     כלי שמחבר אותן יכול להחזיר לך 30-60 דקות ביום. לחודש זה עוד 10-20 שעות שאפשר להפנות לאילוף עצמו, או לעצמך.
@@ -823,7 +823,7 @@ const POSTS: Record<string, Post> = {
                         רוצה לראות איך זה עובד בפועל? Doggo CRM נבנה במיוחד למאלפי כלבים בישראל — לקוחות, תוכניות, יומן, חשבוניות והצעות מחיר במקום אחד.
                     </p>
                     <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
-                        התחילי בחינם
+                        להתחיל בחינם
                         <ChevronRight size={16} className="rotate-180" />
                     </Link>
                 </div>
