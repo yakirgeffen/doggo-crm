@@ -46,7 +46,7 @@ export function StickyNote({ clientId, initialNote }: StickyNoteProps) {
                             disabled={saving}
                             className="text-xs bg-warning/10 text-warning px-3 py-1 rounded-lg font-medium hover:bg-warning/20 transition-colors animate-fade-in"
                         >
-                            {saving ? 'שומר...' : 'שמור שינויים'}
+                            {saving ? 'שומרים...' : 'שמירת שינויים'}
                         </button>
                     )}
                 </div>

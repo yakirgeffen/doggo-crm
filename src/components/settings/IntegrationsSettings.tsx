@@ -440,7 +440,7 @@ export function IntegrationsSettings() {
                         disabled={webhookSaving}
                         className="btn btn-primary text-sm flex-1"
                     >
-                        {webhookSaving ? 'שומר...' : 'שמור'}
+                        {webhookSaving ? 'שומרים...' : 'שמירה'}
                     </button>
                     <button
                         onClick={handleTestWebhook}
@@ -560,7 +560,7 @@ export function IntegrationsSettings() {
                         className="btn btn-primary text-sm flex items-center gap-1.5 flex-1 justify-center"
                     >
                         <RefreshCw size={14} className={tokenGenerating ? 'animate-spin' : ''} />
-                        {tokenGenerating ? 'יוצר...' : (hasActiveToken ? 'צור טוקן חדש (יבטל את הקיים)' : 'צור טוקן חדש')}
+                        {tokenGenerating ? 'יוצרים...' : (hasActiveToken ? 'יצירת טוקן חדש (יבטל את הקיים)' : 'יצירת טוקן חדש')}
                     </button>
                     {hasActiveToken && (
                         <button

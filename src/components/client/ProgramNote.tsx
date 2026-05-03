@@ -45,7 +45,7 @@ export function ProgramNote({ programId, initialNote }: ProgramNoteProps) {
                             disabled={saving}
                             className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-lg font-medium hover:bg-primary/20 transition-colors animate-fade-in"
                         >
-                            {saving ? 'שומר...' : 'שמור שינויים'}
+                            {saving ? 'שומרים...' : 'שמירת שינויים'}
                         </button>
                     )}
                 </div>

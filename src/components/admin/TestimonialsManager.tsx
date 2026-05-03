@@ -300,7 +300,7 @@ function TestimonialModal({
                         type="button"
                     >
                         {saving && <Spinner size="sm" />}
-                        {saving ? 'שומר...' : initial ? 'שמירת שינויים' : 'הוספה'}
+                        {saving ? 'שומרים...' : initial ? 'שמירת שינויים' : 'הוספה'}
                     </button>
                 </div>
             </div>

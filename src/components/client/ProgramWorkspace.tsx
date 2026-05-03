@@ -260,7 +260,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 {markingPaid ? (
                                     <>
                                         <Spinner size="sm" />
-                                        <span>שומר...</span>
+                                        <span>שומרים...</span>
                                     </>
                                 ) : 'שולם (Bit/מזומן)'}
                             </button>
@@ -299,7 +299,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                     disabled={generatingLink || !programState.price}
                                     className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white"
                                 >
-                                    {generatingLink ? 'המערכת מייצרת קישור...' : '💳 צור קישור לתשלום'}
+                                    {generatingLink ? 'המערכת מייצרת קישור...' : '💳 יצירת קישור לתשלום'}
                                 </button>
                             ) : (
                                 <div className="flex items-center gap-2 animate-fade-in">

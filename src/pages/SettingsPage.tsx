@@ -116,7 +116,7 @@ export function SettingsPage() {
                                 ) : (
                                     <Save size={18} />
                                 )}
-                                {saving ? 'שומר...' : 'שמור שינויים'}
+                                {saving ? 'שומרים...' : 'שמירת שינויים'}
                             </button>
 
                             {successMessage && (

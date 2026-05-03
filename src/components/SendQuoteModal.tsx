@@ -228,7 +228,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                                             onChange={e => pickService(idx, e.target.value)}
                                             disabled={servicesLoading}
                                         >
-                                            <option value="">בחר מהקטלוג או הקלד מטה...</option>
+                                            <option value="">בחירה מהקטלוג או הקלדה למטה...</option>
                                             {services.map(s => (
                                                 <option key={s.id} value={s.id}>{s.name} (₪{s.price})</option>
                                             ))}

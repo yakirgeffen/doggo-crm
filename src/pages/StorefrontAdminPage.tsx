@@ -127,7 +127,7 @@ export function StorefrontAdminPage() {
                         className="btn btn-primary flex items-center gap-2"
                     >
                         {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
-                        {savingProfile ? 'שומר...' : 'שמור שינויים'}
+                        {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
                     </button>
                 </div>
 
@@ -297,7 +297,7 @@ export function StorefrontAdminPage() {
                             onClick={() => setIsServiceModalOpen(true)}
                             className="mt-3 text-primary text-sm hover:underline"
                         >
-                            + צור את השירות הראשון שלך
+                            + יצירת השירות הראשון
                         </button>
                     </div>
                 ) : (

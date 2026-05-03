@@ -139,7 +139,7 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                             {saving ? (
                                 <>
                                     <Spinner size="md" />
-                                    <span>שומר...</span>
+                                    <span>שומרים...</span>
                                 </>
                             ) : (
                                 <>

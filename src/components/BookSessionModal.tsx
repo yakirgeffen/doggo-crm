@@ -353,7 +353,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                             {saving ? (
                                 <>
                                     <Spinner size="md" />
-                                    <span>שומר...</span>
+                                    <span>שומרים...</span>
                                 </>
                             ) : '🐾 קבע מפגש'}
                         </button>

@@ -229,7 +229,7 @@ export function ServiceModal({ isOpen, onClose, onSave, initialData }: ServiceMo
                         disabled={saving}
                         className="btn btn-primary min-w-[100px]"
                     >
-                        {saving ? 'שומר...' : (initialData ? 'שמור שינויים' : 'צור שירות')}
+                        {saving ? 'שומרים...' : (initialData ? 'שמירת שינויים' : 'יצירת שירות')}
                     </button>
                 </div>
             </div>
