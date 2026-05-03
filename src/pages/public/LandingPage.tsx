@@ -124,7 +124,7 @@ export function LandingPage() {
                             דף חנות פומבי — שתעזור לך להשיג לקוחות חדשים
                         </h2>
                         <p className="text-text-secondary mb-4 leading-relaxed">
-                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.com/t/your-name</code>. שתף את הקישור ב-WhatsApp, ברשתות, ובמודעות — וקבל פניות ישירות למערכת.
+                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.app/t/your-name</code>. שתף את הקישור ב-WhatsApp, ברשתות, ובמודעות — וקבל פניות ישירות למערכת.
                         </p>
                         <ul className="space-y-2 text-sm text-text-secondary">
                             <li className="flex items-start gap-2">

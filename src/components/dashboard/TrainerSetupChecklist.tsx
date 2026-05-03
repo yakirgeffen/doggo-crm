@@ -58,7 +58,7 @@ export function TrainerSetupChecklist() {
             {
                 id: 'handle',
                 label: 'בחר כתובת חנות',
-                description: 'כתובת ייחודית שבה לקוחות פוטנציאליים ימצאו אותך (doggocrm.com/t/your-handle).',
+                description: 'כתובת ייחודית שבה לקוחות פוטנציאליים ימצאו אותך.',
                 done: Boolean(trainerHandle && trainerHandle.length > 0),
                 href: '/storefront',
                 cta: 'בחר',
