@@ -40,8 +40,8 @@ export function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-text-primary mb-4">1. הקדמה</h2>
                             <p className="text-text-secondary leading-relaxed">
-                                ברוכים הבאים ל-{appName}. אנו מכבדים את פרטיותכם ומחויבים להגנה על המידע האישי שלכם.
-                                מדיניות פרטיות זו מסבירה כיצד אנו אוספים, משתמשים ומגינים על המידע שלכם בעת השימוש
+                                ברוכים הבאים ל-{appName}. אנחנו מכבדים את פרטיות המשתמשים ומחויבים להגנה על המידע האישי שלהם.
+                                מדיניות פרטיות זו מסבירה כיצד אנחנו אוספים, משתמשים ומגינים על המידע במהלך השימוש
                                 בפלטפורמת ניהול אילוף הכלבים שלנו.
                             </p>
                         </section>
@@ -53,13 +53,13 @@ export function PrivacyPolicyPage() {
                             <h3 className="text-lg font-semibold text-text-secondary mb-2">2.1 פרטי חשבון</h3>
                             <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                                 <li>שם וכתובת אימייל (דרך התחברות עם Google)</li>
-                                <li>תמונת פרופיל (מחשבון Google שלכם)</li>
+                                <li>תמונת פרופיל (מחשבון ה-Google של המשתמש)</li>
                                 <li>אסימוני אימות לגישה לשירות</li>
                             </ul>
 
                             <h3 className="text-lg font-semibold text-text-secondary mb-2">2.2 נתונים עסקיים</h3>
                             <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
-                                <li>פרטי לקוחות שאתם מזינים (שמות, פרטי קשר, מידע על כלבים)</li>
+                                <li>פרטי לקוחות המוזנים למערכת (שמות, פרטי קשר, מידע על כלבים)</li>
                                 <li>תוכניות אימון ורשומות מפגשים</li>
                                 <li>הערות והערכות התנהגותיות</li>
                                 <li>נתוני תזמון ויומן</li>
@@ -67,15 +67,15 @@ export function PrivacyPolicyPage() {
 
                             <h3 className="text-lg font-semibold text-text-secondary mb-2">2.3 נתוני Google API</h3>
                             <p className="text-text-secondary leading-relaxed">
-                                באישורכם המפורש, אנו עשויים לגשת לשירותי Google מוגבלים לשיפור הפונקציונליות:
+                                באישור מפורש, אנחנו עשויים לגשת לשירותי Google מוגבלים לשיפור הפונקציונליות:
                             </p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2 mt-2">
-                                <li><strong>Gmail (שליחה בלבד):</strong> לשליחת תזכורות מפגשים ללקוחות שלכם בשמכם</li>
-                                <li><strong>יומן (קריאה וכתיבה):</strong> לסנכרון מפגשים שאתם קובעים במערכת ליומן Google שלכם, ולבדיקת הזמינות בעת תזמון. לעולם לא נמחק או נשנה אירועים שלא יצרנו.</li>
+                                <li><strong>Gmail (שליחה בלבד):</strong> לשליחת תזכורות מפגשים ללקוחות בשם המאלף</li>
+                                <li><strong>יומן (קריאה וכתיבה):</strong> לסנכרון מפגשים הנקבעים במערכת אל יומן ה-Google של המאלף, ולבדיקת הזמינות בעת תזמון. לעולם לא נמחק או נשנה אירועים שלא יצרנו.</li>
                             </ul>
                             <p className="text-text-secondary leading-relaxed mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                                <strong>חשוב:</strong> אנחנו לעולם לא קוראים, מאחסנים או ניגשים לתוכן האימייל שלכם.
-                                אנו משתמשים רק ביכולת השליחה של Gmail למסירת תזכורות שאתם מאשרים.
+                                <strong>חשוב:</strong> אנחנו לעולם לא קוראים, מאחסנים או ניגשים לתוכן האימייל של המשתמש.
+                                אנחנו משתמשים רק ביכולת השליחה של Gmail למסירת תזכורות מאושרות מראש.
                             </p>
 
                             <h3 className="text-lg font-semibold text-text-secondary mb-2 mt-6">2.4 ספקי שירות חיצוניים</h3>
@@ -87,18 +87,18 @@ export function PrivacyPolicyPage() {
                                 <li><strong>Vercel:</strong> אירוח האפליקציה.</li>
                                 <li><strong>Resend:</strong> שירות שליחת מייל טרנזקציוני (אישורי פגישה, תזכורות, הודעות לידים).</li>
                                 <li><strong>Cloudflare Turnstile:</strong> CAPTCHA בטופס הפניות הציבורי, להגנה מפני בוטים.</li>
-                                <li><strong>Sumit / חשבונית ירוקה (Morning):</strong> אם בחרתם לחבר חשבון, מפתחות ה-API שלכם משמשים אך ורק להפקת חשבוניות והצעות מחיר בשמכם. אנחנו לא מאחסנים את נתוני הלקוחות שלכם בחשבונות ספקי החיוב; הם נשלחים אליהם דרך ה-API שלהם.</li>
+                                <li><strong>Sumit / חשבונית ירוקה (Morning):</strong> במקרה של חיבור חשבון, מפתחות ה-API משמשים אך ורק להפקת חשבוניות והצעות מחיר בשם המאלף. אנחנו לא מאחסנים את נתוני הלקוחות בחשבונות ספקי החיוב; הם נשלחים אליהם דרך ה-API שלהם.</li>
                             </ul>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-primary mb-4">3. כיצד אנו משתמשים במידע שלכם</h2>
-                            <p className="text-text-secondary leading-relaxed mb-4">אנו משתמשים במידע שלכם כדי:</p>
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">3. כיצד אנחנו משתמשים במידע</h2>
+                            <p className="text-text-secondary leading-relaxed mb-4">אנחנו משתמשים במידע כדי:</p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2">
                                 <li>לספק ולתחזק את שירות ניהול אילוף הכלבים שלנו</li>
-                                <li>לאמת את זהותכם ולאבטח את החשבון שלכם</li>
-                                <li>לשלוח תזכורות מפגשים ללקוחות שלכם (באישורכם)</li>
-                                <li>להציג את זמינות היומן שלכם לתזמון</li>
+                                <li>לאמת זהות ולאבטח את החשבון</li>
+                                <li>לשלוח תזכורות מפגשים ללקוחות (באישור מראש)</li>
+                                <li>להציג את זמינות היומן לצורך תזמון</li>
                                 <li>לשפר את השירות וחוויית המשתמש שלנו</li>
                                 <li>לתקשר עדכונים חשובים על השירות</li>
                             </ul>
@@ -107,12 +107,12 @@ export function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-text-primary mb-4">4. אחסון נתונים ואבטחה</h2>
                             <p className="text-text-secondary leading-relaxed mb-4">
-                                הנתונים שלכם מאוחסנים בצורה מאובטחת באמצעות נוהלים מקובלים בתעשייה:
+                                הנתונים מאוחסנים בצורה מאובטחת באמצעות נוהלים מקובלים בתעשייה:
                             </p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2">
                                 <li>הנתונים מאוחסנים ב-Supabase, פלטפורמת מסד נתונים ענן מאובטחת</li>
                                 <li>כל העברת הנתונים מוצפנת באמצעות TLS/SSL</li>
-                                <li>אבטחה ברמת שורה (RLS) מבטיחה שתוכלו לגשת רק לנתונים שלכם</li>
+                                <li>אבטחה ברמת שורה (RLS) מבטיחה גישה לנתונים אישיים בלבד</li>
                                 <li>האימות מטופל בצורה מאובטחת דרך Google OAuth 2.0</li>
                             </ul>
                         </section>
@@ -120,10 +120,10 @@ export function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-text-primary mb-4">5. שיתוף נתונים</h2>
                             <p className="text-text-secondary leading-relaxed mb-4">
-                                אנחנו <strong>לא</strong> מוכרים, משכירים או משתפים את המידע האישי שלכם עם צדדים שלישיים, למעט:
+                                אנחנו <strong>לא</strong> מוכרים, משכירים או משתפים את המידע האישי עם צדדים שלישיים, למעט:
                             </p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2">
-                                <li>באישורכם המפורש</li>
+                                <li>באישור מפורש מראש</li>
                                 <li>לציות לחובות חוקיות</li>
                                 <li>להגנה על הזכויות שלנו או בטיחות המשתמשים</li>
                                 <li>עם ספקי שירות שעוזרים להפעיל את הפלטפורמה שלנו (תחת הסכמי הגנת נתונים מחמירים)</li>
@@ -131,14 +131,14 @@ export function PrivacyPolicyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-primary mb-4">6. הזכויות שלכם</h2>
-                            <p className="text-text-secondary leading-relaxed mb-4">יש לכם את הזכות:</p>
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">6. הזכויות של המשתמש</h2>
+                            <p className="text-text-secondary leading-relaxed mb-4">למשתמש עומדת הזכות:</p>
                             <ul className="list-disc list-inside text-text-secondary space-y-2">
-                                <li><strong>גישה:</strong> לבקש עותק של המידע האישי שלכם</li>
+                                <li><strong>גישה:</strong> לבקש עותק של המידע האישי</li>
                                 <li><strong>תיקון:</strong> לעדכן או לתקן נתונים לא מדויקים</li>
-                                <li><strong>מחיקה:</strong> לבקש מחיקה של החשבון והנתונים שלכם</li>
+                                <li><strong>מחיקה:</strong> לבקש מחיקה של החשבון והנתונים</li>
                                 <li><strong>ביטול גישה:</strong> לנתק הרשאות Google בכל עת דרך הגדרות חשבון Google</li>
-                                <li><strong>ייצוא:</strong> לבקש ייצוא של הנתונים שלכם בפורמט נייד</li>
+                                <li><strong>ייצוא:</strong> לבקש ייצוא של הנתונים בפורמט נייד</li>
                             </ul>
                         </section>
 
@@ -162,7 +162,7 @@ export function PrivacyPolicyPage() {
                             <h2 className="text-2xl font-bold text-text-primary mb-4">9. ציות לחוק הישראלי</h2>
                             <p className="text-text-secondary leading-relaxed">
                                 Doggo CRM פועל בהתאם ל<strong>חוק הגנת הפרטיות, התשמ"א-1981</strong> ולתקנותיו (תקנות הגנת הפרטיות (אבטחת מידע), התשע"ז-2017).
-                                כמאלפי כלבים המנהלים נתוני לקוחות, אתם מנהלי המאגר; Doggo CRM מספק את התשתית הטכנית כעוסק בנתונים מטעמכם.
+                                מאלפי הכלבים המנהלים נתוני לקוחות הם מנהלי המאגר; Doggo CRM מספק את התשתית הטכנית כעוסק בנתונים מטעמם.
                                 המידע מאוחסן בתשתיות עם אבטחה ברמת שורה (RLS) המבטיחה הפרדה מלאה בין מאגרי לקוחות של מאלפים שונים.
                             </p>
                         </section>
@@ -170,16 +170,16 @@ export function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-text-primary mb-4">10. שינויים במדיניות זו</h2>
                             <p className="text-text-secondary leading-relaxed">
-                                אנו עשויים לעדכן מדיניות פרטיות זו מעת לעת. נודיע לכם על שינויים משמעותיים
+                                אנחנו עשויים לעדכן מדיניות פרטיות זו מעת לעת. הודעה על שינויים משמעותיים תינתן
                                 על ידי פרסום המדיניות החדשה בדף זה ועדכון תאריך "עודכן לאחרונה".
                             </p>
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-primary mb-4">11. צרו קשר</h2>
+                            <h2 className="text-2xl font-bold text-text-primary mb-4">11. יצירת קשר</h2>
                             <p className="text-text-secondary leading-relaxed">
-                                אם יש לכם שאלות לגבי מדיניות פרטיות זו או שתרצו לממש את זכויות הנתונים שלכם,
-                                אנא פנו אלינו ב:
+                                לשאלות לגבי מדיניות פרטיות זו או למימוש זכויות הנתונים,
+                                ניתן לפנות אלינו ב:
                             </p>
                             <div className="mt-4 p-4 bg-background rounded-lg">
                                 <p className="text-text-secondary">
