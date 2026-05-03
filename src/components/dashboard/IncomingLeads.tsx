@@ -47,20 +47,17 @@ export function IncomingLeads() {
     const handleApprove = async (lead: IntakeSubmission) => {
         setActioning(lead.id);
         try {
-            // Create a new client from the lead. Notes carry the breed since
-            // `clients` doesn't have a dedicated breed column (intake_submissions
-            // does, but the schemas diverge — preserving the info via notes
-            // here, scoped fix in place of a schema migration).
-            const breedNote = lead.dog_breed ? `גזע: ${lead.dog_breed}` : '';
-            const combinedNotes = [breedNote, lead.notes].filter(Boolean).join('\n');
-
+            // Create a new client from the lead. iter 115 added the proper
+            // `primary_dog_breed` column to clients; iter 114's notes-prepend
+            // workaround is now obsolete.
             const { data: insertedClient, error: clientError } = await supabase
                 .from('clients')
                 .insert([{
                     full_name: lead.full_name,
                     phone: lead.phone || '',
                     primary_dog_name: lead.dog_name || '',
-                    notes: combinedNotes || null,
+                    primary_dog_breed: lead.dog_breed || null,
+                    notes: lead.notes || null,
                     is_active: true,
                     user_id: user?.id,
                     behavioral_tags: lead.behavioral_tags ?? [],

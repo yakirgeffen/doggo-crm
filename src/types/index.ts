@@ -4,6 +4,7 @@ export interface Client {
     email: string | null;
     phone: string | null;
     primary_dog_name: string | null;
+    primary_dog_breed: string | null;
     notes: string | null;
     is_active: boolean;
     behavioral_tags: string[];

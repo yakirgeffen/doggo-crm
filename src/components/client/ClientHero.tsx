@@ -24,7 +24,12 @@ export function ClientHero({ client }: ClientHeroProps) {
                         <h1 className="text-2xl font-bold text-text-primary leading-tight">
                             {client.primary_dog_name || 'ללא שם כלב'}
                         </h1>
-                        <p className="text-sm text-text-secondary mt-0.5 font-medium">
+                        {client.primary_dog_breed && (
+                            <p className="text-xs text-text-muted mt-0.5">
+                                {client.primary_dog_breed}
+                            </p>
+                        )}
+                        <p className="text-sm text-text-secondary mt-1 font-medium">
                             {client.full_name}
                         </p>
                         <p className="text-xs text-text-muted mt-1">
