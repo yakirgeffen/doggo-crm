@@ -83,6 +83,15 @@
         { "name": "selected_service_id", "type": "uuid", "nullable": true, "default": null }
       ]
     },
+    "intro_modal_events": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "trainer_id", "type": "uuid", "nullable": false, "default": "auth.uid()" },
+        { "name": "page", "type": "text", "nullable": false, "default": null },
+        { "name": "event", "type": "text", "nullable": false, "default": null },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+      ]
+    },
     "newsletter_subscribers": {
       "columns": [
         { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },

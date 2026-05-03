@@ -357,6 +357,7 @@ export function ClientsPage() {
 
             <IntroModal
                 isOpen={intro.shouldShow}
+                pageId="clients"
                 intro={PAGE_INTROS.clients}
                 onDismiss={intro.dismiss}
                 onSkip={intro.dismiss}
