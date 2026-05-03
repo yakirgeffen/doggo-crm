@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "check:routes": "node scripts/check-routes.mjs",
+    "check:vercel": "node scripts/check-vercel.mjs",
     "prebuild": "node scripts/check-routes.mjs",
     "preview": "vite preview"
   },
