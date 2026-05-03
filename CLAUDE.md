@@ -202,7 +202,7 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 - All tables have RLS enabled — always query as an authenticated user in tests/seeds.
 - `sessions_completed` on programs is updated automatically via a DB trigger.
 - `trainer_handle` on `user_settings` drives the public storefront URL.
-- `supabase_schema.sql` is the source of truth for table/column names and RLS policies — check it before writing queries.
+- ⚠️ **`supabase_schema.sql` is STALE** — captures the founding-phase schema only. Subsequent migrations under `supabase/migrations/` add columns + tables + policies not reflected in the .sql file. Iter 114 (2026-05-03) caught a silent prod bug rooted in trusting the stale file. Before writing any Supabase query, either (a) read the relevant recent migrations, or (b) query `information_schema.columns` via Supabase MCP. Schema-drift is a known class-of-bug; build-time guard for it is on the queue.
 
 ### Security
 - `.env` is gitignored — never commit secrets.
