@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, Phone, Dog, Clock, MessageCircle } from 'lucide-react';
+import { Inbox, Phone, Dog, Clock, MessageCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
@@ -51,7 +51,6 @@ export function LeadsPage() {
     }, [user, filter]);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
         fetchLeads();
     }, [fetchLeads]);
 
@@ -100,11 +99,17 @@ export function LeadsPage() {
                 />
             ) : (
                 <div className="grid gap-3">
-                    {leads.map(lead => (
-                        <div key={lead.id} className="flat-card p-4">
+                    {leads.map(lead => {
+                        // eslint-disable-next-line react-hooks/purity -- intentional render-time comparison; "stale lead" indicator updates on each render is correct UX
+                        const ageMs = Date.now() - new Date(lead.created_at).getTime();
+                        const ageHours = ageMs / (1000 * 60 * 60);
+                        const isStale = lead.status === 'new' && ageHours > 2;
+                        const isVeryStale = lead.status === 'new' && ageHours > 24;
+                        return (
+                        <div key={lead.id} className={`flat-card p-4 ${isVeryStale ? 'border-error/40 bg-error/5' : isStale ? 'border-warning/40 bg-warning/5' : ''}`}>
                             <div className="flex items-start justify-between gap-3 flex-wrap">
                                 <div className="flex items-start gap-3 flex-1 min-w-0">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-sm">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm ${isVeryStale ? 'bg-error/15 text-error' : isStale ? 'bg-warning/15 text-warning' : 'bg-primary/10 text-primary'}`}>
                                         {lead.full_name.charAt(0)}
                                     </div>
                                     <div className="min-w-0 flex-1">
@@ -113,6 +118,18 @@ export function LeadsPage() {
                                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${lead.status === 'new' ? 'bg-primary/10 text-primary' : lead.status === 'approved' ? 'bg-success/10 text-success' : 'bg-text-muted/10 text-text-muted'}`}>
                                                 {lead.status === 'new' ? 'חדש' : lead.status === 'approved' ? 'אושר' : 'בארכיון'}
                                             </span>
+                                            {isVeryStale && (
+                                                <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-error/15 text-error flex items-center gap-1">
+                                                    <AlertCircle size={10} />
+                                                    מעל 24 שעות ללא תגובה
+                                                </span>
+                                            )}
+                                            {isStale && !isVeryStale && (
+                                                <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-warning/15 text-warning flex items-center gap-1">
+                                                    <AlertCircle size={10} />
+                                                    דורש תגובה
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-text-muted">
                                             {lead.dog_name && (<span className="flex items-center gap-1"><Dog size={12} />{lead.dog_name}</span>)}
@@ -164,7 +181,8 @@ export function LeadsPage() {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>

@@ -18,6 +18,205 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'testimonial-request-whatsapp': {
+        slug: 'testimonial-request-whatsapp',
+        title: 'איך לבקש המלצה מלקוח ב-WhatsApp בלי להישמע מתחנן',
+        description: 'המלצות הן הנכס השיווקי הכי חזק של מאלף עצמאי — אבל רוב המאלפים מפחדים לבקש. הנה איך לבקש בצורה שהלקוח שמח לתת, מתי לבקש, ואיך להשתמש בהן בדף החנות.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 5,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    המלצות הן ההוכחה החברתית הכי חזקה שיש לעסק אילוף עצמאי. לקוח חדש שמתלבט בין שלושה מאלפים יבחר את זה שיש לו 12 המלצות אמיתיות בדף.
+                    אבל יש בעיה: רוב המאלפים מתביישים לבקש. הם פוחדים להישמע מתחננים, או "ללחוץ" על לקוח שכבר שילם.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הנה הניסיון שצברנו משיחות עם עשרות מאלפים בישראל — איך לבקש המלצה ב-WhatsApp, מתי, ובאיזה ניסוח שלקוח באמת שמח לענות.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">העיתוי: שני חלונות זהב</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    הטעות הקלאסית: לבקש המלצה חודש אחרי שהקורס נגמר. בשלב הזה הלקוח כבר התרחק, החיים זזו, והבקשה נראית מנותקת.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שני העיתויים שעובדים:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>אחרי רגע "וואו"</strong> — מפגש שבו הכלב הצליח משהו שהלקוח חשב שלא יקרה. הילד ישב בלי לקפוץ. ההליכה ברצועה הייתה חלקה. זה הרגע שבו ההתרגשות הכי גבוהה.</li>
+                    <li><strong>במפגש הסיום של החבילה</strong> — בסוף המפגש האחרון, פנים אל פנים. לפני שיוצאים. ההמלצה תגיע באותו ערב.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בקשה ב-WhatsApp תוך 24 שעות אחרי אחד מהשניים — שיעור התשובה החיובית עומד על 70-80%. אחרי שבועיים — הוא יורד ל-20%.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">הניסוח שעובד</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    הטעות הנפוצה היא ניסוח שמתחיל בהתנצלות: "סליחה שאני מטריד, אם זה לא בעיה, אם יש זמן..." — זה גורם ללקוח להרגיש שזו עבודה.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    הנוסחה שעובדת בנויה משלושה חלקים:
+                </p>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li><strong>הזכרה ספציפית</strong> — לא "תודה על העבודה" אלא "תודה על הקורס עם לונה. הצלחתם להפוך את ההליכה הבוקרית מסיוט לבריחה רגועה". ספציפי = אמיתי.</li>
+                    <li><strong>הבקשה הישירה והקצרה</strong> — "אם תוכלו לכתוב כמה מילים על איך הייתה החוויה — זה יעזור לי מאוד עם לקוחות חדשים שמתלבטים."</li>
+                    <li><strong>הקלה על הביצוע</strong> — לתת קישור ישיר. לא "תכתבו לי במייל" אלא "אפשר לכתוב כאן בוואטסאפ ואני אעלה לדף עם תמונת הכלב". פחות חיכוך = יותר תשובות.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">תבנית מוכנה להעתקה</h2>
+                <div className="bg-background border border-border rounded-xl p-5 my-6 text-sm leading-relaxed text-text-secondary">
+                    <p className="mb-3">היי [שם הלקוח],</p>
+                    <p className="mb-3">רציתי להגיד שוב כמה כיף היה לעבוד עם [שם הכלב] — ההתקדמות בנושא [בעיה ספציפית] הייתה ממש מרשימה.</p>
+                    <p className="mb-3">בקשה קטנה: אני בונה את דף ההמלצות באתר ושמחה אם תכתבו כמה משפטים על איך הייתה החוויה. זה עוזר ללקוחות חדשים להחליט, ובעיקר עוזר לי לקבל לקוחות שדומים לכם.</p>
+                    <p className="mb-3">אפשר לכתוב כאן בוואטסאפ — אני כבר אעבירה לאתר, עם תמונה של [שם הכלב] אם זה בסדר.</p>
+                    <p>תודה רבה!</p>
+                </div>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הניסוח הזה עובד כי הוא ספציפי, קצר, ונותן ללקוח לראות שיש כאן רווח גם לו ("עוזר לי לקבל לקוחות שדומים לכם" = הקבוצה החברתית שלו).
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה לעשות עם ההמלצה אחרי שהיא נכנסה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>להעלות לדף החנות</strong> — שם הלקוח (אם אישר), שם הכלב, תמונה (אם נתן), הציטוט. הנראות הכי גדולה.</li>
+                    <li><strong>לשמור צילום מסך</strong> — לפני שההודעה נמחקת. גם אם תפרסמו רק את הטקסט בדף, הצילום עצמו הוא אסמכתא.</li>
+                    <li><strong>להגיב ללקוח</strong> — "תודה ענקית, זה נכנס לדף ההמלצות באתר. הנה הקישור" — הוא יוסיף לסיפור החיובי שלו עליך.</li>
+                    <li><strong>לחזור אחרי 6 חודשים</strong> — "בא לי לבדוק איך לונה. אם תוכלו לשלוח תמונה ועדכון, אעלה את זה כעדכון להמלצה" — המלצה שמתעדכנת היא כפול חזקה.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה לעשות אם הלקוח לא עונה</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    שתיקה היא לא תמיד "לא". פעמיים מתוך שלוש זו פשוט הודעה שירדה ברשימה. תזכורת אחת אחרי 5-7 ימים — ניסוח רך, "רק שלא נשכח, אם נוח לך" — ושיעור התשובה עולה ב-30-40%. אחרי שתיים שלא נענו, להניח. לא להמשיך.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">החיבור להצעות מחיר חדשות</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    לקוח שמתלבט אם להזמין חבילה מתבונן בהמלצות לפני שהוא לוחץ על "אישור". כל המלצה בדף החנות שווה כסף ישיר.
+                    זה גם הסיבה ש<Link to="/blog/quote-writing-guide" className="text-primary hover:underline">הצעת מחיר טובה</Link> מצרפת קישור לדף ההמלצות, ולא רק את המחיר.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">להמשך קריאה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><Link to="/blog/whatsapp-vs-crm" className="text-primary hover:underline">WhatsApp או מערכת ייעודית?</Link> — איפה שומרים את שיחות הלקוח לטווח ארוך</li>
+                    <li><Link to="/blog/intake-form-mistakes" className="text-primary hover:underline">5 טעויות בטופס פניות</Link> — איך הוכחה חברתית בטופס מעלה המרה</li>
+                    <li><Link to="/blog/admin-mistakes" className="text-primary hover:underline">5 טעויות אדמין נפוצות</Link> — מקום אחיד למעקב אחרי לקוחות</li>
+                </ul>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        ב-Doggo CRM יש דף חנות אישי עם מודול המלצות מובנה — שם הלקוח, תמונת הכלב, והציטוט. בלי לעצב דף נפרד.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        לראות איך זה עובד
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
+    'late-cancellation-policy': {
+        slug: 'late-cancellation-policy',
+        title: 'ביטול שיעור ברגע האחרון — מדיניות שמחזיקה בלי לאבד לקוחות',
+        description: 'ביטולים ברגע האחרון אוכלים 8-12% מההכנסה של מאלף עצמאי. הנה איך לכתוב מדיניות ביטולים שמחזיקה — שלקוחות מבינים, מכבדים, ולא הופכים לסיבה לעזיבה.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 6,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    שמונה בבוקר. הודעה ב-WhatsApp: "סליחה, לא נצליח להגיע למפגש ב-9, יש לנו משהו דחוף". המפגש בעוד שעה. אין סיכוי לאתר לקוח חלופי.
+                    שעה הולכת לאיבוד, נסיעה הלוך-חזור, ואין מי שמשלם.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    זו לא תקרית בודדת. בלי מדיניות ביטולים ברורה, ביטולים-ברגע-האחרון אוכלים 8-12% מההכנסה של מאלף עצמאי טיפוסי בישראל. הנה איך בונים מדיניות שמחזיקה — בלי לפחד שלקוחות יברחו.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה רוב המאלפים לא גובים על ביטולים</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    שלוש סיבות עיקריות שראינו:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>"זה ייראה תאב-בצע"</strong> — חשש שהלקוח יחשוב שהמאלף כל-כך זקוק לכסף שגובה על מפגשים שלא קרו.</li>
+                    <li><strong>"אין מדיניות ברורה"</strong> — בלי משפט שכתוב מראש בהצעת המחיר, אי אפשר לדרוש בדיעבד. מבייש לבקש.</li>
+                    <li><strong>"הלקוח ייעלב ויברח"</strong> — אבל הסטטיסטיקה הפוכה: לקוחות שיש להם מחויבות פיננסית מתייחסים יותר ברצינות, ושיעור הנשירה מתוך החבילה דווקא יורד.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">המדיניות שעובדת ב-2026</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    אחרי שיחות עם עשרות מאלפים מקצועיים, המבנה שחוזר על עצמו אצל המוצלחים:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>ביטול עד 24 שעות לפני</strong> — בחינם. הזמן מספיק כדי לתאם מפגש חלופי.</li>
+                    <li><strong>ביטול 4-24 שעות לפני</strong> — 50% מעלות המפגש. מקובל בשוק. גם הלקוח מבין.</li>
+                    <li><strong>ביטול בפחות מ-4 שעות / איחור / אי-הופעה</strong> — 100% מעלות המפגש. המפגש נחשב כשהתקיים.</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    האחוזים יכולים להשתנות (יש מאלפים שגובים 100% גם 24-12 שעות לפני). העיקר: שלוש מדרגות, לא יותר. מדיניות מסובכת היא מדיניות שלא נאכפת.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איפה כותבים את המדיניות</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li><strong>בהצעת המחיר</strong> — סעיף "מדיניות ביטולים" לפני המחיר. הלקוח מאשר את ההצעה = מאשר את המדיניות.</li>
+                    <li><strong>בהודעת אישור התשלום</strong> — לחזור על המדיניות בקצרה. "תזכורת: ביטול עד 24 שעות לפני — בחינם".</li>
+                    <li><strong>בתזכורת 24 שעות לפני המפגש</strong> — שורה אחת בסוף ההודעה. "אם משהו השתנה, מסגרת הביטולים מצורפת".</li>
+                </ol>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    שלוש נקודות מגע — הלקוח לא יכול להגיד "לא ידעתי".
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">ניסוח שעובד בהצעת המחיר</h2>
+                <div className="bg-background border border-border rounded-xl p-5 my-6 text-sm leading-relaxed text-text-secondary">
+                    <p className="mb-2"><strong>מדיניות ביטולים</strong></p>
+                    <p className="mb-2">המפגשים שלנו מתואמים מראש ולא ניתן לאתר חלופי ברגע האחרון. לכן:</p>
+                    <ul className="list-disc list-inside mb-2 space-y-1 mr-4">
+                        <li>ביטול עד 24 שעות לפני המפגש — בלי עלות.</li>
+                        <li>ביטול בין 4 ל-24 שעות לפני — 50% ממחיר המפגש.</li>
+                        <li>ביטול בפחות מ-4 שעות, איחור של מעל 15 דקות, או אי-הופעה — 100% ממחיר המפגש (המפגש נחשב כממומש).</li>
+                    </ul>
+                    <p>במקרה של מצב חירום אמיתי (מחלה, אסון משפחתי) — נדבר. הגמישות היא הדדית.</p>
+                </div>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">איך אוכפים בלי לריב</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    אכיפה היא החלק שמרבית המאלפים נכשלים בו. הלקוח מבטל, המאלף לא דורש את התשלום, והמדיניות הופכת לטקסט מת.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    מה שעובד:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>אישור הביטול במייל/וואטסאפ אחרי שהוא קורה</strong> — "קיבלתי את הביטול שלך ל-9:00 מחר. בהתאם למדיניות, מפגש זה יחויב ב-50%. החשבונית תישלח עד סוף השבוע."</li>
+                    <li><strong>הוצאת חשבונית מיידית</strong> — לא להמתין שהלקוח ישלם "כשיוכל". חיוב באשראי שכבר נשמר במערכת, או חשבונית עם קישור תשלום.</li>
+                    <li><strong>גמישות בנדל-קייסים אמיתיים</strong> — לקוח עם רישום של 3 שנים בלי שום ביטול שמבטל פעם אחת בגלל ילד חולה? לוותר. השם הטוב יותר חשוב מ-200 ש"ח.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה קורה לתגובת הלקוחות</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בניגוד לאינטואיציה — מאלפים שאוכפים מדיניות ברורה מדווחים על שיפור ביחסי הלקוחות, לא על הרעה. הסיבה: הלקוח מבין שהזמן שלך שווה כסף, וזה מגביר את הכבוד למקצוע.
+                    מאלפים שלא אוכפים נחשפים לחרגה הדרגתית: הלקוח מבטל יותר, מאחר יותר, ובסופו של דבר נושר מהחבילה — בלי תשלום.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">החיבור לתמחור הכולל</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    מדיניות ביטולים היא חלק מ<Link to="/blog/pricing-guide" className="text-primary hover:underline">תמחור התוכנית הכולל</Link> שלך. אם החבילה מתומחרת לפי תוצאה (ולא לפי שעה), הביטול הוא לא רק על השעה האבודה — זו הפרעה ברצף האימון.
+                    כדי להבין כמה ביטולים-ברגע-האחרון בפועל אוכלים מהרווח החודשי שלך, אפשר להריץ את ה<Link to="/calculator" className="text-primary hover:underline">מחשבון העלות</Link> ולראות את ההפרש בין שיעור ביטולים של 10% ל-3%.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">להמשך קריאה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><Link to="/blog/quote-writing-guide" className="text-primary hover:underline">המדריך השלם להצעת מחיר</Link> — איפה לכתוב את המדיניות בהצעה</li>
+                    <li><Link to="/blog/admin-mistakes" className="text-primary hover:underline">5 טעויות אדמין</Link> — תזכורות אוטומטיות 24 שעות לפני שמקטינות ביטולים</li>
+                    <li><Link to="/blog/make-whatsapp-automation" className="text-primary hover:underline">אוטומציית Make + WhatsApp</Link> — לשלוח תזכורת + מדיניות אוטומטית</li>
+                </ul>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        ב-Doggo CRM אפשר להגדיר מדיניות ביטולים פעם אחת — והיא תופיע אוטומטית בכל הצעת מחיר ובתזכורות. בלי להעתיק ידנית.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        להתחיל בחינם
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'tools-trainers-need': {
         slug: 'tools-trainers-need',
         title: '5 כלים שמאלפי כלבים מקצועיים לא יכולים בלעדיהם בעבודה היומיומית',
