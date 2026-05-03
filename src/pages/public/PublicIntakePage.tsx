@@ -371,7 +371,16 @@ export function PublicIntakePage() {
 
             {/* Footer */}
             <footer className="text-center py-4 text-xs text-text-muted border-t border-border-light">
-                פועל באמצעות <span className="font-medium">Doggo CRM</span> 🐾
+                פועל באמצעות{' '}
+                <a
+                    href="/?utm_source=intake_footer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-primary hover:underline"
+                >
+                    Doggo CRM
+                </a>{' '}
+                🐾 · CRM למאלפי כלבים
             </footer>
         </div>
     );

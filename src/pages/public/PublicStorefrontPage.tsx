@@ -190,9 +190,18 @@ export function PublicStorefrontPage() {
                 )}
             </main>
 
-            {/* Footer */}
+            {/* Footer — link to Doggo CRM landing for trainer acquisition */}
             <footer className="text-center pb-8 text-xs text-text-muted">
-                פועל באמצעות <span className="font-medium">Doggo CRM</span> 🐾
+                פועל באמצעות{' '}
+                <a
+                    href="/?utm_source=storefront_footer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-primary hover:underline"
+                >
+                    Doggo CRM
+                </a>{' '}
+                🐾 · CRM למאלפי כלבים
             </footer>
         </div>
     );
