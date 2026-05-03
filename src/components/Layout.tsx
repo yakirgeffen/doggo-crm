@@ -62,7 +62,7 @@ export function Layout() {
 
             {/* Skip Link — IS 5568 / WCAG 2.1 AA */}
             <a href="#main-content" className="skip-link">
-                דלג לתוכן הראשי
+                מעבר לתוכן הראשי
             </a>
 
             {/* ========== DESKTOP SIDEBAR (lg+) ========== */}

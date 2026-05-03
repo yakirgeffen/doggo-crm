@@ -9,7 +9,7 @@ import type { LucideIcon } from 'lucide-react';
  *
  * Copy follows the Kinneret gender-neutral framework — verbal-noun forms,
  * plural where natural, no slashes, no second-person masculine. Keep each
- * intro to ~3 short lines + 1 primary CTA + a 'דלג' secondary.
+ * intro to ~3 short lines + 1 primary CTA + a 'דילוג' secondary.
  */
 
 export type PageId = 'clients' | 'settings' | 'storefront' | 'calendar' | 'leads';

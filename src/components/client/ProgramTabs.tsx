@@ -1,7 +1,12 @@
-import { ClipboardList, FileSearch, History, Paperclip } from 'lucide-react';
+import { ClipboardList, History, Paperclip } from 'lucide-react';
 import type { Program } from '../../types';
 
-export type TabId = 'active' | 'intake' | 'files' | 'history';
+// Tab id type. The 'intake' tab was a Phase-3 placeholder that shipped with
+// the bare "נתוני קבלה ואבחון יופיעו כאן בקרוב (Phase 3)" copy and no
+// substance. Per Yakir's polish-before-need rule (2026-05-03), an empty tab
+// reading 'בקרוב' is a defect — removed iter 136 ahead of the Gaya demo.
+// Re-add when there's actual intake UX to ship.
+export type TabId = 'active' | 'files' | 'history';
 
 interface ProgramTabsProps {
     activeTab: TabId;
@@ -13,7 +18,6 @@ interface ProgramTabsProps {
 
 const tabs: { id: TabId; label: string; icon: React.ComponentType<{ size?: number }> }[] = [
     { id: 'active', label: 'חבילה פעילה', icon: ClipboardList },
-    { id: 'intake', label: 'קבלה', icon: FileSearch },
     { id: 'files', label: 'קבצים', icon: Paperclip },
     { id: 'history', label: 'היסטוריה', icon: History },
 ];

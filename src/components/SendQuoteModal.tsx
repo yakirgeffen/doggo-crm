@@ -77,7 +77,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
 
                     <div className="p-6 space-y-4">
                         <p className="text-sm text-text-secondary leading-relaxed">
-                            רוצה לשלוח גם הודעה ב-WhatsApp ללקוח/ה? לפעמים זה מקצר את זמן התגובה.
+                            לשלוח גם הודעה ב-WhatsApp ללקוח? לפעמים זה מקצר את זמן התגובה.
                         </p>
 
                         <a
@@ -87,7 +87,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                             className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
                         >
                             <MessageCircle size={18} />
-                            {phoneDigits ? `שלח/י ל-${phoneDigits}` : 'בחר/י נמען ב-WhatsApp'}
+                            {phoneDigits ? `שליחה ל-${phoneDigits}` : 'בחירת נמען ב-WhatsApp'}
                         </a>
 
                         <button
@@ -183,7 +183,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     </div>
                     <div>
                         <h2 className="text-lg font-bold text-text-primary">שליחת הצעת מחיר</h2>
-                        <p className="text-xs text-text-muted">הפק הצעת מחיר ושלח ללקוח דרך Sumit</p>
+                        <p className="text-xs text-text-muted">הפקת הצעת מחיר ושליחה ללקוח דרך Sumit</p>
                     </div>
                 </div>
 
@@ -191,7 +191,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     {!sumit.isConnected && (
                         <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm">
                             <p className="font-bold text-text-primary mb-1">חיבור Sumit חסר</p>
-                            <p className="text-text-secondary">כדי לשלוח הצעות מחיר, חבר את Sumit בעמוד ההגדרות תחת אינטגרציות.</p>
+                            <p className="text-text-secondary">כדי לשלוח הצעות מחיר, יש לחבר את Sumit בעמוד ההגדרות תחת אינטגרציות.</p>
                         </div>
                     )}
 
@@ -214,7 +214,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                         <div className="flex items-center justify-between mb-3">
                             <h3 className="text-sm font-bold text-text-primary">פירוט שירותים</h3>
                             <button onClick={addLine} className="text-xs text-primary hover:underline flex items-center gap-1">
-                                <Plus size={14} /> הוסף שורה
+                                <Plus size={14} /> הוספת שורה
                             </button>
                         </div>
 

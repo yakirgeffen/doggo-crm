@@ -244,7 +244,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 flex items-center gap-2"
                             >
                                 <MessageCircle size={18} />
-                                שלח תזכורת
+                                שליחת תזכורת
                             </a>
                             <button
                                 onClick={async () => {
@@ -273,42 +273,47 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 ) : 'שולם (Bit/מזומן)'}
                             </button>
                             {!paymentUrl ? (
-                                <button
-                                    onClick={async () => {
-                                        if (!programState.price) return showToast('לא נקבע מחיר לתוכנית זו', 'error');
+                                <div className="flex flex-col items-end gap-1">
+                                    <button
+                                        onClick={async () => {
+                                            if (!programState.price) return showToast('לא נקבע מחיר לתוכנית זו', 'error');
 
-                                        const res = await generatePaymentLink({
-                                            description: `תשלום עבור תוכנית: ${programState.program_name}`,
-                                            amount: programState.price,
-                                            clientName: clientName,
-                                            clientEmail: clientEmail,
-                                            clientPhone: clientPhone || '',
-                                            currency: programState.currency || 'ILS'
-                                        });
+                                            const res = await generatePaymentLink({
+                                                description: `תשלום עבור תוכנית: ${programState.program_name}`,
+                                                amount: programState.price,
+                                                clientName: clientName,
+                                                clientEmail: clientEmail,
+                                                clientPhone: clientPhone || '',
+                                                currency: programState.currency || 'ILS'
+                                            });
 
-                                        if (res.success && res.url) {
-                                            setPaymentUrl(res.url);
-                                            await supabase.from('programs').update({
-                                                payment_status: 'pending',
-                                                payment_link_id: res.id
-                                            }).eq('id', programState.id);
-                                            await logActivity(
-                                                'program',
-                                                programState.id,
-                                                'payment_link_generated',
-                                                `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
-                                            );
+                                            if (res.success && res.url) {
+                                                setPaymentUrl(res.url);
+                                                await supabase.from('programs').update({
+                                                    payment_status: 'pending',
+                                                    payment_link_id: res.id
+                                                }).eq('id', programState.id);
+                                                await logActivity(
+                                                    'program',
+                                                    programState.id,
+                                                    'payment_link_generated',
+                                                    `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
+                                                );
 
-                                            setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
-                                        } else {
-                                            showToast(res.error || 'שגיאה ביצירת קישור', 'error');
-                                        }
-                                    }}
-                                    disabled={generatingLink || !programState.price}
-                                    className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white"
-                                >
-                                    {generatingLink ? 'המערכת מייצרת קישור...' : '💳 יצירת קישור לתשלום'}
-                                </button>
+                                                setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
+                                            } else {
+                                                showToast(res.error || 'שגיאה ביצירת קישור', 'error');
+                                            }
+                                        }}
+                                        disabled={generatingLink || !programState.price}
+                                        className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {generatingLink ? 'המערכת מייצרת קישור...' : '💳 יצירת קישור לתשלום'}
+                                    </button>
+                                    {!generatingLink && !programState.price && (
+                                        <p className="text-xs text-text-muted">יש לקבוע מחיר לתוכנית כדי ליצור קישור לתשלום</p>
+                                    )}
+                                </div>
                             ) : (
                                 <div className="flex items-center gap-2 animate-fade-in">
                                     <a
@@ -318,7 +323,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         className="btn bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft flex items-center gap-2"
                                     >
                                         <Share2 size={18} />
-                                        שלח בוואטסאפ
+                                        שליחה בוואטסאפ
                                     </a>
                                     <a
                                         href={paymentUrl}
@@ -327,7 +332,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         className="btn btn-secondary border-accent/30 text-accent hover:bg-accent/5"
                                     >
                                         <ExternalLink size={18} />
-                                        פתח קישור
+                                        פתיחת הקישור
                                     </a>
                                 </div>
                             )}
@@ -421,7 +426,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <button
                             onClick={() => setIsRecurringOpen(true)}
                             className="text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                            title="קבע את כל המפגשים בחבילה במכה אחת"
+                            title="קביעת כל המפגשים בחבילה במכה אחת"
                         >
                             <Calendar size={14} />
                             תזמן את כל החבילה
@@ -434,7 +439,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                     <EmptyState
                         icon={Calendar}
                         title="טרם תועדו מפגשים"
-                        description="הוסף את המפגש הראשון כדי להתחיל לעקוב אחר ההתקדמות בתוכנית."
+                        description="כדאי להוסיף את המפגש הראשון כדי להתחיל לעקוב אחר ההתקדמות בתוכנית."
                         actionLabel="תיעוד מפגש ראשון"
                         onAction={() => navigate(`/programs/${programState.id}/sessions/new`)}
                         color="warning"

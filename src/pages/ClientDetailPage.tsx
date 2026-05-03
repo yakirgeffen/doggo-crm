@@ -152,14 +152,6 @@ export function ClientDetailPage() {
                 </>
             )}
 
-            {activeTab === 'intake' && (
-                <div className="flat-card p-8 text-center text-text-muted">
-                    <div className="text-4xl mb-3">📋</div>
-                    <p className="font-medium">אזור הקבלה</p>
-                    <p className="text-sm mt-1">נתוני קבלה ואבחון יופיעו כאן בקרוב (Phase 3)</p>
-                </div>
-            )}
-
             {activeTab === 'files' && (
                 <AttachmentsList clientId={client.id} />
             )}
@@ -281,7 +273,14 @@ export function ClientDetailPage() {
                         setIsEmailOpen(false);
                         setSearchParams({}, { replace: true });
                     }}
+                    onClientEmailUpdated={(email) => {
+                        // Local optimistic update so the hero/contact card
+                        // reflects the new address immediately. The next full
+                        // fetch will reconcile if anything changed server-side.
+                        setClient(prev => (prev ? { ...prev, email } : prev));
+                    }}
                     clientEmail={client.email || ''}
+                    clientId={client.id}
                     clientName={client.full_name}
                     dogName={client.primary_dog_name || ''}
                     entityType="client"

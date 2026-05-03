@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabase';
  * IntroModal — centered welcome card shown on first visit to a page (and
  * re-openable via the global `?` icon in Layout). Backdrop click closes
  * WITHOUT writing the seen-flag, so an accidental tap re-shows the intro
- * next visit. Primary CTA + secondary `דלג` both write the flag.
+ * next visit. Primary CTA + secondary `דילוג` both write the flag.
  *
  * Behaviour matches the rest of the app's modal lifecycle pattern (Esc to
  * close, focus on first interactive element). No spotlight tour — see CPO
@@ -22,7 +22,7 @@ import { supabase } from '../lib/supabase';
  *     re-render. Closing and re-opening the modal in the same session
  *     intentionally re-fires (a separate viewing event).
  *   - `'cta_click'` on primary CTA before `onDismiss`.
- *   - `'dismiss'` on `דלג` (`onSkip`) or backdrop/Esc/X (`onBackdropClose`).
+ *   - `'dismiss'` on `דילוג` (`onSkip`) or backdrop/Esc/X (`onBackdropClose`).
  *
  * Fire-and-forget: insert errors are caught + logged, never block UI.
  * Pattern matches `useClientAttachments.uploadAttachment` shape but uses
@@ -140,7 +140,7 @@ export function IntroModal({ isOpen, pageId, intro, onDismiss, onSkip, onBackdro
                         onClick={handleSkip}
                         className="text-sm font-medium text-text-muted hover:text-text-primary px-3 py-2 rounded-lg transition-colors"
                     >
-                        דלג
+                        דילוג
                     </button>
                 </div>
             </div>
