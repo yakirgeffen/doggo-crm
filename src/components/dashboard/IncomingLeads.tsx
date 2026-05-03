@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Inbox, UserPlus, Archive, Phone, Dog, Clock, MessageCircle } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { supabase, logActivity } from '../../lib/supabase';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
 import { Spinner } from '../Spinner';
@@ -47,16 +47,27 @@ export function IncomingLeads() {
     const handleApprove = async (lead: IntakeSubmission) => {
         setActioning(lead.id);
         try {
-            // Create a new client from the lead
-            const { error: clientError } = await supabase.from('clients').insert([{
-                full_name: lead.full_name,
-                phone: lead.phone || '',
-                primary_dog_name: lead.dog_name || '',
-                primary_dog_breed: lead.dog_breed || '',
-                notes: lead.notes || '',
-                is_active: true,
-                trainer_id: user?.id,
-            }]);
+            // Create a new client from the lead. Notes carry the breed since
+            // `clients` doesn't have a dedicated breed column (intake_submissions
+            // does, but the schemas diverge — preserving the info via notes
+            // here, scoped fix in place of a schema migration).
+            const breedNote = lead.dog_breed ? `גזע: ${lead.dog_breed}` : '';
+            const combinedNotes = [breedNote, lead.notes].filter(Boolean).join('\n');
+
+            const { data: insertedClient, error: clientError } = await supabase
+                .from('clients')
+                .insert([{
+                    full_name: lead.full_name,
+                    phone: lead.phone || '',
+                    primary_dog_name: lead.dog_name || '',
+                    notes: combinedNotes || null,
+                    is_active: true,
+                    user_id: user?.id,
+                    behavioral_tags: lead.behavioral_tags ?? [],
+                    lead_source: lead.lead_source ?? null,
+                }])
+                .select('id')
+                .single();
 
             if (clientError) throw clientError;
 
@@ -66,8 +77,12 @@ export function IncomingLeads() {
                 .update({ status: 'approved' })
                 .eq('id', lead.id);
 
+            if (insertedClient) {
+                await logActivity('client', insertedClient.id, 'created', `לקוח נוצר מליד נכנס: ${lead.full_name}`);
+            }
+
             setLeads(prev => prev.filter(l => l.id !== lead.id));
-            showToast(`${lead.full_name} נוסף/ה כלקוח/ה חדש/ה! 🎉`, 'success');
+            showToast(`${lead.full_name} נוסף כלקוח חדש 🎉`, 'success');
         } catch (err) {
             showToast('שגיאה ביצירת לקוח: ' + (err instanceof Error ? err.message : ''), 'error');
         }
