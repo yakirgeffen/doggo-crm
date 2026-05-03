@@ -17,6 +17,119 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'make-whatsapp-automation': {
+        slug: 'make-whatsapp-automation',
+        title: 'איך לחבר את Doggo CRM ל-Make כדי לשלוח WhatsApp אוטומטית לכל ליד חדש',
+        description: 'מדריך פרקטי: כל פנייה חדשה מטופס הפניות תקפיץ הודעת WhatsApp ללקוח אוטומטית. כל זה ב-15 דקות, בלי קוד, באמצעות Make + Doggo CRM Webhook + WhatsApp.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 8,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    תרחיש: לקוח חדש ממלא את טופס הפניות שלך באתר Doggo CRM. רגע אחר כך, הוא מקבל הודעת WhatsApp אוטומטית: "תודה על הפנייה! נחזור אליך תוך 24 שעות."
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    תוצאה: זמן תגובה ראשונה מ-3 שעות ל-30 שניות. שיעור ההמרה מליד ללקוח גבוה ב-40-60% (מחקרי SaaS) כשמגיבים מתחת ל-5 דקות.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הנה איך מקימים את זה ב-15 דקות:
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה צריך</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li>חשבון Doggo CRM (חינם או Pro)</li>
+                    <li>חשבון Make.com — חינם עד 1,000 פעולות בחודש</li>
+                    <li>כלי שליחת WhatsApp — אופציות פופולריות בישראל: <strong>Whapi.cloud</strong>, <strong>GreenAPI</strong>, או <strong>WhatsApp Business API</strong> רשמי דרך Meta</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 1 — צרי Webhook ב-Make</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li>הירשמי ל-Make.com (חינם).</li>
+                    <li>צרי Scenario חדש.</li>
+                    <li>לחצי על "+" והוסיפי מודול <strong>Webhooks → Custom Webhook</strong>.</li>
+                    <li>לחצי "Add" ותני שם (לדוגמה: "Doggo CRM Lead Webhook"). העתיקי את ה-URL שמופיע — תזדקקי לו בשלב הבא.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 2 — חברי את Webhook ל-Doggo CRM</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li>היכנסי ל-Doggo CRM → הגדרות → אינטגרציות.</li>
+                    <li>גללי לסעיף "Webhook לאוטומציות".</li>
+                    <li>הדביקי את ה-URL מ-Make לתוך השדה "Webhook URL".</li>
+                    <li>לחצי "שמור".</li>
+                    <li>לחצי "שלח בדיקה" — תקבלי אישור ירוק שהבדיקה הצליחה.</li>
+                </ol>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    מצאי שלא — חזרי ל-Make. ב-Scenario תראי שהפעולה הראשונה כבר אכלסה data. זה ה-payload של בדיקה.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 3 — הוסיפי שליחת WhatsApp ב-Make</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    זה הצעד שדורש קצת עבודה. הוא תלוי בכלי ה-WhatsApp שבחרת. דוגמה ל-<strong>Whapi.cloud</strong>:
+                </p>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li>הירשמי ל-Whapi (יש תוכנית חינמית מוגבלת).</li>
+                    <li>חברי את WhatsApp שלך (הסריקה לוקחת 30 שניות).</li>
+                    <li>קבלי <strong>Token</strong> מהדשבורד.</li>
+                    <li>חזרי ל-Make → Scenario → לחצי "+" אחרי ה-Webhook.</li>
+                    <li>חפשי "HTTP" → "Make a request".</li>
+                    <li>הגדירי:
+                        <ul className="mr-4 list-disc list-inside">
+                            <li>URL: <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">https://gate.whapi.cloud/messages/text</code></li>
+                            <li>Method: POST</li>
+                            <li>Headers: <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">Authorization: Bearer YOUR_TOKEN</code></li>
+                            <li>Body type: JSON</li>
+                            <li>Body:
+                                <pre className="bg-background p-2 rounded text-[10px] overflow-x-auto mr-4 my-1 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`{
+  "to": "{{1.phone}}",
+  "body": "שלום {{1.full_name}}! קיבלנו את הפנייה שלך לגבי {{1.dog_name}}. נחזור אליך תוך 24 שעות 🐾"
+}`}</pre>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>הפעילי את ה-Scenario (כפתור "Run once" לבדיקה, אחר כך הפעילי באופן קבוע).</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 4 — בדיקה אמיתית</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li>היכנסי לדף החנות שלך (<code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">doggocrm.app/t/your-handle</code>).</li>
+                    <li>מלאי טופס פניות בעצמך (הזיני מספר WhatsApp שלך).</li>
+                    <li>תוך 30 שניות, את צריכה לקבל הודעת WhatsApp.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">רעיונות נוספים שאת יכולה לבנות</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>הודעה למאלף עצמו</strong> — פנייה חדשה? קבלי גם הודעת WhatsApp לעצמך עם פרטי הליד.</li>
+                    <li><strong>תזכורת תשלום</strong> — אירוע <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">program.paid</code> מחבר ל-WhatsApp תודה ללקוח.</li>
+                    <li><strong>סנכרון ל-Google Sheets</strong> — כל ליד נכנס לאקסל לגיבוי + ניתוח.</li>
+                    <li><strong>שליחה למייל-מרקטינג</strong> — Mailchimp / Brevo. הליד נוסף אוטומטית לרשימת תפוצה.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">סוגי האירועים שזמינים</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    כשאת מחברת Webhook ל-Doggo CRM, ארבעה סוגי אירועים נשלחים אליו אוטומטית:
+                </p>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">intake_submission.created</code> — פנייה חדשה</li>
+                    <li><code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">session.created</code> — מפגש חדש נקבע</li>
+                    <li><code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">session.cancelled</code> — מפגש בוטל</li>
+                    <li><code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">program.paid</code> — תוכנית סומנה כשולמה</li>
+                </ul>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    כל אירוע מגיע כ-JSON עם header <code dir="ltr" className="font-mono bg-background px-1 rounded text-[10px]">X-Doggo-Event</code>. ב-Make אפשר לבנות לוגיקה שונה לכל סוג.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM כבר תומך ב-Webhook לאוטומציות (G4) — בלי תוספת תשלום בכל התוכניות. חברי Make / Zapier / Whapi / כל כלי שמדבר HTTP.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        התחילי עכשיו
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'crm-buying-guide': {
         slug: 'crm-buying-guide',
         title: 'המדריך לבחירת CRM למאלף כלבים עצמאי',
