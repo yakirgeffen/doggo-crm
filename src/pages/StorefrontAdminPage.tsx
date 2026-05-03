@@ -167,20 +167,20 @@ export function StorefrontAdminPage() {
                                 <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
                                     {copied ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
-                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתיחה">
                                     <ExternalLink size={14} />
                                 </a>
                             </div>
 
                             {/* Share buttons — share storefront URL via WhatsApp / Facebook / native share */}
                             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-                                <span className="text-xs text-text-muted">שתף:</span>
+                                <span className="text-xs text-text-muted">שיתוף:</span>
                                 <a
                                     href={`https://wa.me/?text=${encodeURIComponent(`${businessName ? `שלום! אני ${businessName}, ` : ''}אפשר לקבל אצלי הצעת מחיר לאילוף הכלב שלכם דרך הקישור הזה: ${publicUrl}`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-xs font-medium text-success bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                                    title="שתף את כתובת החנות בוואטסאפ"
+                                    title="שיתוף כתובת החנות בוואטסאפ"
                                 >
                                     <Send size={14} />
                                     WhatsApp
@@ -190,7 +190,7 @@ export function StorefrontAdminPage() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-xs font-medium text-[#1877F2] bg-[#1877F2]/10 hover:bg-[#1877F2]/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                                    title="שתף את כתובת החנות בפייסבוק"
+                                    title="שיתוף כתובת החנות בפייסבוק"
                                 >
                                     <Facebook size={14} />
                                     Facebook
