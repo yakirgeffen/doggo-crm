@@ -170,9 +170,13 @@ export function Dashboard() {
                                 <span className="text-2xl font-bold text-text-primary">{stats.sessionsThisMonth}</span>
                                 <span className="text-[11px] text-text-muted font-medium uppercase tracking-wide">מפגשי חודש</span>
                             </div>
-                            <div className="flat-card p-4 flex flex-col items-center text-center border-error/30">
+                            <div className="flat-card p-4 flex flex-col items-center text-center border-success/30 bg-success/5">
+                                <span className="text-2xl font-bold text-success ltr-nums" dir="ltr">₪{stats.revenueThisMonth.toLocaleString()}</span>
+                                <span className="text-[11px] text-success/80 font-medium uppercase tracking-wide">הכנסות חודש</span>
+                            </div>
+                            <div className="flat-card p-4 flex flex-col items-center text-center border-error/30 col-span-2">
                                 <span className="text-2xl font-bold text-error">{stats.pendingPayment}</span>
-                                <span className="text-[11px] text-error/80 font-medium uppercase tracking-wide">גבייה</span>
+                                <span className="text-[11px] text-error/80 font-medium uppercase tracking-wide">תוכניות בגבייה</span>
                             </div>
                         </div>
                     </div>

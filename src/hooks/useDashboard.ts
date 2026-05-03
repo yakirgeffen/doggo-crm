@@ -7,7 +7,8 @@ export function useDashboard() {
         activeClients: 0,
         activePrograms: 0,
         sessionsThisMonth: 0,
-        pendingPayment: 0
+        pendingPayment: 0,
+        revenueThisMonth: 0
     });
 
     const [actionItems, setActionItems] = useState<ActionItem[]>([]);
@@ -32,7 +33,8 @@ export function useDashboard() {
                 { count: programCount },
                 { count: sessionCount },
                 { count: paymentCount },
-                { data: todayData }
+                { data: todayData },
+                { data: paidProgramsThisMonth }
             ] = await Promise.all([
                 supabase.from('clients').select('*', { count: 'exact', head: true }).eq('is_active', true),
                 supabase.from('programs').select('*', { count: 'exact', head: true }).eq('status', 'active'),
@@ -42,14 +44,22 @@ export function useDashboard() {
                     .select('id, session_date, programs(id, program_name, sessions_included, clients(id, full_name, primary_dog_name, phone))')
                     .gte('session_date', startOfDay.toISOString())
                     .lt('session_date', endOfDay.toISOString())
-                    .order('session_date', { ascending: true })
+                    .order('session_date', { ascending: true }),
+                supabase.from('programs')
+                    .select('price')
+                    .eq('payment_status', 'paid')
+                    .gte('created_at', startOfMonth.toISOString())
             ]);
+
+            const revenueThisMonth = (paidProgramsThisMonth || [])
+                .reduce((sum, p) => sum + (Number(p.price) || 0), 0);
 
             setStats({
                 activeClients: clientCount || 0,
                 activePrograms: programCount || 0,
                 sessionsThisMonth: sessionCount || 0,
-                pendingPayment: paymentCount || 0
+                pendingPayment: paymentCount || 0,
+                revenueThisMonth,
             });
 
             if (todayData) {
