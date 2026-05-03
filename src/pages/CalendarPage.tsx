@@ -105,8 +105,8 @@ export function CalendarPage() {
                             allItems.push({
                                 id: e.id,
                                 type: 'external',
-                                title: e.summary || 'Google Event',
-                                subtitle: 'External Calendar',
+                                title: e.summary || 'אירוע ביומן',
+                                subtitle: 'יומן Google',
                                 start: new Date(startStr),
                                 end: new Date(endStr),
                             });
@@ -114,7 +114,7 @@ export function CalendarPage() {
                     });
                 } catch (gError) {
                     console.error("Google Calendar Error:", gError);
-                    setError("Could not sync Google Calendar. Please re-login.");
+                    setError('לא ניתן היה לסנכרן עם יומן Google. ייתכן שצריך להתחבר מחדש בדף הכניסה.');
                 }
             }
 
@@ -123,7 +123,7 @@ export function CalendarPage() {
 
         } catch (err) {
             console.error(err);
-            setError("Failed to load schedule");
+            setError('טעינת לוח הזמנים נכשלה');
         } finally {
             setLoading(false);
         }
@@ -229,14 +229,16 @@ export function CalendarPage() {
                         <button
                             onClick={() => setViewMode('week')}
                             className={`p-2 rounded-md transition-all ${viewMode === 'week' ? 'bg-surface shadow-soft text-primary' : 'text-text-muted hover:bg-surface-warm'}`}
-                            title="Week View"
+                            title="תצוגת שבוע"
+                            aria-label="תצוגת שבוע"
                         >
                             <Grid size={18} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
                             className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-surface shadow-soft text-primary' : 'text-text-muted hover:bg-surface-warm'}`}
-                            title="List View"
+                            title="תצוגת רשימה"
+                            aria-label="תצוגת רשימה"
                         >
                             <List size={18} />
                         </button>
@@ -413,7 +415,8 @@ export function CalendarPage() {
                     setIsBookModalOpen(true);
                 }}
                 className="md:hidden fixed bottom-24 end-5 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-card flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
-                title="קבע מפגש חדש"
+                title="מפגש חדש"
+                aria-label="מפגש חדש"
             >
                 <Plus size={24} />
             </button>
