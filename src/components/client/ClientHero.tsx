@@ -1,11 +1,14 @@
 import { Dog, Mail, Phone, MessageCircle } from 'lucide-react';
 import type { Client } from '../../types';
+import { useSettings } from '../../hooks/useSettings';
+import { applyTemplate } from '../../lib/whatsapp-template';
 
 interface ClientHeroProps {
     client: Client;
 }
 
 export function ClientHero({ client }: ClientHeroProps) {
+    const { settings } = useSettings();
     return (
         <div className="flat-card p-0 overflow-hidden mb-6">
             {/* Hero banner */}
@@ -25,7 +28,7 @@ export function ClientHero({ client }: ClientHeroProps) {
                             {client.full_name}
                         </p>
                         <p className="text-xs text-text-muted mt-1">
-                            הצטרף ב- {new Date(client.created_at).toLocaleDateString('he-IL')}
+                            הצטרפות: {new Date(client.created_at).toLocaleDateString('he-IL')}
                         </p>
                     </div>
                 </div>
@@ -47,13 +50,19 @@ export function ClientHero({ client }: ClientHeroProps) {
                             {(() => {
                                 const phoneDigits = client.phone.replace(/[^0-9]/g, '');
                                 const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
-                                const dogReference = client.primary_dog_name ? ` ול-${client.primary_dog_name}` : '';
-                                const greeting = encodeURIComponent(`שלום ${client.full_name.split(' ')[0]}!${dogReference ? ` מה שלומכם${dogReference}? 🐾` : ' 🐾'}`);
+                                const firstName = client.full_name.split(' ')[0];
+                                const dogName = client.primary_dog_name || '';
+                                const greetingText = applyTemplate(
+                                    settings?.wa_template_greeting ?? null,
+                                    { firstName, dogName },
+                                    `שלום ${firstName}! 🐾`
+                                );
+                                const greeting = encodeURIComponent(greetingText);
                                 return (
                                     <a
                                         href={`https://wa.me/${intl}?text=${greeting}`}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1.5 text-sm font-medium text-success bg-success/10 px-3 py-1.5 rounded-lg hover:bg-success/15 transition-colors"
                                     >
                                         <MessageCircle size={14} />
