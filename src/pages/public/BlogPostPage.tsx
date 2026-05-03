@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { useEffect } from 'react';
+import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 
 // G-CMO loop iteration 17 — first blog post. Hebrew SEO content
 // targeting cluster-A queries ("ניהול עסק אילוף כלבים", "אקסל למאלפים",
@@ -905,7 +906,15 @@ export function BlogPostPage() {
                     {post.body()}
                 </div>
 
-                <footer className="mt-16 pt-8 border-t border-border flex items-center justify-between text-sm text-text-muted">
+                <div className="mt-16">
+                    <NewsletterCTA
+                        source={`blog:${post.slug}`}
+                        title="אהבת את הפוסט?"
+                        subtitle="קבלי טיפים שבועיים על ניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם."
+                    />
+                </div>
+
+                <footer className="mt-12 pt-8 border-t border-border flex items-center justify-between text-sm text-text-muted">
                     <Link to="/blog" className="hover:text-primary transition-colors">← כל הפוסטים</Link>
                     <Link to="/" className="hover:text-primary transition-colors">דף הבית</Link>
                 </footer>
