@@ -106,16 +106,29 @@ export function Dashboard() {
 
                         {todaysSessions.length === 0 ? (
                             <div className="flat-card p-6">
-                                <EmptyState
-                                    icon={Calendar}
-                                    title="אין מפגשים מתוכננים להיום"
-                                    description="היומן שלך פנוי להיום. תהנה מהחופש או קבע מפגש חדש."
-                                    action={
-                                        <Link to="/calendar" className="btn btn-sm btn-outline mt-2">
-                                            קבע מפגש חדש
-                                        </Link>
-                                    }
-                                />
+                                {stats.activeClients === 0 ? (
+                                    <EmptyState
+                                        icon={Calendar}
+                                        title="עדיין לא הוספת לקוחות"
+                                        description="כדי לקבוע מפגשים, תצטרכי קודם להוסיף את הלקוח הראשון שלך."
+                                        action={
+                                            <Link to="/clients/new" className="btn btn-sm btn-primary mt-2">
+                                                הוסף לקוח ראשון
+                                            </Link>
+                                        }
+                                    />
+                                ) : (
+                                    <EmptyState
+                                        icon={Calendar}
+                                        title="אין מפגשים מתוכננים להיום"
+                                        description="היומן שלך פנוי להיום. תהנה מהחופש או קבעי מפגש חדש."
+                                        action={
+                                            <Link to="/calendar" className="btn btn-sm btn-outline mt-2">
+                                                קבעי מפגש חדש
+                                            </Link>
+                                        }
+                                    />
+                                )}
                             </div>
                         ) : (
                             <div className="grid gap-3">
