@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Dog, User, Phone, Loader2 } from 'lucide-react';
+import { X, Dog, User, Phone } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
+import { Spinner } from './Spinner';
 
 interface QuickAddClientModalProps {
     isOpen: boolean;
@@ -100,7 +101,7 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                             type="text"
                             value={ownerName}
                             onChange={(e) => setOwnerName(e.target.value)}
-                            placeholder="ישראל ישראלי"
+                            placeholder="שם מלא"
                             className="input-field"
                             required
                         />
@@ -137,13 +138,13 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                         >
                             {saving ? (
                                 <>
-                                    <Loader2 size={16} className="animate-spin" />
+                                    <Spinner size="md" />
                                     <span>שומר...</span>
                                 </>
                             ) : (
                                 <>
                                     <Dog size={16} />
-                                    <span>הוסף לקוח</span>
+                                    <span>הוספת לקוח</span>
                                 </>
                             )}
                         </button>
