@@ -29,7 +29,7 @@ export function NewClientPage() {
             setLoading(false);
         } else {
             if (data && data[0]) {
-                await logActivity('client', data[0].id, 'created', `Client ${formData.full_name} added`);
+                await logActivity('client', data[0].id, 'created', `לקוח חדש: ${formData.full_name}`);
             }
             navigate('/clients');
         }
@@ -44,7 +44,7 @@ export function NewClientPage() {
 
             <div className="flat-card p-8 border-t-4 border-t-primary shadow-card">
                 <h1 className="text-[28px] font-bold text-text-primary mb-2">לקוח חדש</h1>
-                <p className="text-text-muted mb-8 text-sm">הזן את פרטי הלקוח החדש והכלב שלו.</p>
+                <p className="text-text-muted mb-8 text-sm">פרטי הלקוח החדש והכלב.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-1.5">
@@ -55,7 +55,7 @@ export function NewClientPage() {
                             id="nc-full-name"
                             type="text"
                             required
-                            placeholder="לדוגמה: ישראל ישראלי"
+                            placeholder="שם מלא"
                             className="input-field"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -134,9 +134,9 @@ export function NewClientPage() {
                             {loading ? (
                                 <span className="flex items-center gap-2">
                                     <Spinner size="md" className="text-white" />
-                                    יוצר...
+                                    שומרים...
                                 </span>
-                            ) : 'צור לקוח'}
+                            ) : 'יצירת לקוח'}
                         </button>
                     </div>
                 </form>
