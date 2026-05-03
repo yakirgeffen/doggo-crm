@@ -18,7 +18,8 @@ export function LoginPage() {
             },
         });
         if (error) {
-            setError(error.message);
+            console.error('Google OAuth error:', error);
+            setError('ההתחברות נכשלה. כדאי לנסות שוב, ובמקרה של בעיה חוזרת לפנות לתמיכה.');
             setLoading(false);
         }
     };
