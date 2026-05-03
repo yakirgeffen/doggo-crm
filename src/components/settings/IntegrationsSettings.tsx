@@ -553,13 +553,16 @@ export function IntegrationsSettings() {
                 </div>
 
                 <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
-                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">דוגמת קריאה (Make / Zapier / curl)</summary>
+                    <summary className="cursor-pointer font-medium text-text-secondary mb-2">פעולות זמינות + דוגמת קריאה</summary>
+                    <p className="text-[11px] mt-2 mb-2">7 פעולות זמינות: 2 יצירה, 3 קריאה, 2 עדכון. כולן מקבלות <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "action": "...", "payload": {...} }'}</code> ומחזירות <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "success": true, ... }'}</code> או status 4xx/5xx עם <code dir="ltr" className="font-mono bg-surface px-1 rounded">error</code>.</p>
                     <pre className="overflow-x-auto text-[10px] mt-2 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>{`POST ${apiBaseUrl}
 Headers:
   Content-Type: application/json
   X-Doggo-Token: <your-token>
 
-Body — create a client:
+═══ CREATE ═══
+
+create_client                    → { client_id }
 {
   "action": "create_client",
   "payload": {
@@ -571,7 +574,7 @@ Body — create a client:
   }
 }
 
-Body — create an intake submission:
+create_intake_submission         → { submission_id }
 {
   "action": "create_intake_submission",
   "payload": {
@@ -582,8 +585,60 @@ Body — create an intake submission:
     "dog_age": "3",
     "lead_source": "google-form"
   }
+}
+
+═══ READ ═══
+
+list_clients                     → { clients[], total, limit, offset }
+{
+  "action": "list_clients",
+  "payload": {
+    "is_active": true,            // optional filter
+    "search": "רקס",              // optional ilike on name/email/phone
+    "limit": 50,                  // 1-200, default 50
+    "offset": 0
+  }
+}
+
+get_client                       → { client }
+{ "action": "get_client", "payload": { "client_id": "<uuid>" } }
+
+list_intake_submissions          → { submissions[], total, limit, offset }
+{
+  "action": "list_intake_submissions",
+  "payload": {
+    "status": "new",              // new | approved | archived
+    "limit": 50,
+    "offset": 0
+  }
+}
+
+═══ UPDATE ═══
+
+update_client                    → { client_id }
+{
+  "action": "update_client",
+  "payload": {
+    "client_id": "<uuid>",
+    "updates": {                  // partial; only allowed fields persist
+      "phone": "052-9999999",
+      "notes": "המאלף שלח שאלה",
+      "is_active": false
+    }
+  }
+}
+// Allowed: full_name, email, phone, primary_dog_name, notes,
+//          lead_source, is_active
+
+update_intake_submission_status  → { submission_id }
+{
+  "action": "update_intake_submission_status",
+  "payload": {
+    "submission_id": "<uuid>",
+    "status": "approved"          // new | approved | archived
+  }
 }`}</pre>
-                    <p className="text-[11px] text-text-muted mt-3">תגובה: <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "success": true, "client_id": "<uuid>" }'}</code> או <code dir="ltr" className="font-mono bg-surface px-1 rounded">{'{ "error": "..." }'}</code> עם status 4xx/5xx.</p>
+                    <p className="text-[11px] text-text-muted mt-3">כל הקריאות מתבצעות בשם המאלפת המזוהה לפי הטוקן. גישה למידע של מאלפת אחרת חסומה ברמת הפונקציה (predicates על user_id / trainer_id) וברמת ה-RLS.</p>
                 </details>
             </div>
         </div>
