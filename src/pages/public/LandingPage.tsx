@@ -4,7 +4,7 @@ import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 
 // G-CMO direction (2026-05-02 loop iteration) — public trainer-acquisition
 // landing page. Surfaces Doggo CRM's value prop to dog-trainer visitors
-// landing on the root domain. Single primary CTA (התחל בחינם → /login),
+// landing on the root domain. Single primary CTA (להתחיל בחינם → /login),
 // Hebrew RTL, mobile-first per Israeli market research. Built for trainers
 // who arrive via Google search ("CRM למאלפי כלבים").
 
@@ -51,11 +51,11 @@ export function LandingPage() {
                                 to="/login"
                                 className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated hover:shadow-card transition-shadow"
                             >
-                                התחל בחינם
+                                להתחיל בחינם
                                 <ChevronLeft size={18} />
                             </Link>
                             <span className="text-sm text-text-muted">
-                                ללא כרטיס אשראי · התחבר עם Google
+                                ללא כרטיס אשראי · כניסה עם Google
                             </span>
                         </div>
                     </div>
@@ -95,18 +95,18 @@ export function LandingPage() {
                     <div className="grid md:grid-cols-3 gap-8 md:gap-6 max-w-4xl mx-auto">
                         <Step
                             n={1}
-                            title="הירשם דרך Google"
+                            title="הרשמה דרך Google"
                             description="לחיצה אחת. בלי טפסים, בלי סיסמאות חדשות לזכור."
                         />
                         <Step
                             n={2}
-                            title="הוסף לקוחות ושירותים"
+                            title="הוספת לקוחות ושירותים"
                             description="הקטלוג שלך + הלקוחות הקיימים. ייקח לך 10 דקות."
                         />
                         <Step
                             n={3}
-                            title="התחל לעבוד"
-                            description="קבע מפגשים, שלח הצעות מחיר, עקוב אחרי תוכניות. כל יום, מהמכשיר שלך."
+                            title="להתחיל לעבוד"
+                            description="קביעת מפגשים, שליחת הצעות מחיר, מעקב אחרי תוכניות. כל יום, מכל מכשיר."
                         />
                     </div>
                 </div>
@@ -174,12 +174,13 @@ export function LandingPage() {
                     </h2>
                     <p className="text-white/80 text-lg mb-8">
                         Doggo CRM חינם להתחלה. בלי קליטה ארוכה, בלי שיחות מכירה.
+
                     </p>
                     <Link
                         to="/login"
                         className="inline-flex items-center gap-2 bg-white text-primary font-bold px-8 py-3.5 rounded-xl shadow-elevated hover:shadow-card transition-shadow"
                     >
-                        התחל עכשיו
+                        להתחלה
                         <ChevronLeft size={18} />
                     </Link>
                 </div>

@@ -188,7 +188,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     {!clientEmail && (
                         <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm">
                             <p className="font-bold text-text-primary mb-1">כתובת מייל חסרה</p>
-                            <p className="text-text-secondary">הוסף כתובת מייל לכרטיס הלקוח לפני שליחת הצעת מחיר.</p>
+                            <p className="text-text-secondary">יש להוסיף כתובת מייל לכרטיס הלקוח לפני שליחת הצעת מחיר.</p>
                         </div>
                     )}
 
@@ -298,7 +298,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                         ) : (
                             <>
                                 <Send size={16} />
-                                <span>שלח הצעת מחיר</span>
+                                <span>שליחת הצעת מחיר</span>
                             </>
                         )}
                     </button>

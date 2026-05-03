@@ -911,8 +911,8 @@ export function BlogPostPage() {
                 <div className="mt-16">
                     <NewsletterCTA
                         source={`blog:${post.slug}`}
-                        title="אהבת את הפוסט?"
-                        subtitle="קבלי טיפים שבועיים על ניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם."
+                        title="היה מעניין?"
+                        subtitle="טיפ שבועי על ניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם."
                     />
                 </div>
 

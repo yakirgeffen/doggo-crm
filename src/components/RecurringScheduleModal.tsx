@@ -123,7 +123,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-4">
                     <p className="text-sm text-text-secondary">
-                        קבעי {count} מפגשים שבועיים בלחיצה אחת.
+                        קביעת {count} מפגשים שבועיים בלחיצה אחת.
                     </p>
 
                     <div className="grid grid-cols-2 gap-3">

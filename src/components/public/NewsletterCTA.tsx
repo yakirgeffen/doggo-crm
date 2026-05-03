@@ -21,7 +21,7 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
         e.preventDefault();
         const trimmed = email.trim().toLowerCase();
         if (!isValidEmail(trimmed)) {
-            setErrorMessage('אנא הכנס כתובת אימייל תקינה');
+            setErrorMessage('יש להזין כתובת אימייל תקינה');
             setDoneState('error');
             return;
         }
@@ -36,14 +36,14 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
             });
             const data = await res.json();
             if (!res.ok || data.error) {
-                setErrorMessage(data.error || 'שגיאה בהרשמה. נסי שוב.');
+                setErrorMessage(data.error || 'שגיאה בהרשמה. כדאי לנסות שוב.');
                 setDoneState('error');
             } else {
                 setDoneState(data.status || 'subscribed');
                 setEmail('');
             }
         } catch {
-            setErrorMessage('שגיאה ברשת. נסי שוב.');
+            setErrorMessage('שגיאה ברשת. כדאי לנסות שוב.');
             setDoneState('error');
         } finally {
             setSubmitting(false);
@@ -51,9 +51,9 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
     };
 
     const successMessage =
-        doneState === 'subscribed' ? 'נרשמת! נשלח לך תוכן שימושי על אילוף-עסקי בלי ספאם.'
-        : doneState === 'resubscribed' ? 'ברוכה השבה — חזרת לרשימה.'
-        : doneState === 'already-subscribed' ? 'את כבר רשומה — תודה!'
+        doneState === 'subscribed' ? 'נרשמת! נשלח תוכן שימושי על אילוף-עסקי, בלי ספאם.'
+        : doneState === 'resubscribed' ? 'ברוכים השבים — חזרתם לרשימה.'
+        : doneState === 'already-subscribed' ? 'כבר רשומים — תודה!'
         : null;
 
     const containerClass = variant === 'card'
@@ -68,10 +68,10 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
                 </div>
                 <div>
                     <h3 className="font-bold text-lg text-text-primary">
-                        {title || 'הצטרפי לרשימת המאלפות שלנו'}
+                        {title || 'רשימת מאלפים בישראל'}
                     </h3>
                     <p className="text-sm text-text-secondary mt-1">
-                        {subtitle || 'טיפים שבועיים לניהול עסק אילוף, מחירון, שיווק ולקוחות. אפשר להסיר רישום בכל שלב.'}
+                        {subtitle || 'טיפים שבועיים לניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם, אפשר להסיר רישום בכל שלב.'}
                     </p>
                 </div>
             </div>
@@ -108,7 +108,7 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
                         disabled={submitting || !email.trim()}
                         className="btn btn-primary px-6 whitespace-nowrap"
                     >
-                        {submitting ? 'שולח...' : 'הצטרפי'}
+                        {submitting ? 'שולח...' : 'להצטרפות'}
                     </button>
                 </form>
             )}
