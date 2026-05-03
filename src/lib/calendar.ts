@@ -12,6 +12,10 @@ export interface CalendarEvent {
     };
     location?: string;
     htmlLink: string;
+    /** Present when an event was deleted; only surfaces with showDeleted=true. */
+    status?: 'confirmed' | 'tentative' | 'cancelled';
+    /** ISO 8601 timestamp of the last server-side modification. Used by sync to detect drift. */
+    updated?: string;
 }
 
 export interface CalendarEventInput {
@@ -127,6 +131,60 @@ export async function updateCalendarEvent(
     }
 
     return response.json();
+}
+
+/**
+ * Lists events on the user's primary calendar that have been updated since
+ * `sinceISO` (server-side `updated` timestamp). Used by the two-way sync
+ * (CTO iter 78) to detect events the trainer rescheduled / cancelled
+ * directly inside Google Calendar so we can reconcile the CRM `sessions`
+ * row.
+ *
+ * Why polling on the client (Architecture A):
+ *   - Polling is bound to the trainer's individual `providerToken`. The token
+ *     never leaves the browser, which keeps multi-tenant isolation airtight
+ *     (no per-trainer OAuth tokens stored server-side).
+ *   - Approach B (Google `events.watch` push notifications) would be real-
+ *     time, but requires (a) a public webhook endpoint, (b) channel
+ *     registration, (c) channel renewal every ~7 days, (d) server-side
+ *     storage of refresh tokens to act on the webhook. Skipped for v1 —
+ *     the freshness need (single trainer, manual reschedule) doesn't
+ *     justify the infra footprint.
+ *   - Approach C (pg_cron + edge function poll) was considered but the
+ *     server has no access to the trainer's `providerToken`, so a server-
+ *     scheduled poll would require persisting per-trainer Google refresh
+ *     tokens — a security regression we explicitly avoided in G7.
+ *
+ * Pagination is intentionally not implemented for v1; 250 results covers
+ * roughly 8 days of dense scheduling, far above the freshness window
+ * we ever poll.
+ */
+export async function listCalendarEventsUpdatedSince(
+    token: string,
+    sinceISO: string
+): Promise<CalendarEvent[]> {
+    const params = new URLSearchParams({
+        updatedMin: sinceISO,
+        singleEvents: 'true',
+        showDeleted: 'true',
+        maxResults: '250',
+    });
+
+    const response = await fetch(`${CALENDAR_BASE}/events?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || 'Failed to list calendar events');
+    }
+
+    const data = await response.json();
+    return data.items || [];
 }
 
 /**

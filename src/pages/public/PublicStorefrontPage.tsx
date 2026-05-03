@@ -184,8 +184,19 @@ export function PublicStorefrontPage() {
             {/* Services Grid */}
             <main className="max-w-3xl mx-auto px-4 pb-16 -mt-2">
                 {services.length === 0 ? (
-                    <div className="flat-card p-10 text-center text-text-muted">
-                        <p className="font-medium">עדיין לא הוגדרו שירותים</p>
+                    <div className="flat-card p-8 md:p-10 text-center">
+                        <div className="text-4xl mb-3">🐾</div>
+                        <p className="font-bold text-text-primary mb-2">השירותים בעדכון</p>
+                        <p className="text-sm text-text-secondary mb-5 max-w-md mx-auto leading-relaxed">
+                            הקטלוג עדיין בעדכון{profile?.business_name ? ` אצל ${profile.business_name}` : ''}. אפשר לפנות ישירות בטופס פנייה — מענה מהיר.
+                        </p>
+                        <Link
+                            to={`/t/${trainerHandle}/intake${forwardQuery ? `?${forwardQuery}` : ''}`}
+                            className="btn btn-primary inline-flex items-center gap-2 text-sm"
+                        >
+                            לטופס פנייה
+                            <ArrowLeft size={14} />
+                        </Link>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

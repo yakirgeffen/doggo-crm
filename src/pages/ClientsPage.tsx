@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Search, Mail, Users, Phone, ChevronRight, Upload, Zap, Download } from 'lucide-react';
+import { Search, Mail, Users, Phone, MessageCircle, ChevronRight, Upload, Zap, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type Client } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -306,15 +306,31 @@ export function ClientsPage() {
 
                                         <ChevronRight size={20} className="opacity-50 absolute end-4 top-1/2 -translate-y-1/2 text-text-muted" />
                                     </Link>
-                                    {client.phone && (
-                                        <a
-                                            href={`tel:${client.phone}`}
-                                            aria-label={`התקשרות ל${client.full_name}`}
-                                            className="absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-background hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary"
-                                        >
-                                            <Phone size={18} />
-                                        </a>
-                                    )}
+                                    {client.phone && (() => {
+                                        const phoneDigits = client.phone.replace(/[^\d]/g, '');
+                                        const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
+                                        const greeting = encodeURIComponent(`היי ${client.full_name.split(' ')[0]} 🐾`);
+                                        return (
+                                            <>
+                                                <a
+                                                    href={`https://wa.me/${intl}?text=${greeting}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    aria-label={`WhatsApp ל${client.full_name}`}
+                                                    className="absolute end-20 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-success/10 hover:text-success transition-colors focus-visible:outline-2 focus-visible:outline-primary"
+                                                >
+                                                    <MessageCircle size={18} />
+                                                </a>
+                                                <a
+                                                    href={`tel:${client.phone}`}
+                                                    aria-label={`התקשרות ל${client.full_name}`}
+                                                    className="absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-background hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary"
+                                                >
+                                                    <Phone size={18} />
+                                                </a>
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                             ))}
                         </div>

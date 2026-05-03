@@ -26,3 +26,4 @@ dist-ssr
 .env
 .dev-notes
 supabase/.temp/
+.claude/worktrees/
