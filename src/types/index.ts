@@ -26,7 +26,7 @@ export interface Program {
     payment_link_id: string | null;
     invoice_url: string | null;
     invoice_pdf_url: string | null;
-    legacy_morning_invoice_number: string | null;
+    morning_invoice_number: string | null;
     sumit_invoice_document_id: number | null;
     sumit_invoice_document_number: number | null;
     notes: string | null;

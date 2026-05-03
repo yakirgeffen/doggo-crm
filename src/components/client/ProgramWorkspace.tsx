@@ -229,11 +229,13 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <div className="flex items-center gap-2 flex-wrap">
                             <a
                                 href={(() => {
-                                    const invoiceRef = programState.sumit_invoice_document_number
-                                        ? ` (חשבונית #${programState.sumit_invoice_document_number})`
-                                        : programState.legacy_morning_invoice_number
-                                            ? ` (חשבונית #${programState.legacy_morning_invoice_number})`
-                                            : '';
+                                    // A program is invoiced via one of the trainer's connected vendors
+                                    // (Sumit OR Morning). Either column may be populated; surface whichever
+                                    // is set. No "primary vs fallback" hierarchy — the two are parallel
+                                    // choices per trainer preference.
+                                    const invoiceNumber = programState.sumit_invoice_document_number
+                                        ?? programState.morning_invoice_number;
+                                    const invoiceRef = invoiceNumber ? ` (חשבונית #${invoiceNumber})` : '';
                                     const text = `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${invoiceRef}. תודה! 🙏`;
                                     return `https://wa.me/?text=${encodeURIComponent(text)}`;
                                 })()}
