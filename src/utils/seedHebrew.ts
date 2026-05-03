@@ -15,6 +15,11 @@ const DOG_NAMES = [
     'בוני', 'מיקה', 'צ\'ארלי', 'רוקי', 'ג\'וני', 'פו', 'כתם', 'שלג'
 ];
 
+const DOG_BREEDS = [
+    'לברדור', 'גולדן רטריבר', 'בורדר קולי', 'רועה גרמני', 'פודל', 'פוקס טרייר',
+    'בולדוג צרפתי', "ג'ק ראסל", 'הסקי סיבירי', 'בייגל', 'מעורב', null, null,
+];
+
 const PROGRAMS = [
     { name: 'אילוף גורים', type: 'fixed_sessions', sessions: 5 },
     { name: 'משמעת מתקדמת', type: 'fixed_sessions', sessions: 10 },
@@ -53,6 +58,7 @@ export async function seedHebrewData() {
             email: `user${Date.now()}_${i}@example.com`,
             phone: getRandomPhone(),
             primary_dog_name: getRandom(DOG_NAMES),
+            primary_dog_breed: getRandom(DOG_BREEDS),
             notes: getRandom(NOTES),
             is_active: Math.random() > 0.3, // 70% active
         });
