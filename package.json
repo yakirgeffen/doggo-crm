@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "check:routes": "node scripts/check-routes.mjs",
     "check:vercel": "node scripts/check-vercel.mjs",
+    "check:schema": "node scripts/check-schema.mjs",
     "prebuild": "node scripts/check-routes.mjs",
     "preview": "vite preview"
   },

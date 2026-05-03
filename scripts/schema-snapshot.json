@@ -1,0 +1,231 @@
+{
+  "generated_at": "2026-05-03",
+  "project_id": "mmcgbtnjdatxkdzmsmwy",
+  "schema": "public",
+  "_purpose": "Snapshot of the live public schema, regenerated via `npm run schema:snapshot` after every migration. `npm run check:schema` diffs the live DB against this file and fails on drift. Source of truth — when in doubt, trust this file over `supabase_schema.sql` (which is preserved as a founding-phase artifact only). Companion to the iter 117 schema-truth-stale callout and the iter 120 silent-prod-bug arc.",
+  "tables": {
+    "activity_logs": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "uuid_generate_v4()" },
+        { "name": "entity_type", "type": "text", "nullable": false, "default": null },
+        { "name": "entity_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "action", "type": "text", "nullable": false, "default": null },
+        { "name": "description", "type": "text", "nullable": true, "default": null },
+        { "name": "performed_by", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" }
+      ]
+    },
+    "client_attachments": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "client_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "storage_path", "type": "text", "nullable": false, "default": null },
+        { "name": "display_name", "type": "text", "nullable": false, "default": null },
+        { "name": "mime_type", "type": "text", "nullable": true, "default": null },
+        { "name": "size_bytes", "type": "bigint", "nullable": true, "default": null },
+        { "name": "uploaded_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+      ]
+    },
+    "clients": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "uuid_generate_v4()" },
+        { "name": "full_name", "type": "text", "nullable": false, "default": null },
+        { "name": "email", "type": "text", "nullable": true, "default": null },
+        { "name": "phone", "type": "text", "nullable": true, "default": null },
+        { "name": "primary_dog_name", "type": "text", "nullable": true, "default": null },
+        { "name": "notes", "type": "text", "nullable": true, "default": null },
+        { "name": "is_active", "type": "boolean", "nullable": true, "default": "true" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
+        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "behavioral_tags", "type": "ARRAY", "nullable": true, "default": "'{}'::text[]" },
+        { "name": "lead_source", "type": "text", "nullable": true, "default": null },
+        { "name": "primary_dog_breed", "type": "text", "nullable": true, "default": null }
+      ]
+    },
+    "email_send_log": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "session_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "user_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "client_email", "type": "text", "nullable": true, "default": null },
+        { "name": "email_template", "type": "text", "nullable": false, "default": null },
+        { "name": "sent_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" }
+      ]
+    },
+    "email_templates": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "name", "type": "text", "nullable": false, "default": null },
+        { "name": "subject", "type": "text", "nullable": false, "default": null },
+        { "name": "body", "type": "text", "nullable": false, "default": null },
+        { "name": "is_default", "type": "boolean", "nullable": true, "default": "false" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
+        { "name": "updated_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" }
+      ]
+    },
+    "intake_submissions": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "full_name", "type": "text", "nullable": false, "default": null },
+        { "name": "phone", "type": "text", "nullable": true, "default": null },
+        { "name": "dog_name", "type": "text", "nullable": true, "default": null },
+        { "name": "notes", "type": "text", "nullable": true, "default": null },
+        { "name": "status", "type": "text", "nullable": true, "default": "'new'::text" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
+        { "name": "trainer_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "captcha_token", "type": "text", "nullable": true, "default": null },
+        { "name": "dog_breed", "type": "text", "nullable": true, "default": null },
+        { "name": "dog_age", "type": "text", "nullable": true, "default": null },
+        { "name": "behavioral_tags", "type": "ARRAY", "nullable": true, "default": "'{}'::text[]" },
+        { "name": "lead_source", "type": "text", "nullable": true, "default": null },
+        { "name": "selected_service_id", "type": "uuid", "nullable": true, "default": null }
+      ]
+    },
+    "newsletter_subscribers": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "email", "type": "text", "nullable": false, "default": null },
+        { "name": "source", "type": "text", "nullable": true, "default": null },
+        { "name": "confirmed_at", "type": "timestamp with time zone", "nullable": true, "default": null },
+        { "name": "unsubscribed_at", "type": "timestamp with time zone", "nullable": true, "default": null },
+        { "name": "metadata", "type": "jsonb", "nullable": true, "default": "'{}'::jsonb" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+      ]
+    },
+    "profiles": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "email", "type": "text", "nullable": false, "default": null },
+        { "name": "full_name", "type": "text", "nullable": true, "default": null },
+        { "name": "role", "type": "text", "nullable": false, "default": null },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" }
+      ]
+    },
+    "programs": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "uuid_generate_v4()" },
+        { "name": "client_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "program_name", "type": "text", "nullable": false, "default": null },
+        { "name": "program_type", "type": "text", "nullable": false, "default": null },
+        { "name": "sessions_included", "type": "integer", "nullable": true, "default": null },
+        { "name": "sessions_completed", "type": "integer", "nullable": true, "default": "0" },
+        { "name": "status", "type": "text", "nullable": false, "default": "'active'::text" },
+        { "name": "assigned_trainer", "type": "uuid", "nullable": true, "default": null },
+        { "name": "payment_status", "type": "text", "nullable": true, "default": "'pending'::text" },
+        { "name": "greeninvoice_invoice_number", "type": "text", "nullable": true, "default": null },
+        { "name": "start_date", "type": "date", "nullable": true, "default": null },
+        { "name": "end_date", "type": "date", "nullable": true, "default": null },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
+        { "name": "price", "type": "numeric", "nullable": true, "default": null },
+        { "name": "currency", "type": "text", "nullable": true, "default": "'ILS'::text" },
+        { "name": "payment_link_id", "type": "text", "nullable": true, "default": null },
+        { "name": "invoice_url", "type": "text", "nullable": true, "default": null },
+        { "name": "invoice_pdf_url", "type": "text", "nullable": true, "default": null },
+        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "service_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "sumit_invoice_document_id", "type": "bigint", "nullable": true, "default": null },
+        { "name": "sumit_invoice_document_number", "type": "bigint", "nullable": true, "default": null },
+        { "name": "notes", "type": "text", "nullable": true, "default": null }
+      ]
+    },
+    "quotes": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "client_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "intake_submission_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "sumit_document_id", "type": "bigint", "nullable": true, "default": null },
+        { "name": "sumit_document_number", "type": "bigint", "nullable": true, "default": null },
+        { "name": "total_amount", "type": "numeric", "nullable": true, "default": null },
+        { "name": "currency", "type": "text", "nullable": true, "default": "'ILS'::text" },
+        { "name": "status", "type": "text", "nullable": false, "default": "'sent'::text" },
+        { "name": "sent_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" }
+      ]
+    },
+    "services": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "name", "type": "text", "nullable": false, "default": null },
+        { "name": "description", "type": "text", "nullable": true, "default": null },
+        { "name": "price", "type": "numeric", "nullable": false, "default": "0" },
+        { "name": "currency", "type": "text", "nullable": true, "default": "'ILS'::text" },
+        { "name": "duration_minutes", "type": "integer", "nullable": true, "default": "60" },
+        { "name": "color", "type": "text", "nullable": true, "default": "'#15803d'::text" },
+        { "name": "is_active", "type": "boolean", "nullable": true, "default": "true" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
+        { "name": "updated_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
+        { "name": "type", "type": "text", "nullable": true, "default": "'fixed'::text" },
+        { "name": "sessions_included", "type": "integer", "nullable": true, "default": null }
+      ]
+    },
+    "sessions": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "uuid_generate_v4()" },
+        { "name": "program_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "session_date", "type": "date", "nullable": false, "default": null },
+        { "name": "trainer", "type": "uuid", "nullable": true, "default": null },
+        { "name": "session_notes", "type": "text", "nullable": true, "default": null },
+        { "name": "homework", "type": "text", "nullable": true, "default": null },
+        { "name": "next_session_date", "type": "date", "nullable": true, "default": null },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": true, "default": "now()" },
+        { "name": "price", "type": "numeric", "nullable": true, "default": null },
+        { "name": "currency", "type": "text", "nullable": true, "default": "'ILS'::text" },
+        { "name": "service_id", "type": "uuid", "nullable": true, "default": null },
+        { "name": "payment_status", "type": "text", "nullable": true, "default": "'unpaid'::text" },
+        { "name": "payment_link_id", "type": "text", "nullable": true, "default": null },
+        { "name": "invoice_url", "type": "text", "nullable": true, "default": null },
+        { "name": "user_id", "type": "uuid", "nullable": true, "default": "auth.uid()" },
+        { "name": "google_calendar_event_id", "type": "text", "nullable": true, "default": null }
+      ]
+    },
+    "sys_integrations_vault": {
+      "columns": [
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "service_name", "type": "text", "nullable": false, "default": "'morning'::text" },
+        { "name": "access_key_id", "type": "text", "nullable": true, "default": null },
+        { "name": "secret_access_key", "type": "text", "nullable": true, "default": null },
+        { "name": "webhook_secret", "type": "text", "nullable": true, "default": null },
+        { "name": "is_connected", "type": "boolean", "nullable": true, "default": "false" },
+        { "name": "updated_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" }
+      ]
+    },
+    "trainer_testimonials": {
+      "columns": [
+        { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "client_name", "type": "text", "nullable": false, "default": null },
+        { "name": "client_dog_name", "type": "text", "nullable": true, "default": null },
+        { "name": "body", "type": "text", "nullable": false, "default": null },
+        { "name": "rating", "type": "smallint", "nullable": true, "default": null },
+        { "name": "is_published", "type": "boolean", "nullable": false, "default": "true" },
+        { "name": "display_order", "type": "integer", "nullable": false, "default": "0" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+      ]
+    },
+    "user_settings": {
+      "columns": [
+        { "name": "user_id", "type": "uuid", "nullable": false, "default": null },
+        { "name": "business_name", "type": "text", "nullable": true, "default": null },
+        { "name": "work_days", "type": "ARRAY", "nullable": true, "default": "'{0,1,2,3,4}'::integer[]" },
+        { "name": "work_hours_start", "type": "text", "nullable": true, "default": "'09:00'::text" },
+        { "name": "work_hours_end", "type": "text", "nullable": true, "default": "'17:00'::text" },
+        { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
+        { "name": "updated_at", "type": "timestamp with time zone", "nullable": false, "default": "timezone('utc'::text, now())" },
+        { "name": "trainer_handle", "type": "text", "nullable": true, "default": null },
+        { "name": "bio", "type": "text", "nullable": true, "default": null },
+        { "name": "avatar_url", "type": "text", "nullable": true, "default": null },
+        { "name": "specialties", "type": "ARRAY", "nullable": true, "default": "'{}'::text[]" },
+        { "name": "webhook_url", "type": "text", "nullable": true, "default": null },
+        { "name": "api_token_hash", "type": "text", "nullable": true, "default": null },
+        { "name": "wa_template_greeting", "type": "text", "nullable": true, "default": null },
+        { "name": "wa_template_booking", "type": "text", "nullable": true, "default": null },
+        { "name": "wa_template_reminder", "type": "text", "nullable": true, "default": null },
+        { "name": "intro_pages_seen", "type": "ARRAY", "nullable": false, "default": "'{}'::text[]" }
+      ]
+    }
+  }
+}
