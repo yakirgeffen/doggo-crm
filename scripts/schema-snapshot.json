@@ -97,7 +97,6 @@
         { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
         { "name": "email", "type": "text", "nullable": false, "default": null },
         { "name": "source", "type": "text", "nullable": true, "default": null },
-        { "name": "confirmed_at", "type": "timestamp with time zone", "nullable": true, "default": null },
         { "name": "unsubscribed_at", "type": "timestamp with time zone", "nullable": true, "default": null },
         { "name": "metadata", "type": "jsonb", "nullable": true, "default": "'{}'::jsonb" },
         { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }

@@ -11,17 +11,23 @@
 --   - email is the natural unique key (case-insensitive via lower())
 --   - source is a free-text tag describing where the subscription
 --     happened ('landing-page', 'blog:post-slug', 'lead-magnet:name')
---   - confirmed_at supports double-opt-in if added later (column nullable
---     for now; first version is single-opt-in for friction reduction)
 --   - unsubscribed_at supports honoring opt-out without deleting the row
 --     (so we can avoid re-adding bounces / spam complaints)
+--   - NOTE 2026-05-03: original v1 of this migration also created a
+--     `confirmed_at` column as a "supports double-opt-in if added later"
+--     placeholder. CMO sub-agent decision 2026-05-03 dropped that column
+--     under polish-before-need (single-opt-in is the deliberate contract;
+--     no dead-schema future-tasks). See migration
+--     20260503210000_newsletter_subscribers_drop_confirmed_at.sql for the
+--     drop and `geffen-studio:leadership/cmo/decisions-log.md`
+--     2026-05-03 entry for the reasoning.
 -- ============================================================
 
 create table if not exists public.newsletter_subscribers (
   id uuid primary key default gen_random_uuid(),
   email text not null,
   source text,
-  confirmed_at timestamptz,
+  confirmed_at timestamptz, -- dropped in 20260503210000 (CMO 2026-05-03)
   unsubscribed_at timestamptz,
   metadata jsonb default '{}'::jsonb,
   created_at timestamptz not null default now()
