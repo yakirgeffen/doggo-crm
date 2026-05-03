@@ -32,21 +32,21 @@ const isValidEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
 function renderWelcomeEmail(): string {
     return [
         '<!doctype html>',
-        '<html dir="rtl" lang="he"><head><meta charset="utf-8"><title>ברוכה הבאה</title></head>',
+        '<html dir="rtl" lang="he"><head><meta charset="utf-8"><title>ברוכים הבאים</title></head>',
         '<body style="font-family:-apple-system,system-ui,sans-serif;background:#FAF9F7;color:#2C2A26;padding:40px 20px;max-width:560px;margin:0 auto;direction:rtl;">',
         '<div style="background:white;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">',
         '<div style="font-size:32px;margin-bottom:12px;">🐾</div>',
-        '<h1 style="font-size:24px;font-weight:800;margin:0 0 8px;color:#2C2A26;">ברוכה הבאה ל-Doggo CRM</h1>',
-        '<p style="font-size:15px;line-height:1.6;color:#5C5852;margin:0 0 16px;">תודה שהצטרפת! מדי שבוע נשלח לך טיפ אחד שימושי על ניהול עסק אילוף — מחירון, שיווק, לקוחות, או תהליכים. בלי ספאם.</p>',
+        '<h1 style="font-size:24px;font-weight:800;margin:0 0 8px;color:#2C2A26;">ברוכים הבאים ל-Doggo CRM</h1>',
+        '<p style="font-size:15px;line-height:1.6;color:#5C5852;margin:0 0 16px;">תודה על ההרשמה! מדי שבוע נשלח טיפ אחד שימושי על ניהול עסק אילוף — מחירון, שיווק, לקוחות, או תהליכים. בלי ספאם.</p>',
         '<p style="font-size:15px;line-height:1.6;color:#5C5852;margin:0 0 24px;">הטיפ הראשון יגיע ביום ראשון הקרוב.</p>',
         '<div style="border-top:1px solid #E8E4DC;padding-top:20px;margin-top:24px;">',
-        '<p style="font-size:13px;color:#8C8780;margin:0 0 8px;">בינתיים — כמה דברים שעשויים לעניין אותך:</p>',
+        '<p style="font-size:13px;color:#8C8780;margin:0 0 8px;">בינתיים — כמה דברים שעשויים לעניין אתכם:</p>',
         '<ul style="font-size:13px;color:#5C5852;padding-right:20px;margin:0;">',
         '<li style="margin-bottom:6px;"><a href="https://doggocrm.app/free/cost-calculator" style="color:#4A6741;text-decoration:underline;">מחשבון מחירון לאילוף</a> — חישוב כמה לקחת לשעה</li>',
         '<li style="margin-bottom:6px;"><a href="https://doggocrm.app/blog" style="color:#4A6741;text-decoration:underline;">הבלוג</a> — 10 פוסטים על ניהול עסק אילוף</li>',
-        '<li><a href="https://doggocrm.app/" style="color:#4A6741;text-decoration:underline;">Doggo CRM</a> — מערכת לניהול הלקוחות, התוכניות, והחשבוניות שלך</li>',
+        '<li><a href="https://doggocrm.app/" style="color:#4A6741;text-decoration:underline;">Doggo CRM</a> — מערכת לניהול לקוחות, תוכניות, וחשבוניות</li>',
         '</ul></div></div>',
-        '<p style="font-size:11px;color:#8C8780;text-align:center;margin:16px 0 0;">קיבלת את האימייל הזה כי נרשמת ב-doggocrm.app. לא רוצה לקבל יותר? פשוט אל תענה — וננתק אותך מהרשימה ידנית.</p>',
+        '<p style="font-size:11px;color:#8C8780;text-align:center;margin:16px 0 0;">האימייל הזה הגיע כי הייתה הרשמה ב-doggocrm.app. לא רוצים לקבל יותר? אפשר פשוט לענות "להסיר" וננתק את הרשימה ידנית.</p>',
         '</body></html>',
     ].join('')
 }
@@ -122,7 +122,7 @@ serve(async (req: Request) => {
                 await resend.emails.send({
                     from: 'Doggo CRM <notifications@resend.dev>',
                     to: rawEmail,
-                    subject: 'ברוכה הבאה ל-Doggo CRM 🐾',
+                    subject: 'ברוכים הבאים ל-Doggo CRM 🐾',
                     html,
                 })
             } catch (mailErr) {

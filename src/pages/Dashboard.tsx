@@ -109,11 +109,11 @@ export function Dashboard() {
                                 {stats.activeClients === 0 ? (
                                     <EmptyState
                                         icon={Calendar}
-                                        title="עדיין לא הוספת לקוחות"
-                                        description="כדי לקבוע מפגשים, תצטרכי קודם להוסיף את הלקוח הראשון שלך."
+                                        title="עדיין אין לקוחות במערכת"
+                                        description="כדי לקבוע מפגשים, צריך קודם להוסיף את הלקוח הראשון."
                                         action={
                                             <Link to="/clients/new" className="btn btn-sm btn-primary mt-2">
-                                                הוסף לקוח ראשון
+                                                הוספת לקוח ראשון
                                             </Link>
                                         }
                                     />
@@ -121,10 +121,10 @@ export function Dashboard() {
                                     <EmptyState
                                         icon={Calendar}
                                         title="אין מפגשים מתוכננים להיום"
-                                        description="היומן שלך פנוי להיום. תהנה מהחופש או קבעי מפגש חדש."
+                                        description="היומן פנוי להיום. אפשר ליהנות מהחופש או לקבוע מפגש חדש."
                                         action={
                                             <Link to="/calendar" className="btn btn-sm btn-outline mt-2">
-                                                קבעי מפגש חדש
+                                                קביעת מפגש חדש
                                             </Link>
                                         }
                                     />

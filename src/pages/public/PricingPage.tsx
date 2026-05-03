@@ -25,7 +25,7 @@ const TIERS: Tier[] = [
         tagline: 'התחלה חינם — לבחון ולהרגיש את המערכת',
         price: 'חינם',
         priceSubtitle: 'לעולם',
-        cta: 'התחל בחינם',
+        cta: 'להתחיל בחינם',
         features: [
             { label: 'עד 10 לקוחות פעילים', included: true },
             { label: 'מאלף יחיד', included: true },
@@ -43,7 +43,7 @@ const TIERS: Tier[] = [
         tagline: 'למאלפים פעילים — ההגדרה הסטנדרטית',
         price: '₪119',
         priceSubtitle: 'לחודש · ₪1,190 לשנה (חודשיים מתנה)',
-        cta: 'התחל ניסיון 30 יום',
+        cta: 'להתחלת ניסיון 30 יום',
         highlight: true,
         features: [
             { label: 'לקוחות, תוכניות, ומפגשים בלתי מוגבלים', included: true },
@@ -110,7 +110,7 @@ export function PricingPage() {
                         מחיר שמתאים לכל שלב בעסק
                     </h1>
                     <p className="text-lg text-text-secondary">
-                        התחל בחינם. שדרג רק כשהעסק שלך גדל.
+                        להתחיל בחינם. לשדרג רק כשהעסק גדל.
                     </p>
                 </div>
 
@@ -215,13 +215,13 @@ export function PricingPage() {
                         מוכן/ה להתחיל?
                     </h2>
                     <p className="text-text-secondary mb-6">
-                        הירשם בחינם · שדרג רק כשתחליט/י
+                        הרשמה חינם · שדרוג רק לפי החלטתך
                     </p>
                     <Link
                         to="/login"
                         className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated"
                     >
-                        התחל בחינם
+                        להתחיל בחינם
                         <ChevronLeft size={18} />
                     </Link>
                 </section>

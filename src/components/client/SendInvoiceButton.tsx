@@ -129,7 +129,7 @@ export function SendInvoiceButton({
                 ) : (
                     <>
                         <FileCheck size={14} />
-                        <span>שלח חשבונית</span>
+                        <span>שליחת חשבונית</span>
                     </>
                 )}
             </button>

@@ -78,7 +78,7 @@ export function CostCalculatorPage() {
                 <section className="flat-card p-6 md:p-8 space-y-5 mb-10">
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">משכורת יעד נטו לחודש</label>
-                        <p className="text-xs text-text-muted mb-2">כמה את רוצה שיישאר לך בכיס בסוף החודש, אחרי מס.</p>
+                        <p className="text-xs text-text-muted mb-2">כמה רוצים שיישאר בכיס בסוף החודש, אחרי מס.</p>
                         <div className="relative">
                             <span className="absolute end-3 top-3 text-text-muted text-sm">₪</span>
                             <input
@@ -127,7 +127,7 @@ export function CostCalculatorPage() {
 
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">שיעור מס משוער</label>
-                        <p className="text-xs text-text-muted mb-2">לעצמאים בישראל — ברירת מחדל 25% (משלב הכנסה ומע״מ אפקטיבי). לחישוב מדויק התייעצי עם רו״ח.</p>
+                        <p className="text-xs text-text-muted mb-2">לעצמאים בישראל — ברירת מחדל 25% (משלב הכנסה ומע״מ אפקטיבי). לחישוב מדויק כדאי להתייעץ עם רו״ח.</p>
                         <div className="relative">
                             <span className="absolute end-3 top-3 text-text-muted text-sm">%</span>
                             <input
@@ -186,14 +186,14 @@ export function CostCalculatorPage() {
                         <div className="flex items-start gap-2 p-4 rounded-xl bg-warning/5 border border-warning/20 text-xs text-text-secondary">
                             <AlertTriangle className="text-warning shrink-0 mt-0.5" size={14} />
                             <p>
-                                המחשבון מציג רף מינימלי בלבד — הוא לא לוקח בחשבון תחרות מקומית, ניסיון, התמחויות, או ערך נוסף שאת מציעה (חבילות, מעקב WhatsApp, סדנאות). המחיר בפועל שלך אמור להיות גבוה יותר. לחישוב מסים וביטוח לאומי מדויקים — התייעצי עם רואה חשבון.
+                                המחשבון מציג רף מינימלי בלבד — הוא לא לוקח בחשבון תחרות מקומית, ניסיון, התמחויות, או ערך נוסף שאתם מציעים (חבילות, מעקב WhatsApp, סדנאות). המחיר בפועל אמור להיות גבוה יותר. לחישוב מסים וביטוח לאומי מדויקים — כדאי להתייעץ עם רואה חשבון.
                             </p>
                         </div>
 
                         <NewsletterCTA
                             source="cost-calculator"
-                            title="רוצה עוד כלים כאלה?"
-                            subtitle="מדי שבוע אנחנו שולחות טיפ אחד על מחירון, שיווק, או ניהול עסק אילוף. בלי ספאם — אפשר להסיר רישום בכל שלב."
+                            title="רוצים עוד כלים כאלה?"
+                            subtitle="מדי שבוע נשלח טיפ אחד על מחירון, שיווק, או ניהול עסק אילוף. בלי ספאם — אפשר להסיר רישום בכל שלב."
                         />
                     </section>
                 )}

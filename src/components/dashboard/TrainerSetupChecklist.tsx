@@ -49,51 +49,51 @@ export function TrainerSetupChecklist() {
         const next: ChecklistItem[] = [
             {
                 id: 'business',
-                label: 'הגדר שם עסק',
-                description: 'השם שיוצג ללקוחות בדף החנות הציבורי שלך.',
+                label: 'הגדרת שם עסק',
+                description: 'השם שיוצג ללקוחות בדף החנות הציבורי.',
                 done: Boolean(businessName && businessName.trim().length > 0),
                 href: '/settings',
-                cta: 'הגדר',
+                cta: 'להגדרה',
             },
             {
                 id: 'handle',
-                label: 'בחר כתובת חנות',
-                description: 'כתובת ייחודית שבה לקוחות פוטנציאליים ימצאו אותך.',
+                label: 'בחירת כתובת חנות',
+                description: 'כתובת ייחודית שבה לקוחות פוטנציאליים ימצאו את העסק.',
                 done: Boolean(trainerHandle && trainerHandle.length > 0),
                 href: '/storefront',
-                cta: 'בחר',
+                cta: 'לבחירה',
             },
             {
                 id: 'services',
-                label: 'הוסף שירות ראשון',
-                description: 'הקטלוג מאפשר ללקוחות לראות מה אתה מציע ובאיזה מחיר.',
+                label: 'הוספת שירות ראשון',
+                description: 'הקטלוג מאפשר ללקוחות לראות מה אתם מציעים ובאיזה מחיר.',
                 done: serviceCount > 0,
                 href: '/settings',
-                cta: 'הוסף',
+                cta: 'להוספה',
             },
             {
                 id: 'billing',
-                label: 'חבר חשבונית (Sumit / Morning)',
+                label: 'חיבור חשבונית (Sumit / Morning)',
                 description: 'חיבור לסומיט או חשבונית ירוקה מאפשר הפקת חשבוניות, הצעות מחיר וקבלות.',
                 done: billingConnected,
                 href: '/settings',
-                cta: 'חבר',
+                cta: 'לחיבור',
             },
             {
                 id: 'calendar',
-                label: 'אפשר סנכרון יומן Google',
-                description: 'מפגשים שנקבעים במערכת יופיעו אוטומטית ביומן שלך.',
+                label: 'סנכרון יומן Google',
+                description: 'מפגשים שנקבעים במערכת יופיעו אוטומטית ביומן.',
                 done: Boolean(providerToken),
                 href: '/login',
-                cta: providerToken ? 'התחבר מחדש' : 'התחבר ל-Google',
+                cta: providerToken ? 'התחברות מחדש' : 'חיבור ל-Google',
             },
             {
                 id: 'first-client',
-                label: 'הוסף לקוח ראשון',
-                description: 'התחל מלקוח אחד ובנה את הפעילות שלך משם.',
+                label: 'הוספת לקוח ראשון',
+                description: 'מתחילים מלקוח אחד ובונים את הפעילות משם.',
                 done: clientCount > 0,
                 href: '/clients/new',
-                cta: 'הוסף',
+                cta: 'להוספה',
             },
         ];
 
@@ -131,6 +131,7 @@ export function TrainerSetupChecklist() {
                     </div>
                     <div>
                         <h2 className="text-lg font-bold text-text-primary">בואו נסיים את ההתקנה</h2>
+
                         <p className="text-xs text-text-muted">{completed} מתוך {total} הושלמו · {percent}%</p>
                     </div>
                 </div>

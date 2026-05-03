@@ -38,7 +38,7 @@ export function IntegrationsSettings() {
 
     const handleGenerateToken = async () => {
         if (hasActiveToken) {
-            const ok = window.confirm('יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שתעדכני אותן. להמשיך?');
+            const ok = window.confirm('יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שיעודכנו. להמשיך?');
             if (!ok) return;
         }
         setTokenGenerating(true);
@@ -117,7 +117,7 @@ export function IntegrationsSettings() {
     const handleTestWebhook = async () => {
         const trimmed = webhookUrl.trim();
         if (!trimmed || !isValidWebhookUrl(trimmed)) {
-            showToast('הכניסי כתובת https:// תקינה', 'error');
+            showToast('יש להזין כתובת https:// תקינה', 'error');
             return;
         }
         setWebhookTestSending(true);
@@ -137,7 +137,7 @@ export function IntegrationsSettings() {
                 showToast(`כתובת ה-Webhook החזירה ${res.status}`, 'error');
             }
         } catch (err) {
-            showToast('Webhook לא הגיב — בדקי שהכתובת זמינה', 'error');
+            showToast('Webhook לא הגיב — כדאי לבדוק שהכתובת זמינה', 'error');
             console.error('Webhook test error:', err);
         } finally {
             setWebhookTestSending(false);
@@ -203,10 +203,10 @@ export function IntegrationsSettings() {
                             איך משיגים מפתחות API?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>היכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
-                            <li>בתפריט הצד, לחץ על <b>הגדרות</b> (Settings).</li>
-                            <li>בחר באפשרות <b>API & Webhooks</b> או <b>כלים למפתחים</b>.</li>
-                            <li>לחץ על <b>הוספת מפתח</b> (Add Key) והעתק את הנתונים.</li>
+                            <li>להיכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
+                            <li>בתפריט הצד, ללחוץ על <b>הגדרות</b> (Settings).</li>
+                            <li>לבחור באפשרות <b>API & Webhooks</b> או <b>כלים למפתחים</b>.</li>
+                            <li>ללחוץ על <b>הוספת מפתח</b> (Add Key) ולהעתיק את הנתונים.</li>
                         </ol>
                         <p className="text-[11px] text-text-muted mt-2 border-t border-primary/10 pt-2">
                             * המיקום המדויק בתפריט עשוי להשתנות, אך תמיד יימצא תחת "הגדרות".
@@ -220,7 +220,7 @@ export function IntegrationsSettings() {
                             className="input-field dir-ltr font-mono text-sm"
                             value={apiKey}
                             onChange={(e) => setApiKey(e.target.value)}
-                            placeholder="הדבק כאן את Key ID"
+                            placeholder="להדביק כאן את Key ID"
                         />
                     </div>
 
@@ -233,7 +233,7 @@ export function IntegrationsSettings() {
                                 className="input-field dir-ltr font-mono text-sm ps-9"
                                 value={apiSecret}
                                 onChange={(e) => setApiSecret(e.target.value)}
-                                placeholder="הדבק כאן את Secret Key"
+                                placeholder="להדביק כאן את Secret Key"
                             />
                         </div>
                     </div>
@@ -314,9 +314,9 @@ export function IntegrationsSettings() {
                             איך משיגים CompanyID + APIKey?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>היכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
-                            <li>בתפריט הגדרות, חפש <b>API</b> או <b>מפתחים</b>.</li>
-                            <li>הפק <b>API Key חדש</b> והעתק את <b>CompanyID</b> ואת ה-<b>APIKey</b>.</li>
+                            <li>להיכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
+                            <li>בתפריט הגדרות, לחפש <b>API</b> או <b>מפתחים</b>.</li>
+                            <li>להפיק <b>API Key חדש</b> ולהעתיק את <b>CompanyID</b> ואת ה-<b>APIKey</b>.</li>
                         </ol>
                         <p className="text-[11px] text-text-muted mt-2 border-t border-primary/10 pt-2">
                             * תיעוד מלא: app.sumit.co.il/developers/api/
@@ -344,7 +344,7 @@ export function IntegrationsSettings() {
                                 className="input-field dir-ltr font-mono text-sm ps-9"
                                 value={sumitApiKey}
                                 onChange={(e) => setSumitApiKey(e.target.value)}
-                                placeholder="הדבק כאן את ה-APIKey"
+                                placeholder="להדביק כאן את ה-APIKey"
                             />
                         </div>
                     </div>
@@ -508,7 +508,7 @@ export function IntegrationsSettings() {
                         <div className="flex items-start gap-2">
                             <AlertTriangle className="text-warning shrink-0 mt-0.5" size={16} />
                             <p className="text-xs text-text-primary font-medium">
-                                שמרי את הטוקן הזה במקום בטוח. <b>לא נציג אותו שוב.</b> אם תאבדי אותו, תצטרכי ליצור טוקן חדש.
+                                כדאי לשמור את הטוקן הזה במקום בטוח. <b>לא נציג אותו שוב.</b> במקרה של אובדן, תצטרכו ליצור טוקן חדש.
                             </p>
                         </div>
                         <div className="flex gap-2">
