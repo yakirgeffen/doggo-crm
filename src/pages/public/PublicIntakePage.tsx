@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User, BookOpen, Calculator, Clock } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
 import { useToast } from '../../context/toast-context';
@@ -129,20 +129,60 @@ export function PublicIntakePage() {
     // Success screen
     if (submitted) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center px-4">
-                <div className="flat-card w-full max-w-md p-10 text-center animate-fade-in">
-                    <div className="w-16 h-16 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                        <CheckCircle size={32} className="text-success" />
+            <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+                <div className="flat-card w-full max-w-lg p-8 md:p-10 animate-fade-in">
+                    <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                            <CheckCircle size={32} className="text-success" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-text-primary mb-2">הפנייה נקלטה 🐾</h1>
+                        <p className="text-text-secondary leading-relaxed flex items-center justify-center gap-1.5">
+                            <Clock size={14} className="text-text-muted" />
+                            תגובה תגיע אליכם תוך 24 שעות.
+                        </p>
                     </div>
-                    <h1 className="text-2xl font-bold text-text-primary mb-2">הטופס נשלח בהצלחה! 🎉</h1>
-                    <p className="text-text-secondary mb-6">המאלף יצור איתכם קשר בהקדם.</p>
-                    <Link
-                        to={`/t/${trainerHandle}`}
-                        className="text-primary hover:underline text-sm font-medium inline-flex items-center gap-1"
-                    >
-                        <ArrowRight size={14} />
-                        חזרה לדף המאלף
-                    </Link>
+
+                    <div className="border-t border-border pt-6 space-y-3">
+                        <p className="text-xs font-medium text-text-muted text-center mb-3">בינתיים, כמה דברים שעשויים לעניין:</p>
+                        <Link
+                            to="/blog"
+                            target="_blank"
+                            className="flat-card p-3 flex items-center gap-3 hover:border-primary transition-colors group"
+                        >
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+                                <BookOpen size={16} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">טיפים לאילוף הכלב</p>
+                                <p className="text-xs text-text-muted truncate">בלוג Doggo CRM — 10 פוסטים</p>
+                            </div>
+                            <ChevronLeft size={16} className="text-text-muted shrink-0" />
+                        </Link>
+                        <Link
+                            to="/calculator"
+                            target="_blank"
+                            className="flat-card p-3 flex items-center gap-3 hover:border-primary transition-colors group"
+                        >
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+                                <Calculator size={16} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">מחשבון מחירון לאילוף</p>
+                                <p className="text-xs text-text-muted truncate">השוואה לפי שעות + הוצאות</p>
+                            </div>
+                            <ChevronLeft size={16} className="text-text-muted shrink-0" />
+                        </Link>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-border text-center">
+                        <Link
+                            to={`/t/${trainerHandle}`}
+                            className="text-primary hover:underline text-sm font-medium inline-flex items-center gap-1"
+                        >
+                            <ArrowRight size={14} />
+                            חזרה לדף המאלף
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
