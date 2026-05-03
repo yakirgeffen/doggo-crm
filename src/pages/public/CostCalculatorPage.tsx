@@ -95,7 +95,7 @@ export function CostCalculatorPage() {
 
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">הוצאות קבועות חודשיות</label>
-                        <p className="text-xs text-text-muted mb-2">דלק/רכב, פרסום, ביטוחים, רואה חשבון, ציוד שמתבלה. אל תכלילי מס.</p>
+                        <p className="text-xs text-text-muted mb-2">דלק/רכב, פרסום, ביטוחים, רואה חשבון, ציוד שמתבלה. בלי מס בשלב הזה.</p>
                         <div className="relative">
                             <span className="absolute end-3 top-3 text-text-muted text-sm">₪</span>
                             <input
@@ -112,7 +112,7 @@ export function CostCalculatorPage() {
 
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">שעות עבודה בתשלום בשבוע</label>
-                        <p className="text-xs text-text-muted mb-2">רק שעות שאת מחייבת לקוח עליהן — לא כולל שיווק, נסיעות, ועד מיידיות.</p>
+                        <p className="text-xs text-text-muted mb-2">רק שעות שמחויבות ללקוח — בלי שיווק, נסיעות או זמינות בהמתנה.</p>
                         <input
                             type="number"
                             inputMode="numeric"
@@ -193,7 +193,7 @@ export function CostCalculatorPage() {
                         <NewsletterCTA
                             source="cost-calculator"
                             title="רוצים עוד כלים כאלה?"
-                            subtitle="מדי שבוע נשלח טיפ אחד על מחירון, שיווק, או ניהול עסק אילוף. בלי ספאם — אפשר להסיר רישום בכל שלב."
+                            subtitle="טיפים מעת לעת על מחירון, שיווק וניהול עסק אילוף. בלי ספאם — אפשר להסיר רישום בכל שלב."
                         />
                     </section>
                 )}

@@ -129,7 +129,7 @@ export function LandingPage() {
                         <ul className="space-y-2 text-sm text-text-secondary">
                             <li className="flex items-start gap-2">
                                 <span className="text-primary mt-0.5">✓</span>
-                                <span>מעקב אחרי מקור הפנייה (UTM) — תדע מאיפה כל ליד הגיע.</span>
+                                <span>מעקב אחרי מקור הפנייה (UTM) — לראות מאיפה כל ליד הגיע.</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-primary mt-0.5">✓</span>
@@ -156,7 +156,7 @@ export function LandingPage() {
                                 "תרגול זנב וכפיים, אילוף ביות, וטיפול בחרדות — אצלך בבית או אצלי."
                             </p>
                             <button className="w-full bg-primary text-white font-bold py-2.5 rounded-lg text-sm">
-                                הזמן פגישת היכרות
+                                קביעת פגישת היכרות
                             </button>
                         </div>
                         <p className="text-xs text-text-muted text-center mt-3">

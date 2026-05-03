@@ -70,12 +70,6 @@ export function LoginPage() {
                         )}
                     </button>
 
-                    <button
-                        disabled={true}
-                        className="w-full flex items-center justify-center gap-3 bg-surface-warm border border-dashed border-border text-text-muted font-medium py-3.5 px-4 rounded-xl cursor-not-allowed opacity-70"
-                    >
-                        <span>Windows / Outlook (בקרוב)</span>
-                    </button>
                 </div>
 
                 {/* Legal Links */}

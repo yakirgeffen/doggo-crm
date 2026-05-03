@@ -439,7 +439,7 @@ const POSTS: Record<string, Post> = {
                     <p className="mb-2"><strong>מחיר:</strong> 2,400 ש"ח לכל החבילה. תשלום מלא או 4 תשלומים.</p>
                     <p className="mb-2"><strong>אופני תשלום:</strong> ביט, אשראי, או העברה.</p>
                     <p className="mb-3"><strong>תוקף ההצעה:</strong> 14 ימים מהיום.</p>
-                    <p>אם אפשר, נשמח לקבוע מפגש היכרות ראשון לפני סיום שבועיים. דברו איתי ב-WhatsApp ב-050-XXXXXXX.</p>
+                    <p>אם אפשר, נשמח לקבוע מפגש היכרות ראשון לפני סיום שבועיים. דברו איתי ב-WhatsApp לפי המספר שמופיע בחנות.</p>
                 </div>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה Doggo CRM מקלה על הצעות מחיר</h2>
@@ -521,7 +521,7 @@ const POSTS: Record<string, Post> = {
                     <li>שיעור חבילה-שלמה גבוה ב-15-25% (תזכורות מקטינות מבוטלות-ברגע-האחרון)</li>
                 </ul>
                 <p className="text-text-secondary leading-relaxed mb-6">
-                    WhatsApp נשאר. ה-CRM מתחבר אליו (פיצ'ר עתידי בקרוב — בינתיים: הקישורים בכתב). העסק שלך גדל בלי תוספת שעות עבודה.
+                    WhatsApp נשאר הערוץ שמדבר עם הלקוח. ה-CRM הוא הזיכרון מאחור — בינתיים החיבור נעשה דרך קישורי שיתוף בכתב, ועובד טוב. העסק גדל בלי תוספת שעות עבודה.
                 </p>
 
                 <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
@@ -566,7 +566,7 @@ const POSTS: Record<string, Post> = {
                     <li>להירשם ל-Make.com (חינם).</li>
                     <li>ליצור Scenario חדש.</li>
                     <li>ללחוץ על "+" ולהוסיף מודול <strong>Webhooks → Custom Webhook</strong>.</li>
-                    <li>ללחוץ "Add" ולתת שם (לדוגמה: "Doggo CRM Lead Webhook"). להעתיק את ה-URL שמופיע — הוא יידרש בשלב הבא.</li>
+                    <li>ללחוץ על כפתור ההוספה (Add) ולתת שם (לדוגמה: "Doggo CRM Lead Webhook"). להעתיק את ה-URL שמופיע — הוא יידרש בשלב הבא.</li>
                 </ol>
 
                 <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">שלב 2 — חיבור Webhook ל-Doggo CRM</h2>

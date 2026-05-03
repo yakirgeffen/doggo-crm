@@ -62,14 +62,13 @@ const TIERS: Tier[] = [
         tagline: 'לסטודיו עם מספר מאלפים',
         price: '₪249',
         priceSubtitle: 'לחודש · ₪2,490 לשנה',
-        cta: 'דבר איתנו',
+        cta: 'אנחנו במרחק שיחה',
         features: [
             { label: 'הכל מ-Working Trainer', included: true },
             { label: 'מאלפים מרובים בארגון אחד', included: true },
             { label: 'דומיין מותאם אישית לחנות', included: true },
             { label: 'תמיכה בעדיפות גבוהה', included: true },
             { label: 'דוחות מתקדמים', included: true },
-            { label: 'אינטגרציה WhatsApp Business (בקרוב)', included: true },
             { label: 'הדרכת התקנה ייחודית', included: true },
             { label: 'מנהל הצלחת לקוח ייעודי', included: false },
             { label: 'SLA חוזה מותאם', included: false },
@@ -172,8 +171,8 @@ export function PricingPage() {
                             description="תשלום שנתי מקדמי = שני חודשים חינם. לפי החיוב היומי, נחסכים לך עשרות שקלים בחודש."
                         />
                         <PromoCard
-                            title="הפנה חבר/ה"
-                            description="לכל מאלף שמצטרף בעקבותייך — את מקבלת חודש Pro חינם. אין הגבלה."
+                            title="הפניית חבר"
+                            description="לכל מאלף שמצטרף בעקבותיכם — חודש Pro חינם נוסף. אין הגבלה."
                         />
                         <PromoCard
                             title="חברי-יסוד"
@@ -204,7 +203,7 @@ export function PricingPage() {
                         />
                         <FaqItem
                             q="האם המערכת מתאימה לאקדמיות אילוף עם מספר מאלפים?"
-                            a="תוכנית Growing Studio נבנתה במיוחד לכך. כל מאלף יקבל את הכניסה שלו, וניהול ההרשאות מרוכז. אם זה מתאים לך — דבר/י איתנו."
+                            a="תוכנית Growing Studio נבנתה במיוחד לכך. כל מאלף יקבל כניסה משלו, וניהול ההרשאות מרוכז. אם זה מתאים — אנחנו במרחק הודעה."
                         />
                     </div>
                 </section>
@@ -212,10 +211,10 @@ export function PricingPage() {
                 {/* Final CTA */}
                 <section className="mt-20 text-center">
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                        מוכן/ה להתחיל?
+                        אפשר להתחיל?
                     </h2>
                     <p className="text-text-secondary mb-6">
-                        הרשמה חינם · שדרוג רק לפי החלטתך
+                        הרשמה חינם · שדרוג רק לפי החלטה
                     </p>
                     <Link
                         to="/login"
