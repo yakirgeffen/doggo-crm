@@ -175,7 +175,7 @@ export function ImportClientsModal({ isOpen, onClose, onComplete }: ImportClient
                             {step === 'done' && 'הייבוא הושלם!'}
                         </p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-lg" aria-label="סגור">
+                    <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-lg" aria-label="סגירה">
                         <X size={20} />
                     </button>
                 </div>

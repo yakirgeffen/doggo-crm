@@ -219,7 +219,7 @@ export function EmailComposer({ clientEmail, clientName, dogName, entityType, en
                         <Mail size={20} className="text-primary" />
                         כתיבת אימייל
                     </h3>
-                    <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-colors p-1 hover:bg-black/5 rounded-lg" aria-label="סגור">
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-colors p-1 hover:bg-black/5 rounded-lg" aria-label="סגירה">
                         <X size={20} />
                     </button>
                 </div>

@@ -125,7 +125,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                         <Calendar size={18} className="text-primary" />
                         <h2 className="text-lg font-bold text-text-primary">תזמון אוטומטי של מפגשים</h2>
                     </div>
-                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1">
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1" aria-label="סגירה">
                         <X size={18} />
                     </button>
                 </div>

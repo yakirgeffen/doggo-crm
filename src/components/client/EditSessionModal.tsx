@@ -142,7 +142,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
             <div className="bg-surface rounded-2xl shadow-card w-full max-w-md border border-border overflow-hidden animate-modal-in" onClick={e => e.stopPropagation()}>
                 <div className="bg-primary/5 border-b border-border px-6 py-4 flex justify-between items-center">
                     <h2 className="text-lg font-bold text-text-primary">עריכת מפגש</h2>
-                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1">
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1" aria-label="סגירה">
                         <X size={18} />
                     </button>
                 </div>
@@ -205,12 +205,12 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
                                 onClick={() => setConfirmingCancel(true)}
                                 disabled={saving}
                                 className="px-3 py-2 rounded-lg text-sm text-error hover:bg-error/10 transition-colors flex items-center gap-1.5"
-                                title="בטל את המפגש"
+                                title="ביטול המפגש"
                             >
-                                <Trash2 size={14} /> בטל מפגש
+                                <Trash2 size={14} /> ביטול מפגש
                             </button>
                             <div className="flex-1" />
-                            <button onClick={onClose} className="btn btn-secondary text-sm">סגור</button>
+                            <button onClick={onClose} className="btn btn-secondary text-sm">סגירה</button>
                             <button
                                 onClick={handleSave}
                                 disabled={saving}

@@ -62,7 +62,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
             >
                 <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
                     <h3 id="extend-program-title" className="font-bold text-lg text-text-primary">הרחבת תוכנית</h3>
-                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-lg" aria-label="סגור">
+                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-lg" aria-label="סגירה">
                         <X size={20} className="text-text-muted" />
                     </button>
                 </div>

@@ -39,7 +39,7 @@ export function Toast({ message, type, onClose }: ToastProps) {
                 {type === 'success' ? <CheckCircle size={20} /> : <XCircle size={20} />}
             </div>
             <p className="flex-1 text-sm font-medium text-text-primary">{message}</p>
-            <button onClick={onClose} className="p-1 hover:bg-background rounded-lg transition-colors text-text-muted hover:text-text-primary">
+            <button onClick={onClose} className="p-1 hover:bg-background rounded-lg transition-colors text-text-muted hover:text-text-primary" aria-label="סגירת הודעה">
                 <X size={16} />
             </button>
         </div>
