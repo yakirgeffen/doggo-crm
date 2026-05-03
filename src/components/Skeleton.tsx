@@ -13,7 +13,7 @@ interface SkeletonTextProps {
 
 export function SkeletonText({ lines = 3, className = '' }: SkeletonTextProps) {
     return (
-        <div className={`space-y-2.5 ${className}`}>
+        <div className={`space-y-2.5 ${className}`} role="status" aria-label="טוען" aria-busy="true">
             {Array.from({ length: lines }).map((_, i) => (
                 <div
                     key={i}
@@ -27,7 +27,7 @@ export function SkeletonText({ lines = 3, className = '' }: SkeletonTextProps) {
 
 export function SkeletonCard({ className = '' }: { className?: string }) {
     return (
-        <div className={`flat-card p-5 space-y-3 animate-fade-in ${className}`}>
+        <div className={`flat-card p-5 space-y-3 animate-fade-in ${className}`} role="status" aria-label="טוען" aria-busy="true">
             <div className="h-4 w-1/3 bg-border/40 rounded-md skeleton-shimmer" />
             <div className="h-8 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
             <SkeletonText lines={2} />
@@ -37,7 +37,7 @@ export function SkeletonCard({ className = '' }: { className?: string }) {
 
 export function SkeletonRow({ className = '' }: { className?: string }) {
     return (
-        <div className={`flex items-center gap-4 p-4 border-b border-border-light ${className}`}>
+        <div className={`flex items-center gap-4 p-4 border-b border-border-light ${className}`} role="status" aria-label="טוען" aria-busy="true">
             <div className="w-10 h-10 rounded-xl bg-border/40 skeleton-shimmer shrink-0" />
             <div className="flex-1 space-y-2">
                 <div className="h-3.5 w-1/3 bg-border/40 rounded-md skeleton-shimmer" />
@@ -51,7 +51,7 @@ export function SkeletonRow({ className = '' }: { className?: string }) {
 /** Dashboard-specific: 4 KPI stat cards */
 export function SkeletonKPIGrid() {
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3" role="status" aria-label="טוען נתוני דשבורד" aria-busy="true">
             {[0, 1, 2, 3].map(i => (
                 <div key={i} className="flat-card p-3 flex flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: `${i * 60}ms` }}>
                     <div className="h-7 w-12 bg-border/40 rounded-md skeleton-shimmer" />
@@ -65,7 +65,7 @@ export function SkeletonKPIGrid() {
 /** Client detail page skeleton */
 export function SkeletonClientDetail() {
     return (
-        <div className="space-y-6 animate-fade-in p-4">
+        <div className="space-y-6 animate-fade-in p-4" role="status" aria-label="טוען לקוח" aria-busy="true">
             {/* Hero */}
             <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-border/40 skeleton-shimmer" />
@@ -90,7 +90,7 @@ export function SkeletonClientDetail() {
 /** Sessions list skeleton */
 export function SkeletonSessionList({ count = 2 }: { count?: number }) {
     return (
-        <div className="space-y-3">
+        <div className="space-y-3" role="status" aria-label="טוען מפגשים" aria-busy="true">
             {Array.from({ length: count }).map((_, i) => (
                 <div key={i} className="flat-card p-4 space-y-2 animate-fade-in" style={{ animationDelay: `${i * 80}ms` }}>
                     <div className="flex justify-between">
@@ -107,7 +107,7 @@ export function SkeletonSessionList({ count = 2 }: { count?: number }) {
 /** Timeline skeleton */
 export function SkeletonTimeline({ count = 3 }: { count?: number }) {
     return (
-        <div className="space-y-3 p-4">
+        <div className="space-y-3 p-4" role="status" aria-label="טוען פעילות" aria-busy="true">
             {Array.from({ length: count }).map((_, i) => (
                 <div key={i} className="flex items-start gap-3 animate-fade-in" style={{ animationDelay: `${i * 60}ms` }}>
                     <div className="w-2 h-2 rounded-full bg-border/40 skeleton-shimmer mt-1.5 shrink-0" />
