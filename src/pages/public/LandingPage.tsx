@@ -65,7 +65,7 @@ export function LandingPage() {
             {/* Value props — three cards */}
             <section className="max-w-5xl mx-auto px-6 py-16">
                 <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-                    כל מה שמאלף עצמאי צריך — ושום דבר מיותר
+                    כל מה שצריך לעסק אילוף עצמאי — ושום דבר מיותר
                 </h2>
                 <div className="grid md:grid-cols-3 gap-6">
                     <ValueCard
@@ -76,12 +76,12 @@ export function LandingPage() {
                     <ValueCard
                         icon={<Calendar size={28} />}
                         title="יומן מסונכרן עם Google"
-                        description="כשאת קובעת מפגש במערכת — האירוע נוצר אוטומטית ביומן Google שלך. בלי כפילויות."
+                        description="כשקובעים מפגש במערכת — האירוע נוצר אוטומטית ביומן Google שלך. בלי כפילויות."
                     />
                     <ValueCard
                         icon={<Receipt size={28} />}
                         title="חשבוניות והצעות מחיר"
-                        description="חיבור ישיר ל-Sumit וחשבונית ירוקה (Morning). הפק הצעות מחיר ללקוחות בלחיצה אחת — בעברית."
+                        description="חיבור ישיר ל-Sumit וחשבונית ירוקה (Morning). הפקת הצעות מחיר ללקוחות בלחיצה אחת — בעברית."
                     />
                 </div>
             </section>
@@ -121,10 +121,10 @@ export function LandingPage() {
                             <span>חדש</span>
                         </div>
                         <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                            דף חנות פומבי — שתעזור לך להשיג לקוחות חדשים
+                            דף חנות פומבי — שיעזור לך להשיג לקוחות חדשים
                         </h2>
                         <p className="text-text-secondary mb-4 leading-relaxed">
-                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.app/t/your-name</code>. שתף את הקישור ב-WhatsApp, ברשתות, ובמודעות — וקבל פניות ישירות למערכת.
+                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.app/t/your-name</code>. שיתוף הקישור ב-WhatsApp, ברשתות, ובמודעות — מביא פניות ישירות למערכת.
                         </p>
                         <ul className="space-y-2 text-sm text-text-secondary">
                             <li className="flex items-start gap-2">
@@ -145,10 +145,10 @@ export function LandingPage() {
                         <div className="bg-surface rounded-xl p-5 shadow-soft">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                                    גג
+                                    נה
                                 </div>
                                 <div>
-                                    <p className="font-bold text-sm">גיא הגנן</p>
+                                    <p className="font-bold text-sm">נועה הגנן</p>
                                     <p className="text-xs text-text-muted">מאלפת מקצועית</p>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@ export function LandingPage() {
                             </button>
                         </div>
                         <p className="text-xs text-text-muted text-center mt-3">
-                            כך נראית חנות אישית של מאלף ב-Doggo CRM
+                            כך נראית חנות אישית ב-Doggo CRM
                         </p>
                     </div>
                 </div>
@@ -170,7 +170,7 @@ export function LandingPage() {
             <section className="bg-primary text-white py-16">
                 <div className="max-w-3xl mx-auto px-6 text-center">
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                        מוכן/ה להפסיק לנהל בקבצי וואטסאפ?
+                        מוכנים להפסיק לנהל בקבצי וואטסאפ?
                     </h2>
                     <p className="text-white/80 text-lg mb-8">
                         Doggo CRM חינם להתחלה. בלי קליטה ארוכה, בלי שיחות מכירה.
