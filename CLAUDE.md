@@ -219,7 +219,7 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 - **No new icon libraries** — `lucide-react` only.
 - **No form libraries** (React Hook Form, Formik, etc.) — controlled `useState` inputs only.
 - **No HTTP client libraries** (axios, etc.) — Supabase client and native `fetch` only.
-- **No `date-fns`** — it's installed but unused; use native `Date` and `toLocaleDateString()` instead.
+- **No `date-fns`** — use native `Date` and `toLocaleDateString()` instead. (Was previously installed-but-unused; iter 124 verified it's no longer a dep but the rule stays — don't add it back.)
 - **Don't update `programs.status` directly** — always use `updateProgramStatus()` from `src/lib/supabase.ts`.
 - **Don't skip `logActivity()`** after mutations — every write to the DB should produce an audit log row.
 
@@ -246,7 +246,7 @@ npm run build   # also runs tsc type-check
 ## Known Tech Debt
 
 - **Intake tab in `ClientDetailPage`** — placeholder, marked Phase 3. Do not build on it yet.
-- **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
+- ~~**`date-fns` and `clsx`** — both are installed in `package.json` but unused~~ — closed iter 124 (verified neither is in package.json or package-lock.json; the tech-debt entry was itself stale).
 - **Sumit `DocumentType` enum constants** in `src/hooks/useSumit.ts` — `SUMIT_DOC_TYPE_PRICE_QUOTATION = 6` and `SUMIT_DOC_TYPE_INVOICE = 1` are working assumptions. Verify against Sumit's authoritative enum on first live test (one-line search-replace if different).
 - ~~**`programs.greeninvoice_invoice_number` column** is named for a specific vendor~~ — closed iter 123 (renamed to `legacy_morning_invoice_number`; new invoices populate `sumit_invoice_document_number` per the Sumit pivot).
 
