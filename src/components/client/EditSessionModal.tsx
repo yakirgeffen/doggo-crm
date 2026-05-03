@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Trash2, Save, X } from 'lucide-react';
+import { Trash2, Save, X } from 'lucide-react';
 import { supabase, logActivity } from '../../lib/supabase';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
 import { updateCalendarEvent, deleteCalendarEvent } from '../../lib/calendar';
 import type { Session } from '../../types';
+import { Spinner } from '../Spinner';
 
 interface EditSessionModalProps {
     isOpen: boolean;
@@ -215,7 +216,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
                                 disabled={saving}
                                 className="btn btn-primary text-sm flex items-center gap-1.5"
                             >
-                                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                {saving ? <Spinner size="sm" /> : <Save size={14} />}
                                 <span>שמור</span>
                             </button>
                         </div>
@@ -238,7 +239,7 @@ export function EditSessionModal({ isOpen, onClose, onSaved, session, programNam
                                     disabled={saving}
                                     className="text-xs font-bold text-white bg-error hover:bg-error/90 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 flex-1"
                                 >
-                                    {saving ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                                    {saving ? <Spinner size="sm" /> : <Trash2 size={14} />}
                                     <span>אשר ביטול</span>
                                 </button>
                             </div>

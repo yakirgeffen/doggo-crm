@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, User, BookOpen, Loader2, MessageCircle } from 'lucide-react';
+import { Calendar, Clock, User, BookOpen, MessageCircle } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
 import { createCalendarEvent } from '../lib/calendar';
 import { useSettings } from '../hooks/useSettings';
 import { applyTemplate } from '../lib/whatsapp-template';
+import { Spinner } from './Spinner';
 
 interface ClientOption {
     id: string;
@@ -351,7 +352,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         >
                             {saving ? (
                                 <>
-                                    <Loader2 size={16} className="animate-spin" />
+                                    <Spinner size="md" />
                                     <span>שומר...</span>
                                 </>
                             ) : '🐾 קבע מפגש'}

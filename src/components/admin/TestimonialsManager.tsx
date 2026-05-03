@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Star, Plus, Trash2, Edit3, Eye, EyeOff, X, Loader2 } from 'lucide-react';
+import { Star, Plus, Trash2, Edit3, Eye, EyeOff, X } from 'lucide-react';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { useToast } from '../../context/toast-context';
 import { type TrainerTestimonial } from '../../types';
+import { Spinner } from '../Spinner';
 
 // Trainer-side admin section: add/edit/publish/unpublish/delete client
 // testimonials displayed on the public storefront. Lives inside
@@ -58,7 +59,7 @@ export function TestimonialsManager() {
 
             {loading ? (
                 <div className="flex items-center justify-center py-10 text-text-muted gap-2">
-                    <Loader2 size={16} className="animate-spin" />
+                    <Spinner size="md" />
                     <span className="text-sm">טוען...</span>
                 </div>
             ) : items.length === 0 ? (
@@ -298,7 +299,7 @@ function TestimonialModal({
                         className="btn btn-primary text-sm flex items-center gap-1.5"
                         type="button"
                     >
-                        {saving && <Loader2 size={14} className="animate-spin" />}
+                        {saving && <Spinner size="sm" />}
                         {saving ? 'שומר...' : initial ? 'שמירת שינויים' : 'הוספה'}
                     </button>
                 </div>

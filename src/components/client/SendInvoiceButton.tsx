@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FileCheck, Loader2, MessageCircle, X } from 'lucide-react';
+import { FileCheck, MessageCircle, X } from 'lucide-react';
 import { supabase, logActivity } from '../../lib/supabase';
 import { useToast } from '../../context/toast-context';
 import { useSumit } from '../../hooks/useSumit';
+import { Spinner } from '../Spinner';
 
 interface SendInvoiceButtonProps {
     programId: string;
@@ -123,7 +124,7 @@ export function SendInvoiceButton({
             >
                 {sending ? (
                     <>
-                        <Loader2 size={14} className="animate-spin" />
+                        <Spinner size="sm" />
                         <span>שולח...</span>
                     </>
                 ) : (

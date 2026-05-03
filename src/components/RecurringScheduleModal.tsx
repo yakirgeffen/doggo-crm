@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Loader2, X, Check } from 'lucide-react';
+import { Calendar, X, Check } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
 import { useAuth } from '../context/auth-context';
 import { createCalendarEvent } from '../lib/calendar';
+import { Spinner } from './Spinner';
 
 interface RecurringScheduleModalProps {
     isOpen: boolean;
@@ -210,7 +211,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                     >
                         {submitting ? (
                             <>
-                                <Loader2 size={14} className="animate-spin" />
+                                <Spinner size="sm" />
                                 <span>קובע...</span>
                             </>
                         ) : (

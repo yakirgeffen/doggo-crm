@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Receipt, Send, Loader2, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Receipt, Send, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
 import { useServices, type Service } from '../hooks/useServices';
 import { useSumit } from '../hooks/useSumit';
+import { Spinner } from './Spinner';
 
 interface SendQuoteModalProps {
     isOpen: boolean;
@@ -301,7 +302,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     <button onClick={handleSend} disabled={!canSend} className="btn btn-primary flex-1 flex items-center justify-center gap-2">
                         {submitting ? (
                             <>
-                                <Loader2 size={16} className="animate-spin" />
+                                <Spinner size="md" />
                                 <span>שולח...</span>
                             </>
                         ) : (
