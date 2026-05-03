@@ -85,7 +85,7 @@ export function TrainerSetupChecklist() {
                 description: 'מפגשים שנקבעים במערכת יופיעו אוטומטית ביומן שלך.',
                 done: Boolean(providerToken),
                 href: '/login',
-                cta: 'התחבר מחדש',
+                cta: providerToken ? 'התחבר מחדש' : 'התחבר ל-Google',
             },
             {
                 id: 'first-client',
