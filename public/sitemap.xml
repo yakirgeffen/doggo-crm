@@ -61,6 +61,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://doggocrm.app/blog/quote-writing-guide</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://doggocrm.app/privacy</loc>
     <lastmod>2026-05-02</lastmod>
     <changefreq>yearly</changefreq>

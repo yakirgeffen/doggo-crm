@@ -17,6 +17,80 @@ interface Post {
 }
 
 const POSTS: Record<string, Post> = {
+    'quote-writing-guide': {
+        slug: 'quote-writing-guide',
+        title: 'המדריך השלם להצעת מחיר ללקוח אילוף',
+        description: 'איך לכתוב הצעת מחיר שגורמת ללקוח לסגור — בלי להתמקח, בלי להסס. מדריך פרקטי מהשטח הישראלי.',
+        publishedAt: '2026-05-03',
+        readingMinutes: 6,
+        body: () => (
+            <>
+                <p className="text-text-secondary text-lg leading-relaxed mb-6">
+                    הצעת מחיר לא נכתבה היטב? הלקוח הולך למתחרה. נכתבה היטב? הלקוח סוגר תוך שעה ובלי להתמקח.
+                    הנה איך לכתוב הצעת מחיר שעובדת — מבוסס על ראיונות עם מאלפים שסוגרים שיעור-המרה גבוה.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">החלקים של הצעת מחיר טובה</h2>
+                <ol className="text-text-secondary leading-relaxed mb-6 list-decimal list-inside space-y-2 mr-4">
+                    <li><strong>פתיחה אישית</strong> — לא "שלום" — שם הלקוח, שם הכלב, ההתייחסות הספציפית למה שהם פנו עליו.</li>
+                    <li><strong>מה התוכנית כוללת</strong> — בנקודות. מספר מפגשים, משך מפגש, איפה מתקיים, מה הלקוח מקבל.</li>
+                    <li><strong>מה לא כלול</strong> — חשוב למנוע אכזבה. "ליווי בוואטסאפ אחרי תום הקורס לא כלול במחיר."</li>
+                    <li><strong>מחיר ברור</strong> — סכום אחד, לא טווח. תשלומים אם רלוונטי.</li>
+                    <li><strong>תוקף ההצעה</strong> — "תקף 14 ימים" — יוצר דחיפות.</li>
+                    <li><strong>אופן התשלום</strong> — ביט, אשראי, תשלומים. מקל על הסגירה.</li>
+                </ol>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">הטעות הנפוצה: הסבר מקצועי יותר מדי</h2>
+                <p className="text-text-secondary leading-relaxed mb-4">
+                    מאלפים נוטים לכתוב כמו ספר. הצעת מחיר של 3 עמודים על שיטת האילוף, על הניסיון של המאלף, על המתודולוגיה.
+                </p>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    הלקוח לא יקרא את זה. הצעה טובה היא בעמוד אחד או פחות. הניסיון שלך + המתודולוגיה — באתר. בהצעה: רק התוצאה והמחיר.
+                </p>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">מה לעשות אחרי שליחת ההצעה</h2>
+                <ul className="text-text-secondary leading-relaxed mb-6 list-disc list-inside space-y-2 mr-4">
+                    <li><strong>שלחי גם הודעת WhatsApp</strong> — "שלום, הרגע שלחתי לך הצעת מחיר במייל. אם יש שאלות אני כאן." זמן תגובה ראשונה לפי 5 דקות = שיעור המרה גבוה ב-40%.</li>
+                    <li><strong>אל תפחדי לחזור</strong> — אם הלקוח לא הגיב תוך 3 ימים, שלחי הודעה: "רציתי לבדוק אם קיבלת את ההצעה ואם יש שאלות". זה לא לחץ — זה שירות.</li>
+                    <li><strong>אבל לא יותר מ-3 פולואפים</strong> — אם הלקוח לא הגיב אחרי 3 ניסיונות בפער של שבוע, אל תשקיעי יותר. הוא לא קונה.</li>
+                </ul>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">דוגמת הצעה שעובדת (תבנית)</h2>
+                <div className="bg-background border border-border rounded-xl p-5 my-6 text-sm leading-relaxed text-text-secondary">
+                    <p className="mb-3"><strong>שלום [שם הלקוח],</strong></p>
+                    <p className="mb-3">תודה ששלחת אלינו פנייה לגבי [שם הכלב]! הנה ההצעה לתוכנית האילוף שלכם.</p>
+                    <p className="mb-2"><strong>מה התוכנית כוללת:</strong></p>
+                    <ul className="list-disc list-inside mb-3 space-y-1 mr-4">
+                        <li>8 מפגשים פרטיים, שעה כל אחד</li>
+                        <li>אצלכם בבית — באזור המגורים שלכם</li>
+                        <li>תוכנית מותאמת אישית, מותאמת לקצב הכלב</li>
+                        <li>תיעוד מפגש אחרי כל מפגש בוואטסאפ</li>
+                    </ul>
+                    <p className="mb-2"><strong>מה לא כלול:</strong> ליווי וואטסאפ אחרי סיום הקורס (אבל אפשר להאריך — בנפרד).</p>
+                    <p className="mb-2"><strong>מחיר:</strong> 2,400 ש"ח לכל החבילה. תשלום מלא או 4 תשלומים.</p>
+                    <p className="mb-2"><strong>אופני תשלום:</strong> ביט, אשראי, או העברה.</p>
+                    <p className="mb-3"><strong>תוקף ההצעה:</strong> 14 ימים מהיום.</p>
+                    <p>אם אפשר, נשמח לקבוע מפגש היכרות ראשון לפני סיום שבועיים. דברו איתי ב-WhatsApp ב-050-XXXXXXX.</p>
+                </div>
+
+                <h2 className="text-2xl font-bold text-text-primary mt-10 mb-4">למה Doggo CRM מקלה על הצעות מחיר</h2>
+                <p className="text-text-secondary leading-relaxed mb-6">
+                    בלחיצה אחת ב-Doggo CRM את בוחרת את החבילה מהקטלוג, מקבלת הצעת מחיר עם PDF, מספר מסמך מ-Sumit, ומעקב סטטוס.
+                    הלקוח מקבל מייל מקצועי ולחיצה אחת על "אישור". את עוקבת בלי לחפש בוואטסאפ.
+                </p>
+
+                <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+                    <p className="text-text-secondary mb-4">
+                        Doggo CRM מפיק לך הצעות מחיר ב-30 שניות, עם PDF נשלח ישירות מהמערכת. ניסיון 30 יום חינם.
+                    </p>
+                    <Link to="/" className="btn btn-primary inline-flex items-center gap-2">
+                        התחילי עכשיו
+                        <ChevronRight size={16} className="rotate-180" />
+                    </Link>
+                </div>
+            </>
+        ),
+    },
     'whatsapp-vs-crm': {
         slug: 'whatsapp-vs-crm',
         title: 'WhatsApp או מערכת ייעודית? לאן הולך עסק האילוף הקטן',
