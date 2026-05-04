@@ -15,6 +15,7 @@ export function NewClientPage() {
         email: '',
         phone: '',
         primary_dog_name: '',
+        primary_dog_breed: '',
         notes: '',
     });
 
@@ -22,14 +23,22 @@ export function NewClientPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { data, error } = await supabase.from('clients').insert([formData]).select();
+        const payload = {
+            full_name: formData.full_name,
+            email: formData.email || null,
+            phone: formData.phone || null,
+            primary_dog_name: formData.primary_dog_name || null,
+            primary_dog_breed: formData.primary_dog_breed || null,
+            notes: formData.notes || null,
+        };
+        const { data, error } = await supabase.from('clients').insert([payload]).select();
 
         if (error) {
             showToast('שגיאה ביצירת לקוח: ' + error.message, 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {
-                await logActivity('client', data[0].id, 'created', `Client ${formData.full_name} added`);
+                await logActivity('client', data[0].id, 'created', `לקוח חדש: ${formData.full_name}`);
             }
             navigate('/clients');
         }
@@ -44,7 +53,7 @@ export function NewClientPage() {
 
             <div className="flat-card p-8 border-t-4 border-t-primary shadow-card">
                 <h1 className="text-[28px] font-bold text-text-primary mb-2">לקוח חדש</h1>
-                <p className="text-text-muted mb-8 text-sm">הזן את פרטי הלקוח החדש והכלב שלו.</p>
+                <p className="text-text-muted mb-8 text-sm">פרטי הלקוח החדש והכלב.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-1.5">
@@ -55,7 +64,7 @@ export function NewClientPage() {
                             id="nc-full-name"
                             type="text"
                             required
-                            placeholder="לדוגמה: ישראל ישראלי"
+                            placeholder="שם מלא"
                             className="input-field"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -91,18 +100,33 @@ export function NewClientPage() {
                         </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                        <label htmlFor="nc-dog-name" className="block text-sm font-medium text-text-primary">
-                            שם הכלב
-                        </label>
-                        <input
-                            id="nc-dog-name"
-                            type="text"
-                            placeholder="לדוגמה: רקסי"
-                            className="input-field"
-                            value={formData.primary_dog_name}
-                            onChange={(e) => setFormData({ ...formData, primary_dog_name: e.target.value })}
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1.5">
+                            <label htmlFor="nc-dog-name" className="block text-sm font-medium text-text-primary">
+                                שם הכלב
+                            </label>
+                            <input
+                                id="nc-dog-name"
+                                type="text"
+                                placeholder="לדוגמה: רקסי"
+                                className="input-field"
+                                value={formData.primary_dog_name}
+                                onChange={(e) => setFormData({ ...formData, primary_dog_name: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label htmlFor="nc-dog-breed" className="block text-sm font-medium text-text-primary">
+                                גזע (אופציונלי)
+                            </label>
+                            <input
+                                id="nc-dog-breed"
+                                type="text"
+                                placeholder="לדוגמה: לברדור, מעורב"
+                                className="input-field"
+                                value={formData.primary_dog_breed}
+                                onChange={(e) => setFormData({ ...formData, primary_dog_breed: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -134,9 +158,9 @@ export function NewClientPage() {
                             {loading ? (
                                 <span className="flex items-center gap-2">
                                     <Spinner size="md" className="text-white" />
-                                    יוצר...
+                                    שומרים...
                                 </span>
-                            ) : 'צור לקוח'}
+                            ) : 'יצירת לקוח'}
                         </button>
                     </div>
                 </form>

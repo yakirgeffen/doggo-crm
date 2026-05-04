@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Receipt, Send, Loader2, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Receipt, Send, Plus, Trash2, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
 import { useServices, type Service } from '../hooks/useServices';
 import { useSumit } from '../hooks/useSumit';
+import { Spinner } from './Spinner';
 
 interface SendQuoteModalProps {
     isOpen: boolean;
@@ -76,17 +77,17 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
 
                     <div className="p-6 space-y-4">
                         <p className="text-sm text-text-secondary leading-relaxed">
-                            רוצה לשלוח גם הודעה ב-WhatsApp ללקוח/ה? לפעמים זה מקצר את זמן התגובה.
+                            לשלוח גם הודעה ב-WhatsApp ללקוח? לפעמים זה מקצר את זמן התגובה.
                         </p>
 
                         <a
                             href={waUrl}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
                         >
                             <MessageCircle size={18} />
-                            {phoneDigits ? `שלח/י ל-${phoneDigits}` : 'בחר/י נמען ב-WhatsApp'}
+                            {phoneDigits ? `שליחה ל-${phoneDigits}` : 'בחירת נמען ב-WhatsApp'}
                         </a>
 
                         <button
@@ -182,7 +183,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     </div>
                     <div>
                         <h2 className="text-lg font-bold text-text-primary">שליחת הצעת מחיר</h2>
-                        <p className="text-xs text-text-muted">הפק הצעת מחיר ושלח ללקוח דרך Sumit</p>
+                        <p className="text-xs text-text-muted">הפקת הצעת מחיר ושליחה ללקוח דרך Sumit</p>
                     </div>
                 </div>
 
@@ -190,7 +191,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     {!sumit.isConnected && (
                         <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm">
                             <p className="font-bold text-text-primary mb-1">חיבור Sumit חסר</p>
-                            <p className="text-text-secondary">כדי לשלוח הצעות מחיר, חבר את Sumit בעמוד ההגדרות תחת אינטגרציות.</p>
+                            <p className="text-text-secondary">כדי לשלוח הצעות מחיר, יש לחבר את Sumit בעמוד ההגדרות תחת אינטגרציות.</p>
                         </div>
                     )}
 
@@ -213,7 +214,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                         <div className="flex items-center justify-between mb-3">
                             <h3 className="text-sm font-bold text-text-primary">פירוט שירותים</h3>
                             <button onClick={addLine} className="text-xs text-primary hover:underline flex items-center gap-1">
-                                <Plus size={14} /> הוסף שורה
+                                <Plus size={14} /> הוספת שורה
                             </button>
                         </div>
 
@@ -227,13 +228,13 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                                             onChange={e => pickService(idx, e.target.value)}
                                             disabled={servicesLoading}
                                         >
-                                            <option value="">בחר מהקטלוג או הקלד מטה...</option>
+                                            <option value="">בחירה מהקטלוג או הקלדה למטה...</option>
                                             {services.map(s => (
                                                 <option key={s.id} value={s.id}>{s.name} (₪{s.price})</option>
                                             ))}
                                         </select>
                                         {lines.length > 1 && (
-                                            <button onClick={() => removeLine(idx)} className="text-text-muted hover:text-error p-2" title="מחק שורה">
+                                            <button onClick={() => removeLine(idx)} className="text-text-muted hover:text-error p-2" title="מחיקת שורה">
                                                 <Trash2 size={16} />
                                             </button>
                                         )}
@@ -301,7 +302,7 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
                     <button onClick={handleSend} disabled={!canSend} className="btn btn-primary flex-1 flex items-center justify-center gap-2">
                         {submitting ? (
                             <>
-                                <Loader2 size={16} className="animate-spin" />
+                                <Spinner size="md" />
                                 <span>שולח...</span>
                             </>
                         ) : (

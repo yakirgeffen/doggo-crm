@@ -6,6 +6,7 @@ import { useServices } from '../hooks/useServices';
 import { useToast } from '../context/toast-context';
 import { useAuth } from '../context/auth-context';
 import { createCalendarEvent } from '../lib/calendar';
+import { Spinner } from '../components/Spinner';
 
 export function NewSessionPage() {
     const navigate = useNavigate();
@@ -67,8 +68,8 @@ export function NewSessionPage() {
             setLoading(false);
         } else {
             if (data && data[0]) {
-                await logActivity('session', data[0].id, 'created', `Session logged for ${programName}`);
-                await logActivity('program', programId, 'updated', 'Session added');
+                await logActivity('session', data[0].id, 'created', `מפגש תועד עבור: ${programName}`);
+                await logActivity('program', programId, 'updated', 'נוסף מפגש לתוכנית');
 
                 if (providerToken) {
                     try {
@@ -161,7 +162,7 @@ export function NewSessionPage() {
                                         });
                                     }}
                                 >
-                                    <option value="">בחר שירות...</option>
+                                    <option value="">בחירת שירות...</option>
                                     {services.map(s => (
                                         <option key={s.id} value={s.id}>{s.name} (₪{s.price})</option>
                                     ))}
@@ -237,9 +238,14 @@ export function NewSessionPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary"
+                            className="btn btn-primary flex items-center gap-2"
                         >
-                            {loading ? 'שומר...' : 'שמור ותעד מפגש'}
+                            {loading ? (
+                                <>
+                                    <Spinner size="md" className="text-white" />
+                                    <span>שומרים...</span>
+                                </>
+                            ) : 'שמירת מפגש'}
                         </button>
                     </div>
                 </form>

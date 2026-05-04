@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
-import { Save, Building2, Calendar, Tag, Globe, Check, Loader2 } from 'lucide-react';
+import { Save, Building2, Calendar, Tag, Globe, Check, MessageCircle } from 'lucide-react';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ScheduleSettings } from '../components/settings/ScheduleSettings';
 import { ServicesSettings } from '../components/settings/ServicesSettings';
 import { IntegrationsSettings } from '../components/settings/IntegrationsSettings';
+import { CommunicationSettings } from '../components/settings/CommunicationSettings';
 import { SkeletonCard } from '../components/Skeleton';
+import { Spinner } from '../components/Spinner';
 
 export function SettingsPage() {
     const { settings, updateLocalSettings, saveSettings, loading } = useSettings();
-    const [activeTab, setActiveTab] = useState<'profile' | 'schedule' | 'services' | 'integrations'>('profile');
+    const [activeTab, setActiveTab] = useState<'profile' | 'schedule' | 'services' | 'communication' | 'integrations'>('profile');
     const [saving, setSaving] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ export function SettingsPage() {
             <div className="h-9 w-48 bg-border/40 rounded-md skeleton-shimmer mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
                 <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible -mx-1 px-1">
-                    {[0, 1, 2, 3].map(i => (
+                    {[0, 1, 2, 3, 4].map(i => (
                         <div key={i} className="h-12 w-32 md:w-full shrink-0 bg-border/30 rounded-lg skeleton-shimmer" />
                     ))}
                 </div>
@@ -59,6 +61,7 @@ export function SettingsPage() {
                         { key: 'profile', icon: Building2, label: 'פרופיל עסק' },
                         { key: 'schedule', icon: Calendar, label: 'שעות פעילות' },
                         { key: 'services', icon: Tag, label: 'שירותים ומחירים' },
+                        { key: 'communication', icon: MessageCircle, label: 'תקשורת' },
                         { key: 'integrations', icon: Globe, label: 'חיבורים' },
                     ] as const).map(tab => (
                         <button
@@ -92,12 +95,16 @@ export function SettingsPage() {
                         <ServicesSettings />
                     )}
 
+                    {activeTab === 'communication' && (
+                        <CommunicationSettings settings={settings} onChange={updateLocalSettings} />
+                    )}
+
                     {activeTab === 'integrations' && (
                         <IntegrationsSettings />
                     )}
 
-                    {/* Save Button (Only for Profile & Schedule) */}
-                    {(activeTab === 'profile' || activeTab === 'schedule') && (
+                    {/* Save Button (Only for Profile, Schedule, & Communication) */}
+                    {(activeTab === 'profile' || activeTab === 'schedule' || activeTab === 'communication') && (
                         <div className="flex items-center gap-4 pt-4 border-t border-border">
                             <button
                                 onClick={handleSave}
@@ -105,11 +112,11 @@ export function SettingsPage() {
                                 className="btn btn-primary flex items-center gap-2 px-8"
                             >
                                 {saving ? (
-                                    <Loader2 size={18} className="animate-spin" />
+                                    <Spinner size="lg" />
                                 ) : (
                                     <Save size={18} />
                                 )}
-                                {saving ? 'שומר...' : 'שמור שינויים'}
+                                {saving ? 'שומרים...' : 'שמירת שינויים'}
                             </button>
 
                             {successMessage && (

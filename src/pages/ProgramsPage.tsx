@@ -88,7 +88,7 @@ export function ProgramsPage() {
                     icon={Layers}
                     title="לא נמצאו תוכניות"
                     description={filter === 'all' ? "אפשר להתחיל ביצירת תוכנית האילוף הראשונה." : `לא נמצאו תוכניות בסטטוס '${filter === 'active' ? 'פעיל' : 'הושלם'}'.`}
-                    actionLabel={filter === 'all' ? "צור תוכנית ראשונה" : undefined}
+                    actionLabel={filter === 'all' ? "יצירת תוכנית ראשונה" : undefined}
                     onAction={filter === 'all' ? () => navigate('/programs/new') : undefined}
                     color="primary"
                 />

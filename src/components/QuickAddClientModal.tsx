@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Dog, User, Phone, Loader2 } from 'lucide-react';
+import { X, Dog, User, Phone } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
+import { Spinner } from './Spinner';
 
 interface QuickAddClientModalProps {
     isOpen: boolean;
@@ -100,7 +101,7 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                             type="text"
                             value={ownerName}
                             onChange={(e) => setOwnerName(e.target.value)}
-                            placeholder="ישראל ישראלי"
+                            placeholder="שם מלא"
                             className="input-field"
                             required
                         />
@@ -122,31 +123,36 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                         />
                     </div>
 
-                    <div className="flex gap-3 pt-2">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="btn btn-secondary"
-                        >
-                            ביטול
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving || !ownerName.trim()}
-                            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                        >
-                            {saving ? (
-                                <>
-                                    <Loader2 size={16} className="animate-spin" />
-                                    <span>שומר...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Dog size={16} />
-                                    <span>הוסף לקוח</span>
-                                </>
-                            )}
-                        </button>
+                    <div className="space-y-2 pt-2">
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="btn btn-secondary"
+                            >
+                                ביטול
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving || !ownerName.trim()}
+                                className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {saving ? (
+                                    <>
+                                        <Spinner size="md" />
+                                        <span>שומרים...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Dog size={16} />
+                                        <span>הוספת לקוח</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                        {!saving && !ownerName.trim() && (
+                            <p className="text-xs text-text-muted text-end">יש להזין שם בעלים</p>
+                        )}
                     </div>
                 </form>
             </div>

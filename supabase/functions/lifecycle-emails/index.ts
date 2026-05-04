@@ -150,7 +150,10 @@ serve(async (req: Request) => {
                     supabaseAdmin.from('user_settings').select('business_name, trainer_handle').eq('user_id', user.id).maybeSingle(),
                     supabaseAdmin.from('services').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
                     supabaseAdmin.from('clients').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-                    supabaseAdmin.from('sys_integrations_vault').select('is_connected').eq('user_id', user.id),
+                    // After iter 130 (composite PK on vault), a trainer may have one row per vendor (sumit, morning).
+                    // Explicit `.in('service_name', ...)` keeps semantics — the .some(r => r.is_connected) check below
+                    // wants ANY vendor connected, regardless of which one. Per QA Avner first-session follow-up #2.
+                    supabaseAdmin.from('sys_integrations_vault').select('is_connected').eq('user_id', user.id).in('service_name', ['morning', 'sumit']),
                 ])
 
                 const trainer: TrainerState = {

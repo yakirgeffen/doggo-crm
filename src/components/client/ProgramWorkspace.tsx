@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote, Loader2 } from 'lucide-react';
+import { Plus, CreditCard, ExternalLink, Share2, FileText, MessageCircle, Calendar, Banknote } from 'lucide-react';
 import { supabase, updateProgramStatus, logActivity } from '../../lib/supabase';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import type { Program, Session } from '../../types';
 import { SessionCard } from './SessionCard';
 import { EmptyState } from '../EmptyState';
 import { SkeletonSessionList } from '../Skeleton';
+import { Spinner } from '../Spinner';
 import { useToast } from '../../context/toast-context';
 import { ExtendProgramModal } from '../ExtendProgramModal';
 import { SessionCheckoutModal } from '../SessionCheckoutModal';
@@ -159,7 +160,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <button
                             onClick={() => setIsExtendModalOpen(true)}
                             className="absolute top-3 start-3 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary/20 hover:scale-110 shadow-soft"
-                            title="הוסף מפגשים"
+                            title="הוספת מפגשים"
                         >
                             <Plus size={16} />
                         </button>
@@ -204,7 +205,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <a
                             href={programState.invoice_pdf_url}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="btn bg-surface border border-border text-text-primary flex items-center gap-2"
                         >
                             <FileText size={18} />
@@ -227,15 +228,23 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                     {programState.payment_status !== 'paid' && (
                         <div className="flex items-center gap-2 flex-wrap">
                             <a
-                                href={`https://wa.me/?text=${encodeURIComponent(
-                                    `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${programState.greeninvoice_invoice_number ? ` (חשבונית #${programState.greeninvoice_invoice_number})` : ''}. תודה! 🙏`
-                                )}`}
+                                href={(() => {
+                                    // A program is invoiced via one of the trainer's connected vendors
+                                    // (Sumit OR Morning). Either column may be populated; surface whichever
+                                    // is set. No "primary vs fallback" hierarchy — the two are parallel
+                                    // choices per trainer preference.
+                                    const invoiceNumber = programState.sumit_invoice_document_number
+                                        ?? programState.morning_invoice_number;
+                                    const invoiceRef = invoiceNumber ? ` (חשבונית #${invoiceNumber})` : '';
+                                    const text = `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${invoiceRef}. תודה! 🙏`;
+                                    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+                                })()}
                                 target="_blank"
-                                rel="noreferrer"
+                                rel="noopener noreferrer"
                                 className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 flex items-center gap-2"
                             >
                                 <MessageCircle size={18} />
-                                שלח תזכורת
+                                שליחת תזכורת
                             </a>
                             <button
                                 onClick={async () => {
@@ -258,67 +267,72 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 <Banknote size={18} />
                                 {markingPaid ? (
                                     <>
-                                        <Loader2 size={14} className="animate-spin" />
-                                        <span>שומר...</span>
+                                        <Spinner size="sm" />
+                                        <span>שומרים...</span>
                                     </>
                                 ) : 'שולם (Bit/מזומן)'}
                             </button>
                             {!paymentUrl ? (
-                                <button
-                                    onClick={async () => {
-                                        if (!programState.price) return showToast('לא נקבע מחיר לתוכנית זו', 'error');
+                                <div className="flex flex-col items-end gap-1">
+                                    <button
+                                        onClick={async () => {
+                                            if (!programState.price) return showToast('לא נקבע מחיר לתוכנית זו', 'error');
 
-                                        const res = await generatePaymentLink({
-                                            description: `תשלום עבור תוכנית: ${programState.program_name}`,
-                                            amount: programState.price,
-                                            clientName: clientName,
-                                            clientEmail: clientEmail,
-                                            clientPhone: clientPhone || '',
-                                            currency: programState.currency || 'ILS'
-                                        });
+                                            const res = await generatePaymentLink({
+                                                description: `תשלום עבור תוכנית: ${programState.program_name}`,
+                                                amount: programState.price,
+                                                clientName: clientName,
+                                                clientEmail: clientEmail,
+                                                clientPhone: clientPhone || '',
+                                                currency: programState.currency || 'ILS'
+                                            });
 
-                                        if (res.success && res.url) {
-                                            setPaymentUrl(res.url);
-                                            await supabase.from('programs').update({
-                                                payment_status: 'pending',
-                                                payment_link_id: res.id
-                                            }).eq('id', programState.id);
-                                            await logActivity(
-                                                'program',
-                                                programState.id,
-                                                'payment_link_generated',
-                                                `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
-                                            );
+                                            if (res.success && res.url) {
+                                                setPaymentUrl(res.url);
+                                                await supabase.from('programs').update({
+                                                    payment_status: 'pending',
+                                                    payment_link_id: res.id
+                                                }).eq('id', programState.id);
+                                                await logActivity(
+                                                    'program',
+                                                    programState.id,
+                                                    'payment_link_generated',
+                                                    `נוצר קישור לתשלום (סכום: ${programState.price} ${programState.currency || 'ILS'})`
+                                                );
 
-                                            setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
-                                        } else {
-                                            showToast(res.error || 'שגיאה ביצירת קישור', 'error');
-                                        }
-                                    }}
-                                    disabled={generatingLink || !programState.price}
-                                    className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white"
-                                >
-                                    {generatingLink ? 'המערכת מייצרת קישור...' : '💳 צור קישור לתשלום'}
-                                </button>
+                                                setProgramState(prev => ({ ...prev, payment_status: 'pending' as const }));
+                                            } else {
+                                                showToast(res.error || 'שגיאה ביצירת קישור', 'error');
+                                            }
+                                        }}
+                                        disabled={generatingLink || !programState.price}
+                                        className="btn btn-primary shadow-md bg-accent hover:bg-accent/90 border-accent text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {generatingLink ? 'המערכת מייצרת קישור...' : '💳 יצירת קישור לתשלום'}
+                                    </button>
+                                    {!generatingLink && !programState.price && (
+                                        <p className="text-xs text-text-muted">יש לקבוע מחיר לתוכנית כדי ליצור קישור לתשלום</p>
+                                    )}
+                                </div>
                             ) : (
                                 <div className="flex items-center gap-2 animate-fade-in">
                                     <a
                                         href={`https://wa.me/?text=${encodeURIComponent(`היי ${clientFirstName}, הנה הקישור לתשלום עבור ${programState.program_name}: ${paymentUrl}`)}`}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="btn bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft flex items-center gap-2"
                                     >
                                         <Share2 size={18} />
-                                        שלח בוואטסאפ
+                                        שליחה בוואטסאפ
                                     </a>
                                     <a
                                         href={paymentUrl}
                                         target="_blank"
-                                        rel="noreferrer"
+                                        rel="noopener noreferrer"
                                         className="btn btn-secondary border-accent/30 text-accent hover:bg-accent/5"
                                     >
                                         <ExternalLink size={18} />
-                                        פתח קישור
+                                        פתיחת הקישור
                                     </a>
                                 </div>
                             )}
@@ -358,7 +372,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                             <span className="text-sm text-text-primary">
                                 {pendingAction === 'complete'
                                     ? 'האם לסמן את התוכנית כהושלמה?'
-                                    : 'האם אתה בטוח שברצונך לבטל את התוכנית?'}
+                                    : 'לבטל את התוכנית? פעולה זו לא ניתנת לביטול.'}
                             </span>
                             <div className="flex items-center gap-2 ms-auto">
                                 <button
@@ -412,7 +426,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                         <button
                             onClick={() => setIsRecurringOpen(true)}
                             className="text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                            title="קבע את כל המפגשים בחבילה במכה אחת"
+                            title="קביעת כל המפגשים בחבילה במכה אחת"
                         >
                             <Calendar size={14} />
                             תזמן את כל החבילה
@@ -425,7 +439,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                     <EmptyState
                         icon={Calendar}
                         title="טרם תועדו מפגשים"
-                        description="הוסף את המפגש הראשון כדי להתחיל לעקוב אחר ההתקדמות בתוכנית."
+                        description="כדאי להוסיף את המפגש הראשון כדי להתחיל לעקוב אחר ההתקדמות בתוכנית."
                         actionLabel="תיעוד מפגש ראשון"
                         onAction={() => navigate(`/programs/${programState.id}/sessions/new`)}
                         color="warning"

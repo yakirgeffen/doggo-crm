@@ -1,0 +1,42 @@
+-- ============================================================
+-- Migration: drop newsletter_subscribers.confirmed_at
+-- Date: 2026-05-03
+-- Author: CMO sub-agent (closes QA Avner audit follow-up #5)
+-- Purpose: drop the dead `confirmed_at` column from
+--   `newsletter_subscribers`. The column was added in
+--   20260503030000_newsletter_subscribers.sql as a "supports
+--   double-opt-in if added later" placeholder, but no code path
+--   ever set it. QA's 2026-05-03 audit (iters-113-120 debrief
+--   Section 2 → process-intake row) flagged it as schema-vs-write-
+--   surface drift.
+--
+-- Decision: drop the column rather than wire double-opt-in.
+--   Reasoning recorded in `geffen-studio:leadership/cmo/decisions-log.md`
+--   2026-05-03 entry "newsletter-confirmed-at-drop". Summary:
+--     - Newsletter is intentionally single-opt-in. Welcome email
+--       (subscribe-newsletter/index.ts renderWelcomeEmail) promises
+--       manual unsubscribe by reply: "אפשר פשוט לענות 'להסיר' וננתק
+--       את הרשימה ידנית". Israeli Spam Law 2008/40A allows this;
+--       double-opt-in is best-practice but not legally required.
+--     - Polish-before-need rule (studio/memory.md 2026-05-03):
+--       unfulfilled-promise schema is a defect to close before
+--       shipping, not a future-task to track. The column was
+--       carrying exactly that "we'll wire it later" tag.
+--     - Single-opt-in stays the documented contract. If a future
+--       broadcast strategy justifies double-opt-in, it'll re-add
+--       the column with the wire (token, confirm endpoint, RTL
+--       confirmation page, copy updates) shipped together — not
+--       left as schema vapor.
+--
+-- Companion changes shipped same commit:
+--   - 20260503030000_newsletter_subscribers.sql comment block
+--     amended to remove the double-opt-in placeholder note
+--   - scripts/schema-snapshot.json regenerated
+--   - geffen-studio:leadership/cmo/decisions-log.md decision
+--     entry appended
+--   - geffen-studio:projects/doggo-crm/qa-reviews/
+--     2026-05-03-iters-113-120-debrief.md row #5 marked closed
+-- ============================================================
+
+alter table public.newsletter_subscribers
+  drop column if exists confirmed_at;

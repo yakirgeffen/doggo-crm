@@ -232,7 +232,7 @@ export function PublicStorefrontPage() {
                                         to={`/t/${trainerHandle}/intake?service=${service.id}${forwardQuery ? `&${forwardQuery}` : ''}`}
                                         className="btn btn-primary text-sm py-2 px-5 flex items-center gap-1.5 group-hover:shadow-md transition-shadow"
                                     >
-                                        קבע תור
+                                        קביעת תור
                                         <ArrowLeft size={14} />
                                     </Link>
                                 </div>
@@ -287,7 +287,7 @@ export function PublicStorefrontPage() {
                 <a
                     href="/?utm_source=storefront_footer"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="font-medium text-primary hover:underline"
                 >
                     Doggo CRM

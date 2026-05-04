@@ -69,8 +69,8 @@ export function NewProgramPage() {
             setLoading(false);
         } else {
             if (data && data[0]) {
-                await logActivity('program', data[0].id, 'created', `Program "${formData.program_name}" created`);
-                await logActivity('client', formData.client_id, 'updated', `Started program: ${formData.program_name}`);
+                await logActivity('program', data[0].id, 'created', `תוכנית חדשה: "${formData.program_name}"`);
+                await logActivity('client', formData.client_id, 'updated', `התחלת תוכנית: ${formData.program_name}`);
             }
             navigate('/programs');
         }
@@ -85,7 +85,7 @@ export function NewProgramPage() {
 
             <div className="flat-card p-8 border-t-4 border-t-primary shadow-card">
                 <h1 className="text-[28px] font-bold text-text-primary mb-2">תוכנית חדשה</h1>
-                <p className="text-text-muted mb-8 text-sm">הגדר תוכנית אילוף חדשה ללקוח.</p>
+                <p className="text-text-muted mb-8 text-sm">תוכנית אילוף חדשה ללקוח.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -100,7 +100,7 @@ export function NewProgramPage() {
                             value={formData.client_id}
                             onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
                         >
-                            <option value="">בחר לקוח...</option>
+                            <option value="">בחירת לקוח...</option>
                             {clients.map(c => (
                                 <option key={c.id} value={c.id}>
                                     {c.full_name} ({c.primary_dog_name})
@@ -113,7 +113,7 @@ export function NewProgramPage() {
                     {services.length > 0 && (
                         <div className="bg-surface-warm p-4 rounded-xl border border-dashed border-border">
                             <label className="block text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
-                                השתמש בתבנית שירות (אופציונלי)
+                                תבנית שירות (אופציונלי)
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {services.map(s => (
@@ -225,9 +225,9 @@ export function NewProgramPage() {
                             {loading ? (
                                 <span className="flex items-center gap-2">
                                     <Spinner size="md" className="text-white" />
-                                    יוצר...
+                                    שומרים...
                                 </span>
-                            ) : 'צור תוכנית'}
+                            ) : 'יצירת תוכנית'}
                         </button>
                     </div>
                 </form>

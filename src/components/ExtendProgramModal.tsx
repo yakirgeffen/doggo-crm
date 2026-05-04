@@ -62,14 +62,14 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
             >
                 <div className="p-4 border-b border-border flex justify-between items-center bg-surface-warm">
                     <h3 id="extend-program-title" className="font-bold text-lg text-text-primary">הרחבת תוכנית</h3>
-                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-lg" aria-label="סגור">
+                    <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-lg" aria-label="סגירה">
                         <X size={20} className="text-text-muted" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div className="text-sm text-text-muted mb-4 bg-accent/10 text-accent p-3 rounded-xl border border-accent/15">
-                        מוסיף מפגשים לתוכנית <strong>{programName}</strong>.
+                        הוספת מפגשים לתוכנית <strong>{programName}</strong>.
                         <br />
                         ההיסטוריה והנתונים הקיימים יישמרו.
                     </div>
@@ -132,7 +132,7 @@ export function ExtendProgramModal({ isOpen, onClose, onConfirm, currentSessions
                             disabled={loading}
                             className="btn btn-primary w-full py-3 shadow-card"
                         >
-                            {loading ? 'מעדכן...' : `הוסף ${sessionsToAdd} מפגשים`}
+                            {loading ? 'שומרים...' : `הוספת ${sessionsToAdd} מפגשים`}
                         </button>
                     </div>
                 </form>

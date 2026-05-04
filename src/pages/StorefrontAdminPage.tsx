@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useSettings } from '../hooks/useSettings';
 import { useServices, type Service } from '../hooks/useServices';
-import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook, Loader2 } from 'lucide-react';
+import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook } from 'lucide-react';
 import { ServiceModal } from '../components/admin/ServiceModal';
 import { TestimonialsManager } from '../components/admin/TestimonialsManager';
+import { Spinner } from '../components/Spinner';
 import { useToast } from '../context/toast-context';
 
 export function StorefrontAdminPage() {
@@ -91,6 +92,16 @@ export function StorefrontAdminPage() {
     const sanitizedHandle = handle.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
     const publicUrl = sanitizedHandle && window.location.origin ? `${window.location.origin}/t/${sanitizedHandle}` : null;
 
+    // Dirty check — drives the sticky save bar so users mid-scroll always have
+    // a way to save without scrolling back to the form. Only shows when there
+    // are actual unsaved changes; avoids the "always-on toolbar" noise.
+    const profileDirty = Boolean(settings) && (
+        sanitizedHandle !== (settings?.trainer_handle || '') ||
+        bio.trim() !== (settings?.bio || '') ||
+        businessName.trim() !== (settings?.business_name || '') ||
+        JSON.stringify(specialties) !== JSON.stringify(settings?.specialties || [])
+    );
+
     const copyUrl = async () => {
         if (!publicUrl) return;
         await navigator.clipboard.writeText(publicUrl);
@@ -118,16 +129,9 @@ export function StorefrontAdminPage() {
 
             {/* Public Profile Section */}
             <div className="flat-card p-6 space-y-6">
-                <div className="flex items-center justify-between">
+                <div>
                     <h2 className="text-lg font-semibold text-text-primary">פרופיל ציבורי</h2>
-                    <button
-                        onClick={handleSaveProfile}
-                        disabled={savingProfile}
-                        className="btn btn-primary flex items-center gap-2"
-                    >
-                        {savingProfile ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                        {savingProfile ? 'שומר...' : 'שמור שינויים'}
-                    </button>
+                    <p className="text-xs text-text-secondary mt-0.5">המידע שיוצג ללקוחות בדף החנות שלך</p>
                 </div>
 
                 {/* Handle & URL */}
@@ -157,29 +161,29 @@ export function StorefrontAdminPage() {
                                 <a
                                     href={publicUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-mono text-primary hover:underline truncate flex-1"
                                     dir="ltr"
                                 >
                                     {publicUrl}
                                 </a>
-                                <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתק">
+                                <button onClick={copyUrl} className="text-text-muted hover:text-primary transition-colors" title="העתקה">
                                     {copied ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
-                                <a href={publicUrl} target="_blank" rel="noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתח">
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition-colors" title="פתיחה">
                                     <ExternalLink size={14} />
                                 </a>
                             </div>
 
                             {/* Share buttons — share storefront URL via WhatsApp / Facebook / native share */}
                             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-                                <span className="text-xs text-text-muted">שתף:</span>
+                                <span className="text-xs text-text-muted">שיתוף:</span>
                                 <a
                                     href={`https://wa.me/?text=${encodeURIComponent(`${businessName ? `שלום! אני ${businessName}, ` : ''}אפשר לקבל אצלי הצעת מחיר לאילוף הכלב שלכם דרך הקישור הזה: ${publicUrl}`)}`}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-medium text-success bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                                    title="שתף את כתובת החנות בוואטסאפ"
+                                    title="שיתוף כתובת החנות בוואטסאפ"
                                 >
                                     <Send size={14} />
                                     WhatsApp
@@ -187,9 +191,9 @@ export function StorefrontAdminPage() {
                                 <a
                                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicUrl)}`}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     className="text-xs font-medium text-[#1877F2] bg-[#1877F2]/10 hover:bg-[#1877F2]/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                                    title="שתף את כתובת החנות בפייסבוק"
+                                    title="שיתוף כתובת החנות בפייסבוק"
                                 >
                                     <Facebook size={14} />
                                     Facebook
@@ -268,6 +272,18 @@ export function StorefrontAdminPage() {
                         className="w-full rounded-xl border border-border bg-background p-3 text-sm text-text-primary focus:ring-2 focus:ring-primary/30 outline-none resize-none min-h-[100px]"
                     />
                 </div>
+
+                {/* Primary save action — placed where the user finishes filling the form, not at the top */}
+                <div className="flex justify-end pt-4 border-t border-border">
+                    <button
+                        onClick={handleSaveProfile}
+                        disabled={savingProfile}
+                        className="btn btn-primary flex items-center gap-2 px-8 shadow-card"
+                    >
+                        {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
+                        {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
+                    </button>
+                </div>
             </div>
 
             {/* Service Catalog Section */}
@@ -296,7 +312,7 @@ export function StorefrontAdminPage() {
                             onClick={() => setIsServiceModalOpen(true)}
                             className="mt-3 text-primary text-sm hover:underline"
                         >
-                            + צור את השירות הראשון שלך
+                            + יצירת השירות הראשון
                         </button>
                     </div>
                 ) : (
@@ -334,14 +350,14 @@ export function StorefrontAdminPage() {
                                             setIsServiceModalOpen(true);
                                         }}
                                         className="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                                        title="ערוך"
+                                        title="עריכה"
                                     >
                                         <Edit2 size={16} />
                                     </button>
                                     <button
                                         onClick={() => handleDeleteService(service.id)}
                                         className="p-2 text-text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors"
-                                        title="מחק"
+                                        title="מחיקה"
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -360,6 +376,36 @@ export function StorefrontAdminPage() {
                 onSave={handleSaveService}
                 initialData={editingService}
             />
+
+            {/*
+              Sticky save bar — only renders when the profile form has unsaved
+              changes. Lives at the bottom of the scroll container (inside the
+              page wrapper) so it stays visible as users fill the form
+              top-to-bottom. Not a permanent toolbar — appears with intent.
+              Padded to clear the mobile bottom nav (Layout pb-28 lg:pb-10).
+            */}
+            {profileDirty && (
+                <div
+                    className="sticky bottom-2 lg:bottom-4 z-20 -mx-2 lg:mx-0 animate-fade-in"
+                    role="region"
+                    aria-label="שינויים לא שמורים"
+                >
+                    <div className="mx-2 lg:mx-0 flex items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-surface/95 backdrop-blur-md px-4 py-3 shadow-elevated">
+                        <span className="text-sm font-medium text-text-secondary flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-warning animate-pulse" aria-hidden="true" />
+                            יש שינויים שלא נשמרו בפרופיל
+                        </span>
+                        <button
+                            onClick={handleSaveProfile}
+                            disabled={savingProfile}
+                            className="btn btn-primary flex items-center gap-2 px-6"
+                        >
+                            {savingProfile ? <Spinner size="md" /> : <Save size={16} />}
+                            {savingProfile ? 'שומרים...' : 'שמירת שינויים'}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

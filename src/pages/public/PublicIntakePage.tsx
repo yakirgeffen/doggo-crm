@@ -40,7 +40,15 @@ export function PublicIntakePage() {
     const [submitted, setSubmitted] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    // Form state
+    // Form state.
+    // INTENTIONAL ASYMMETRY (CPO 2026-05-03, QA Avner follow-up #4): this form
+    // does NOT collect `behavioral_tags`, while the programmatic api-v1
+    // `create_intake_submission` endpoint DOES. behavioral_tags is
+    // trainer-vocabulary classification populated at conversion; dog-owners
+    // self-tagging in their own vocabulary would degrade data quality and
+    // bloat the form. Public surface stays simple; trainers tag during
+    // initial-conversation conversion. See api-v1/index.ts for the matching
+    // comment and `leadership/cpo/decisions-log.md` for the rationale.
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [dogName, setDogName] = useState('');
@@ -48,6 +56,13 @@ export function PublicIntakePage() {
     const [dogAge, setDogAge] = useState('');
     const [notes, setNotes] = useState('');
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+    // iter 136: Turnstile lifecycle states. Without these, a Turnstile load
+    // failure (network blip, bot-detection, domain mismatch) silently leaves
+    // the submit button disabled with no feedback — exactly Yakir's demo
+    // symptom (2026-05-03). We track 'loading' (widget mounted but no token
+    // yet), 'error' (widget reported failure), 'expired' (token aged out)
+    // separately so the UI can show meaningful copy + a retry hint.
+    const [captchaStatus, setCaptchaStatus] = useState<'loading' | 'ready' | 'error' | 'expired'>('loading');
 
     const resolveTrainer = useCallback(async () => {
         if (!trainerHandle) return;
@@ -71,15 +86,19 @@ export function PublicIntakePage() {
     const handleSubmit = async () => {
         if (!trainerId) return;
 
-        // Basic validation
-        if (!captchaToken && import.meta.env.PROD) { // Only enforce strict captcha in PROD or if key exists
-            // Actually, we should enforce it if the widget is present.
-            // For dev, if we use test key, we get a token.
-            // So we should require it.
-        }
-
+        // iter 136: tightened validation. Removed dead `import.meta.env.PROD`
+        // branch (it was a no-op block from initial scaffolding). Token is
+        // required regardless of env — the test site key auto-passes in dev.
         if (!captchaToken) {
-            showToast('אנא אשרו אינכם רובוט', 'error');
+            // If the widget errored or expired, send a more useful message
+            // than the generic "verify you're not a robot".
+            if (captchaStatus === 'error') {
+                showToast('שגיאה בטעינת אימות הזהות. רעננו את הדף ונסו שוב.', 'error');
+            } else if (captchaStatus === 'expired') {
+                showToast('אימות הזהות פג תוקף. אנא אשרו שוב.', 'error');
+            } else {
+                showToast('אנא המתינו לסיום אימות הזהות', 'error');
+            }
             return;
         }
 
@@ -364,11 +383,35 @@ export function PublicIntakePage() {
                                 )}
                             </div>
 
-                            <div className="flex justify-center my-4">
+                            <div className="flex flex-col items-center my-4 gap-2">
                                 <Turnstile
                                     siteKey={TURNSTILE_SITE_KEY}
-                                    onSuccess={setCaptchaToken}
+                                    onSuccess={(token) => {
+                                        setCaptchaToken(token);
+                                        setCaptchaStatus('ready');
+                                    }}
+                                    onError={() => {
+                                        setCaptchaToken(null);
+                                        setCaptchaStatus('error');
+                                    }}
+                                    onExpire={() => {
+                                        setCaptchaToken(null);
+                                        setCaptchaStatus('expired');
+                                    }}
                                 />
+                                {/* iter 136: surface widget status — silent failures
+                                    on this widget were the demo-blocker root cause.
+                                    "loading" = initial render, "error" = network/bot
+                                    blocked, "expired" = token aged out. */}
+                                {captchaStatus === 'loading' && (
+                                    <p className="text-xs text-text-muted">טוען אימות זהות...</p>
+                                )}
+                                {captchaStatus === 'error' && (
+                                    <p className="text-xs text-error">שגיאה בטעינת אימות הזהות. רעננו את הדף ונסו שוב.</p>
+                                )}
+                                {captchaStatus === 'expired' && (
+                                    <p className="text-xs text-warning">האימות פג תוקף — אנא אשרו שוב מעלה.</p>
+                                )}
                             </div>
                         </div>
                     )}
@@ -391,18 +434,37 @@ export function PublicIntakePage() {
                             <button
                                 onClick={() => setStep(s => s + 1)}
                                 disabled={step === 1 && !canAdvanceStep1}
+                                title={step === 1 && !canAdvanceStep1 ? 'יש להזין שם מלא כדי להמשיך' : undefined}
                                 className="btn btn-primary flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 הבא
                                 <ChevronLeft size={16} />
                             </button>
                         ) : (
+                            // iter 136: button label changes when waiting on captcha so
+                            // a grayed-out "send" no longer reads as a permanently broken
+                            // form. Title attribute also surfaces the reason for tooltip.
                             <button
                                 onClick={handleSubmit}
                                 disabled={submitting || !captchaToken}
+                                title={
+                                    submitting
+                                        ? 'שולח טופס'
+                                        : !captchaToken
+                                            ? captchaStatus === 'error'
+                                                ? 'שגיאה באימות זהות — רעננו את הדף'
+                                                : captchaStatus === 'expired'
+                                                    ? 'אימות פג תוקף — אשרו שוב'
+                                                    : 'ממתין לאימות זהות...'
+                                            : 'שלח טופס'
+                                }
                                 className="btn btn-primary flex items-center gap-1.5 bg-success border-success hover:bg-success/90 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {submitting ? 'שולח...' : '🐾 שלח טופס'}
+                                {submitting
+                                    ? 'שולח...'
+                                    : !captchaToken && captchaStatus === 'loading'
+                                        ? 'ממתין לאימות...'
+                                        : '🐾 שלח טופס'}
                             </button>
                         )}
                     </div>
@@ -415,7 +477,7 @@ export function PublicIntakePage() {
                 <a
                     href="/?utm_source=intake_footer"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="font-medium text-primary hover:underline"
                 >
                     Doggo CRM

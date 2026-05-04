@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, UserPlus, Archive, Phone, Dog, Clock, Loader2, MessageCircle } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { Inbox, UserPlus, Archive, Phone, Dog, Clock, MessageCircle } from 'lucide-react';
+import { supabase, logActivity } from '../../lib/supabase';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
+import { Spinner } from '../Spinner';
 
 import type { IntakeSubmission } from '../../types';
 
@@ -46,16 +47,24 @@ export function IncomingLeads() {
     const handleApprove = async (lead: IntakeSubmission) => {
         setActioning(lead.id);
         try {
-            // Create a new client from the lead
-            const { error: clientError } = await supabase.from('clients').insert([{
-                full_name: lead.full_name,
-                phone: lead.phone || '',
-                primary_dog_name: lead.dog_name || '',
-                primary_dog_breed: lead.dog_breed || '',
-                notes: lead.notes || '',
-                is_active: true,
-                trainer_id: user?.id,
-            }]);
+            // Create a new client from the lead. iter 115 added the proper
+            // `primary_dog_breed` column to clients; iter 114's notes-prepend
+            // workaround is now obsolete.
+            const { data: insertedClient, error: clientError } = await supabase
+                .from('clients')
+                .insert([{
+                    full_name: lead.full_name,
+                    phone: lead.phone || '',
+                    primary_dog_name: lead.dog_name || '',
+                    primary_dog_breed: lead.dog_breed || null,
+                    notes: lead.notes || null,
+                    is_active: true,
+                    user_id: user?.id,
+                    behavioral_tags: lead.behavioral_tags ?? [],
+                    lead_source: lead.lead_source ?? null,
+                }])
+                .select('id')
+                .single();
 
             if (clientError) throw clientError;
 
@@ -65,8 +74,12 @@ export function IncomingLeads() {
                 .update({ status: 'approved' })
                 .eq('id', lead.id);
 
+            if (insertedClient) {
+                await logActivity('client', insertedClient.id, 'created', `לקוח נוצר מליד נכנס: ${lead.full_name}`);
+            }
+
             setLeads(prev => prev.filter(l => l.id !== lead.id));
-            showToast(`${lead.full_name} נוסף/ה כלקוח/ה חדש/ה! 🎉`, 'success');
+            showToast(`${lead.full_name} נוסף כלקוח חדש 🎉`, 'success');
         } catch (err) {
             showToast('שגיאה ביצירת לקוח: ' + (err instanceof Error ? err.message : ''), 'error');
         }
@@ -171,9 +184,9 @@ export function IncomingLeads() {
                                                 return `https://wa.me/${intl}?text=${msg}`;
                                             })()}
                                             target="_blank"
-                                            rel="noreferrer"
+                                            rel="noopener noreferrer"
                                             className="btn bg-success/10 text-success border border-success/20 hover:bg-success/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                            title="שלח/י WhatsApp ראשון"
+                                            title="שליחת WhatsApp ראשון"
                                         >
                                             <MessageCircle size={14} />
                                             <span className="hidden sm:inline">WhatsApp</span>
@@ -183,20 +196,20 @@ export function IncomingLeads() {
                                         onClick={() => handleApprove(lead)}
                                         disabled={actioning === lead.id}
                                         className="btn bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                        title="אשר והוסף כלקוח"
+                                        title="אישור והוספה כלקוח"
                                     >
                                         {actioning === lead.id ? (
-                                            <Loader2 size={14} className="animate-spin" />
+                                            <Spinner size="sm" />
                                         ) : (
                                             <UserPlus size={14} />
                                         )}
-                                        <span className="hidden sm:inline">אשר</span>
+                                        <span className="hidden sm:inline">אישור</span>
                                     </button>
                                     <button
                                         onClick={() => handleArchive(lead)}
                                         disabled={actioning === lead.id}
                                         className="btn bg-border/20 text-text-muted border border-border hover:bg-border/30 px-3 py-1.5 text-xs font-medium flex items-center gap-1"
-                                        title="העבר לארכיון"
+                                        title="העברה לארכיון"
                                     >
                                         <Archive size={14} />
                                     </button>

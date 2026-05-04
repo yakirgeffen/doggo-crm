@@ -79,7 +79,7 @@ export function ServicesSettings() {
                             <button
                                 onClick={() => deleteService(service.id)}
                                 className="p-2 text-error/60 hover:text-error hover:bg-error/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                                title="מחק שירות"
+                                title="מחיקת שירות"
                             >
                                 <Trash2 size={18} />
                             </button>
@@ -117,20 +117,27 @@ export function ServicesSettings() {
                                 />
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => setIsAddingService(false)}
-                                className="btn btn-secondary text-xs"
-                            >
-                                ביטול
-                            </button>
-                            <button
-                                onClick={handleAddService}
-                                disabled={!newService.name || !newService.price}
-                                className="btn btn-primary text-xs"
-                            >
-                                שמור שירות
-                            </button>
+                        <div className="flex flex-col items-end gap-1">
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setIsAddingService(false)}
+                                    className="btn btn-secondary text-xs"
+                                >
+                                    ביטול
+                                </button>
+                                <button
+                                    onClick={handleAddService}
+                                    disabled={!newService.name || !newService.price}
+                                    className="btn btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    שמור שירות
+                                </button>
+                            </div>
+                            {(!newService.name || !newService.price) && (
+                                <p className="text-xs text-text-muted">
+                                    {!newService.name ? 'יש להזין שם שירות' : 'יש להזין מחיר'}
+                                </p>
+                            )}
                         </div>
                     </div>
                 )}

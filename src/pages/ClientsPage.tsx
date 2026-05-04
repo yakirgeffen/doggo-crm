@@ -9,9 +9,15 @@ import { ImportClientsModal } from '../components/ImportClientsModal';
 import { QuickAddClientModal } from '../components/QuickAddClientModal';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import { SkeletonRow } from '../components/Skeleton';
+import { useSettings } from '../hooks/useSettings';
+import { applyTemplate } from '../lib/whatsapp-template';
+import { useIntro } from '../hooks/useIntro';
+import { IntroModal } from '../components/IntroModal';
+import { PAGE_INTROS } from '../lib/intro-content';
 
 export function ClientsPage() {
     const navigate = useNavigate();
+    const { settings } = useSettings();
     const [clients, setClients] = useState<Client[]>([]);
     const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('active');
     const [search, setSearch] = useState('');
@@ -19,6 +25,7 @@ export function ClientsPage() {
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+    const intro = useIntro('clients');
 
     const fetchClients = useCallback(async () => {
         setLoading(true);
@@ -49,10 +56,11 @@ export function ClientsPage() {
             }
             return s;
         };
-        const header = ['שם מלא', 'שם הכלב', 'מייל', 'טלפון', 'מקור הליד', 'הערות', 'סטטוס', 'תאריך הצטרפות'];
+        const header = ['שם מלא', 'שם הכלב', 'גזע', 'מייל', 'טלפון', 'מקור הליד', 'הערות', 'סטטוס', 'תאריך הצטרפות'];
         const rows = filteredClients.map(c => [
             csvEscape(c.full_name),
             csvEscape(c.primary_dog_name),
+            csvEscape(c.primary_dog_breed),
             csvEscape(c.email),
             csvEscape(c.phone),
             csvEscape(c.lead_source),
@@ -84,6 +92,7 @@ export function ClientsPage() {
         const matchesSearch =
             client.full_name.toLowerCase().includes(searchLower) ||
             client.primary_dog_name?.toLowerCase().includes(searchLower) ||
+            client.primary_dog_breed?.toLowerCase().includes(searchLower) ||
             client.email?.toLowerCase().includes(searchLower) || '';
 
         return matchesStatus && matchesSearch;
@@ -107,6 +116,7 @@ export function ClientsPage() {
                         <div className="text-xs font-medium text-text-muted flex items-center gap-1.5 bg-background w-fit px-2 py-0.5 rounded-md mt-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                             {client.primary_dog_name || 'אין כלב'}
+                            {client.primary_dog_breed && <span className="text-text-muted/60">· {client.primary_dog_breed}</span>}
                         </div>
                     </div>
                 </div>
@@ -167,8 +177,8 @@ export function ClientsPage() {
                         <button
                             onClick={exportToCsv}
                             disabled={clients.length === 0}
-                            className="btn btn-secondary"
-                            title="ייצא את הלקוחות הנבחרים ל-CSV"
+                            className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={clients.length === 0 ? 'אין לקוחות לייצוא' : 'ייצא את הלקוחות הנבחרים ל-CSV'}
                         >
                             <Download size={18} className="ms-2" />
                             ייצא CSV
@@ -296,6 +306,7 @@ export function ClientsPage() {
                                                 <div className="flex items-center gap-2 mt-0.5">
                                                     <span className="text-xs bg-background text-text-muted px-2 py-0.5 rounded-md font-medium">
                                                         {client.primary_dog_name || 'אין כלב'}
+                                                        {client.primary_dog_breed && <span className="text-text-muted/60"> · {client.primary_dog_breed}</span>}
                                                     </span>
                                                     {client.is_active && (
                                                         <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
@@ -309,13 +320,24 @@ export function ClientsPage() {
                                     {client.phone && (() => {
                                         const phoneDigits = client.phone.replace(/[^\d]/g, '');
                                         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
-                                        const greeting = encodeURIComponent(`היי ${client.full_name.split(' ')[0]} 🐾`);
+                                        const firstName = client.full_name.split(' ')[0];
+                                        const dogName = client.primary_dog_name || '';
+                                        // Match ClientHero fallback shape — drop the dog clause when missing.
+                                        const greetingFallback = dogName
+                                            ? `היי ${firstName} 🐾 מה שלומכם ושלום ${dogName}?`
+                                            : `היי ${firstName} 🐾`;
+                                        const greetingText = applyTemplate(
+                                            settings?.wa_template_greeting ?? null,
+                                            { firstName, dogName },
+                                            greetingFallback
+                                        );
+                                        const greeting = encodeURIComponent(greetingText);
                                         return (
                                             <>
                                                 <a
                                                     href={`https://wa.me/${intl}?text=${greeting}`}
                                                     target="_blank"
-                                                    rel="noreferrer"
+                                                    rel="noopener noreferrer"
                                                     aria-label={`WhatsApp ל${client.full_name}`}
                                                     className="absolute end-20 top-1/2 -translate-y-1/2 p-2 rounded-lg text-text-muted hover:bg-success/10 hover:text-success transition-colors focus-visible:outline-2 focus-visible:outline-primary"
                                                 >
@@ -337,6 +359,15 @@ export function ClientsPage() {
                     </>
                 )}
             </div>
+
+            <IntroModal
+                isOpen={intro.shouldShow}
+                pageId="clients"
+                intro={PAGE_INTROS.clients}
+                onDismiss={intro.dismiss}
+                onSkip={intro.dismiss}
+                onBackdropClose={intro.closeForSession}
+            />
         </div>
     );
 }

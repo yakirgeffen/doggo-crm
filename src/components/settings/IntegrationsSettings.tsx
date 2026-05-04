@@ -68,7 +68,7 @@ export function IntegrationsSettings() {
             showToast('הטוקן הועתק', 'success');
             setTimeout(() => setTokenCopied(false), 2500);
         } catch {
-            showToast('לא ניתן להעתיק. סמני ידנית.', 'error');
+            showToast('לא ניתן להעתיק אוטומטית — סימון ידני נדרש.', 'error');
         }
     };
 
@@ -224,7 +224,7 @@ export function IntegrationsSettings() {
                             איך משיגים מפתחות API?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>להיכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
+                            <li>להיכנס למערכת <a href="https://www.greeninvoice.co.il/login" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-primary">Morning (חשבונית ירוקה)</a>.</li>
                             <li>בתפריט הצד, ללחוץ על <b>הגדרות</b> (Settings).</li>
                             <li>לבחור באפשרות <b>API & Webhooks</b> או <b>כלים למפתחים</b>.</li>
                             <li>ללחוץ על <b>הוספת מפתח</b> (Add Key) ולהעתיק את הנתונים.</li>
@@ -262,10 +262,15 @@ export function IntegrationsSettings() {
                     <button
                         onClick={handleSaveKeys}
                         disabled={integrationsLoading || !apiKey || !apiSecret}
-                        className="btn btn-primary w-full flex justify-center items-center gap-2"
+                        className="btn btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {integrationsLoading ? 'מתחבר...' : 'שמור ובדוק חיבור'}
                     </button>
+                    {!integrationsLoading && (!apiKey || !apiSecret) && (
+                        <p className="text-xs text-text-muted text-center">
+                            יש למלא את שני המפתחות כדי לבדוק את החיבור
+                        </p>
+                    )}
 
                     {testCheckResult && (
                         <div className={`text-xs p-3 rounded-lg ${testCheckResult.success ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
@@ -335,7 +340,7 @@ export function IntegrationsSettings() {
                             איך משיגים CompanyID + APIKey?
                         </h4>
                         <ol className="list-decimal list-inside text-text-secondary space-y-1 mb-3 marker:font-bold">
-                            <li>להיכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
+                            <li>להיכנס למערכת <a href="https://app.sumit.co.il/" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-primary">Sumit</a>.</li>
                             <li>בתפריט הגדרות, לחפש <b>API</b> או <b>מפתחים</b>.</li>
                             <li>להפיק <b>API Key חדש</b> ולהעתיק את <b>CompanyID</b> ואת ה-<b>APIKey</b>.</li>
                         </ol>
@@ -373,10 +378,15 @@ export function IntegrationsSettings() {
                     <button
                         onClick={handleSaveSumitKeys}
                         disabled={sumit.loading || !sumitCompanyId || !sumitApiKey}
-                        className="btn btn-primary w-full flex justify-center items-center gap-2"
+                        className="btn btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {sumit.loading ? 'מתחבר...' : 'שמור ובדוק חיבור'}
                     </button>
+                    {!sumit.loading && (!sumitCompanyId || !sumitApiKey) && (
+                        <p className="text-xs text-text-muted text-center">
+                            יש למלא את שני השדות כדי לבדוק את החיבור
+                        </p>
+                    )}
 
                     {sumitTestResult && (
                         <div className={`text-xs p-3 rounded-lg ${sumitTestResult.success ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
@@ -416,7 +426,7 @@ export function IntegrationsSettings() {
                     Webhook לאוטומציות (G4)
                 </h2>
                 <p className="text-sm text-text-muted">
-                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כך תוכלי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
+                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כדי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
                 </p>
             </div>
 
@@ -434,22 +444,28 @@ export function IntegrationsSettings() {
                     <p className="text-[11px] text-text-muted mt-1">חייב להתחיל ב-https://. אנחנו שולחים POST עם payload JSON של הפנייה.</p>
                 </div>
 
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleSaveWebhook}
-                        disabled={webhookSaving}
-                        className="btn btn-primary text-sm flex-1"
-                    >
-                        {webhookSaving ? 'שומר...' : 'שמור'}
-                    </button>
-                    <button
-                        onClick={handleTestWebhook}
-                        disabled={webhookTestSending || !webhookUrl.trim()}
-                        className="btn btn-secondary text-sm flex items-center gap-1.5"
-                    >
-                        <Send size={14} />
-                        {webhookTestSending ? 'שולח בדיקה...' : 'שלח בדיקה'}
-                    </button>
+                <div className="space-y-1">
+                    <div className="flex gap-2">
+                        <button
+                            onClick={handleSaveWebhook}
+                            disabled={webhookSaving}
+                            className="btn btn-primary text-sm flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {webhookSaving ? 'שומרים...' : 'שמירה'}
+                        </button>
+                        <button
+                            onClick={handleTestWebhook}
+                            disabled={webhookTestSending || !webhookUrl.trim()}
+                            className="btn btn-secondary text-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={!webhookUrl.trim() ? 'יש להזין כתובת Webhook לפני שליחת בדיקה' : undefined}
+                        >
+                            <Send size={14} />
+                            {webhookTestSending ? 'שולח בדיקה...' : 'שלח בדיקה'}
+                        </button>
+                    </div>
+                    {!webhookTestSending && !webhookUrl.trim() && (
+                        <p className="text-xs text-text-muted">שליחת בדיקה זמינה לאחר הזנת כתובת Webhook</p>
+                    )}
                 </div>
 
                 <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
@@ -560,7 +576,7 @@ export function IntegrationsSettings() {
                         className="btn btn-primary text-sm flex items-center gap-1.5 flex-1 justify-center"
                     >
                         <RefreshCw size={14} className={tokenGenerating ? 'animate-spin' : ''} />
-                        {tokenGenerating ? 'יוצר...' : (hasActiveToken ? 'צור טוקן חדש (יבטל את הקיים)' : 'צור טוקן חדש')}
+                        {tokenGenerating ? 'יוצרים...' : (hasActiveToken ? 'יצירת טוקן חדש (יבטל את הקיים)' : 'יצירת טוקן חדש')}
                     </button>
                     {hasActiveToken && (
                         <button

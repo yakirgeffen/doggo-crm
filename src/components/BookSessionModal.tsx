@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, User, BookOpen, Loader2, MessageCircle } from 'lucide-react';
+import { Calendar, Clock, User, BookOpen, MessageCircle } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
 import { createCalendarEvent } from '../lib/calendar';
+import { useSettings } from '../hooks/useSettings';
+import { applyTemplate } from '../lib/whatsapp-template';
+import { Spinner } from './Spinner';
 
 interface ClientOption {
     id: string;
@@ -24,6 +27,7 @@ interface BookSessionModalProps {
 export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefillTime }: BookSessionModalProps) {
     const { user, providerToken } = useAuth();
     const { showToast } = useToast();
+    const { settings } = useSettings();
     const [clients, setClients] = useState<ClientOption[]>([]);
     const [selectedClientId, setSelectedClientId] = useState('');
     const [selectedProgramId, setSelectedProgramId] = useState('');
@@ -173,11 +177,22 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         const timeLabel = dateObj.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
         const phoneDigits = (client.phone || '').replace(/[^\d]/g, '');
         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
-        const message = encodeURIComponent(
-            `שלום ${client.full_name.split(' ')[0]}!\n` +
+        const firstName = client.full_name.split(' ')[0];
+        const fallback =
+            `שלום ${firstName}!\n` +
             `מפגש האילוף של ${client.primary_dog_name} נקבע ליום ${dateLabel} בשעה ${timeLabel}.\n` +
-            `נתראה! 🐾`
+            `נתראה! 🐾`;
+        const messageText = applyTemplate(
+            settings?.wa_template_booking ?? null,
+            {
+                firstName,
+                dogName: client.primary_dog_name,
+                date: dateLabel,
+                time: timeLabel,
+            },
+            fallback
         );
+        const message = encodeURIComponent(messageText);
         const waUrl = phoneDigits ? `https://wa.me/${intl}?text=${message}` : `https://wa.me/?text=${message}`;
 
         return (
@@ -201,7 +216,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         <a
                             href={waUrl}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             onClick={handleClose}
                             className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-3 rounded-xl transition-colors"
                         >
@@ -236,7 +251,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-text-primary">קביעת מפגש</h2>
-                            <p className="text-xs text-text-muted">בחר לקוח ותוכנית לקביעת מפגש חדש</p>
+                            <p className="text-xs text-text-muted">בחירת לקוח ותוכנית לקביעת מפגש חדש</p>
                         </div>
                     </div>
                 </div>
@@ -294,7 +309,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                     setSelectedProgramId('');
                                 }}
                             >
-                                <option value="">בחר לקוח...</option>
+                                <option value="">בחירת לקוח...</option>
                                 {clients.map(c => (
                                     <option key={c.id} value={c.id}>
                                         {c.full_name} • {c.primary_dog_name}
@@ -317,7 +332,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                 value={selectedProgramId}
                                 onChange={e => setSelectedProgramId(e.target.value)}
                             >
-                                <option value="">בחר תוכנית...</option>
+                                <option value="">בחירת תוכנית...</option>
                                 {selectedClient.programs.map(p => (
                                     <option key={p.id} value={p.id}>{p.program_name}</option>
                                 ))}
@@ -326,22 +341,29 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose} className="btn btn-secondary flex-1">
-                            ביטול
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving || !selectedProgramId}
-                            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                        >
-                            {saving ? (
-                                <>
-                                    <Loader2 size={16} className="animate-spin" />
-                                    <span>שומר...</span>
-                                </>
-                            ) : '🐾 קבע מפגש'}
-                        </button>
+                    <div className="space-y-2 pt-2">
+                        <div className="flex gap-3">
+                            <button type="button" onClick={onClose} className="btn btn-secondary flex-1">
+                                ביטול
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving || !selectedProgramId}
+                                className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {saving ? (
+                                    <>
+                                        <Spinner size="md" />
+                                        <span>שומרים...</span>
+                                    </>
+                                ) : '🐾 קביעת מפגש'}
+                            </button>
+                        </div>
+                        {!saving && !selectedProgramId && (
+                            <p className="text-xs text-text-muted text-center">
+                                {!selectedClientId ? 'יש לבחור לקוח כדי להמשיך' : 'יש לבחור תוכנית פעילה'}
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>

@@ -117,7 +117,7 @@ Toast auto-dismisses after 3500ms. The `ToastContext` is provided at the app roo
 - `/programs`, `/programs/:id`, `/programs/new` — training programs
 - `/programs/:programId/sessions/new` — new session creation
 - `/calendar` — scheduling
-- `/settings` — trainer profile / integrations (Morning, Sumit, Webhook, API token)
+- `/settings` — trainer profile / integrations (Morning + Sumit — parallel invoicing choices, trainer picks either, both, or neither; plus Webhook + API token)
 - `/storefront` — storefront admin (profile + services + testimonials manager)
 - `/seed` — dev-only data seeding (gated by `import.meta.env.DEV` AND in-component `<Navigate to="/" />`)
 
@@ -202,7 +202,7 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 - All tables have RLS enabled — always query as an authenticated user in tests/seeds.
 - `sessions_completed` on programs is updated automatically via a DB trigger.
 - `trainer_handle` on `user_settings` drives the public storefront URL.
-- `supabase_schema.sql` is the source of truth for table/column names and RLS policies — check it before writing queries.
+- ⚠️ **`supabase_schema.sql` is STALE** — captures the founding-phase schema only. Subsequent migrations under `supabase/migrations/` add columns + tables + policies not reflected in the .sql file. Iter 114 (2026-05-03) caught a silent prod bug rooted in trusting the stale file. **Source of truth for current schema:** `scripts/schema-snapshot.json` (regenerated from `information_schema.columns` after every migration). When in doubt, trust the snapshot or query the live DB directly via Supabase MCP. `npm run check:schema` diffs live DB against the snapshot and reports drift.
 
 ### Security
 - `.env` is gitignored — never commit secrets.
@@ -219,7 +219,7 @@ Key tables: `profiles`, `clients`, `programs`, `sessions`, `services`, `user_set
 - **No new icon libraries** — `lucide-react` only.
 - **No form libraries** (React Hook Form, Formik, etc.) — controlled `useState` inputs only.
 - **No HTTP client libraries** (axios, etc.) — Supabase client and native `fetch` only.
-- **No `date-fns`** — it's installed but unused; use native `Date` and `toLocaleDateString()` instead.
+- **No `date-fns`** — use native `Date` and `toLocaleDateString()` instead. (Was previously installed-but-unused; iter 124 verified it's no longer a dep but the rule stays — don't add it back.)
 - **Don't update `programs.status` directly** — always use `updateProgramStatus()` from `src/lib/supabase.ts`.
 - **Don't skip `logActivity()`** after mutations — every write to the DB should produce an audit log row.
 
@@ -246,9 +246,9 @@ npm run build   # also runs tsc type-check
 ## Known Tech Debt
 
 - **Intake tab in `ClientDetailPage`** — placeholder, marked Phase 3. Do not build on it yet.
-- **`date-fns` and `clsx`** — both are installed in `package.json` but unused. Do not start using them without a plan to use them consistently.
+- ~~**`date-fns` and `clsx`** — both are installed in `package.json` but unused~~ — closed iter 124 (verified neither is in package.json or package-lock.json; the tech-debt entry was itself stale).
 - **Sumit `DocumentType` enum constants** in `src/hooks/useSumit.ts` — `SUMIT_DOC_TYPE_PRICE_QUOTATION = 6` and `SUMIT_DOC_TYPE_INVOICE = 1` are working assumptions. Verify against Sumit's authoritative enum on first live test (one-line search-replace if different).
-- **`programs.greeninvoice_invoice_number` column** is named for a specific vendor; consider renaming to a vendor-neutral form (e.g., `legacy_morning_invoice_number`) once Sumit becomes the primary billing path.
+- ~~**`programs.greeninvoice_invoice_number` column** is named for a specific vendor~~ — closed iter 123, corrected iter 127. Renamed to `morning_invoice_number` (current Morning brand name; the `greeninvoice_` prefix referenced an outdated brand). Sibling to `sumit_invoice_document_number`. **Sumit and Morning are parallel options** — trainers choose either, both, or neither in IntegrationsSettings; the data model carries one column per vendor with no hierarchy. iter 123's brief misframe ("legacy_morning_invoice_number" + "Sumit pivot") is corrected here.
 
 ### Resolved (kept here as a legend; remove next session)
 - ~~`alert()` in `QuickAddClientModal.tsx`~~ — replaced with `showToast()` in soft-launch session.

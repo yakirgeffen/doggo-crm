@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Loader2, X, Check } from 'lucide-react';
+import { Calendar, X, Check } from 'lucide-react';
 import { supabase, logActivity } from '../lib/supabase';
 import { useToast } from '../context/toast-context';
 import { useAuth } from '../context/auth-context';
 import { createCalendarEvent } from '../lib/calendar';
+import { Spinner } from './Spinner';
 
 interface RecurringScheduleModalProps {
     isOpen: boolean;
@@ -124,7 +125,7 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                         <Calendar size={18} className="text-primary" />
                         <h2 className="text-lg font-bold text-text-primary">תזמון אוטומטי של מפגשים</h2>
                     </div>
-                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1">
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1" aria-label="סגירה">
                         <X size={18} />
                     </button>
                 </div>
@@ -199,27 +200,34 @@ export function RecurringScheduleModal({ isOpen, onClose, onScheduled, programId
                     </div>
                 </div>
 
-                <div className="border-t border-border p-4 bg-surface-warm flex gap-2">
-                    <button onClick={onClose} className="btn btn-secondary flex-1" disabled={submitting}>
-                        ביטול
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={submitting || count < 1 || daysOfWeek.length === 0}
-                        className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-                    >
-                        {submitting ? (
-                            <>
-                                <Loader2 size={14} className="animate-spin" />
-                                <span>קובע...</span>
-                            </>
-                        ) : (
-                            <>
-                                <Calendar size={14} />
-                                <span>קבע {count} מפגשים</span>
-                            </>
-                        )}
-                    </button>
+                <div className="border-t border-border p-4 bg-surface-warm space-y-2">
+                    <div className="flex gap-2">
+                        <button onClick={onClose} className="btn btn-secondary flex-1" disabled={submitting}>
+                            ביטול
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={submitting || count < 1 || daysOfWeek.length === 0}
+                            className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {submitting ? (
+                                <>
+                                    <Spinner size="sm" />
+                                    <span>קובע...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Calendar size={14} />
+                                    <span>קביעת {count} מפגשים</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                    {!submitting && (count < 1 || daysOfWeek.length === 0) && (
+                        <p className="text-xs text-text-muted text-center">
+                            {count < 1 ? 'מספר המפגשים חייב להיות לפחות 1' : 'יש לבחור לפחות יום אחד בשבוע'}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

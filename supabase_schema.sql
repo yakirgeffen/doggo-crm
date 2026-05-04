@@ -1,3 +1,51 @@
+-- ============================================================================
+-- ⚠️  STALE — DO NOT TRUST AS SOURCE OF TRUTH
+-- ============================================================================
+-- This file captures the original founding-phase schema. Subsequent schema
+-- changes ship as migrations under `supabase/migrations/` and HAVE NOT been
+-- replayed back into this file. The live database has additional columns,
+-- tables, indexes, and RLS policies not reflected here.
+--
+-- Concrete drift examples (caught in iter 114 audit, 2026-05-03):
+--   • clients.user_id (default auth.uid()), clients.behavioral_tags,
+--     clients.lead_source, clients.primary_dog_breed
+--   • programs.user_id, programs.price, programs.currency,
+--     programs.payment_link_id, programs.invoice_url, programs.invoice_pdf_url,
+--     programs.service_id, programs.sumit_invoice_document_id, …
+--   • sessions.user_id (default auth.uid()), sessions.google_calendar_event_id,
+--     sessions.price, sessions.currency, sessions.service_id, …
+--   • user_settings.wa_template_*, user_settings.intro_pages_seen,
+--     user_settings.api_token_hash, user_settings.specialties, …
+--   • New tables: services, quotes, intake_submissions, email_templates,
+--     activity_logs, email_send_log, webhook_events, newsletter_subscribers,
+--     client_attachments, trainer_testimonials, sys_integrations_vault.
+--
+-- HOW TO GET THE ACTUAL SCHEMA:
+--   1. Read the migrations under `supabase/migrations/` in chronological order.
+--   2. OR query the live database via Supabase MCP:
+--        SELECT column_name, data_type, is_nullable, column_default
+--          FROM information_schema.columns
+--         WHERE table_schema='public' AND table_name='<table>'
+--         ORDER BY ordinal_position;
+--      and for RLS:
+--        SELECT polname, polcmd,
+--               pg_get_expr(polqual, polrelid)      AS using_expr,
+--               pg_get_expr(polwithcheck, polrelid) AS check_expr
+--          FROM pg_policy
+--         WHERE polrelid = 'public.<table>'::regclass;
+--
+-- If you're about to write a Supabase query and you only checked this file,
+-- check the live schema or a recent migration too — iter 114 was a silent
+-- production bug because IncomingLeads referenced columns that don't exist
+-- on `clients` (`trainer_id`, `primary_dog_breed`-pre-iter-115). Both
+-- caught only by the audit pass after the bug had been live.
+--
+-- Refreshing this file: TODO. The class-of-bug fix is a build-time guard
+-- script that compares this file to live state and fails the build on drift
+-- (tracked in `studio/memory.md` 2026-05-03 build-time-guards entry as a
+-- pattern; not yet applied to schema sync specifically).
+-- ============================================================================
+
 -- Enable UUID extension
 create extension if not exists "uuid-ossp";
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { Plus, Receipt } from 'lucide-react';
+import { Plus, Receipt, ClipboardList, History as HistoryIcon } from 'lucide-react';
 import { SkeletonClientDetail } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
 import { type Client, type Program } from '../types';
@@ -91,7 +91,7 @@ export function ClientDetailPage() {
                         <button
                             onClick={() => setIsQuoteOpen(true)}
                             className="btn btn-secondary text-sm py-2 px-4 flex items-center gap-1"
-                            title="שלח הצעת מחיר ללקוח"
+                            title="שליחת הצעת מחיר ללקוח"
                         >
                             <Receipt size={16} />
                             הצעת מחיר
@@ -126,18 +126,20 @@ export function ClientDetailPage() {
             {activeTab === 'active' && (
                 <>
                     {activePrograms.length === 0 ? (
-                        <div className="flat-card p-12 text-center border-dashed border-2 bg-transparent text-text-muted">
-                            <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center mx-auto mb-3 text-text-muted">
-                                <Plus size={24} />
+                        <div className="rounded-xl border border-border-light bg-surface-warm/40 p-10 text-center">
+                            <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-soft">
+                                <ClipboardList size={26} />
                             </div>
-                            <p className="font-medium">אין תוכניות פעילות</p>
-                            <p className="text-sm mt-1">התחל חבילת אילוף חדשה עבור הכלב</p>
+                            <p className="font-bold text-text-primary text-base">עדיין אין חבילת אילוף פעילה</p>
+                            <p className="text-sm text-text-muted mt-1.5 max-w-xs mx-auto leading-relaxed">
+                                כל מפגש, חשבונית ותכתובת יישמרו תחת חבילת האילוף.
+                            </p>
                             <Link
                                 to={`/programs/new?client_id=${id}`}
-                                className="btn btn-primary mt-4 inline-flex"
+                                className="btn btn-primary mt-5 inline-flex"
                             >
                                 <Plus size={16} className="ms-1" />
-                                הוסף תוכנית
+                                התחלת חבילה ראשונה
                             </Link>
                         </div>
                     ) : selectedProgram ? (
@@ -152,14 +154,6 @@ export function ClientDetailPage() {
                 </>
             )}
 
-            {activeTab === 'intake' && (
-                <div className="flat-card p-8 text-center text-text-muted">
-                    <div className="text-4xl mb-3">📋</div>
-                    <p className="font-medium">אזור הקבלה</p>
-                    <p className="text-sm mt-1">נתוני קבלה ואבחון יופיעו כאן בקרוב (Phase 3)</p>
-                </div>
-            )}
-
             {activeTab === 'files' && (
                 <AttachmentsList clientId={client.id} />
             )}
@@ -169,7 +163,7 @@ export function ClientDetailPage() {
                     {/* Completed programs */}
                     {historyPrograms.length > 0 ? (
                         <div className="space-y-3">
-                            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">תוכניות שהסתיימו</h3>
+                            <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">תוכניות שהסתיימו</h3>
                             {historyPrograms.map((program) => (
                                 <div
                                     key={program.id}
@@ -181,8 +175,8 @@ export function ClientDetailPage() {
                                 >
                                     <div>
                                         <p className="font-bold text-text-primary">{program.program_name}</p>
-                                        <p className="text-sm text-text-muted ltr-nums" dir="ltr">
-                                            {program.sessions_completed} / {program.sessions_included || '∞'} sessions
+                                        <p className="text-sm text-text-muted">
+                                            <span className="ltr-nums">{program.sessions_completed} / {program.sessions_included || '∞'}</span> מפגשים
                                         </p>
                                     </div>
                                     <span className={`badge ${program.status === 'completed' ? 'badge-completed' : 'badge-pending'}`}>
@@ -191,14 +185,20 @@ export function ClientDetailPage() {
                                 </div>
                             ))}
                         </div>
-                    ) : (
-                        <div className="text-center text-text-muted text-sm py-6">אין היסטוריית תוכניות</div>
-                    )}
+                    ) : quotes.length === 0 ? (
+                        <div className="rounded-xl border border-border-light bg-surface-warm/40 p-10 text-center">
+                            <div className="w-12 h-12 bg-text-muted/10 text-text-muted rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                <HistoryIcon size={22} />
+                            </div>
+                            <p className="font-medium text-text-secondary">אין עדיין היסטוריה</p>
+                            <p className="text-xs text-text-muted mt-1">כשיהיו תוכניות שהסתיימו או הצעות מחיר, הן יופיעו כאן.</p>
+                        </div>
+                    ) : null}
 
                     {/* Quote history (G8 native via Sumit) */}
                     {quotes.length > 0 && (
                         <div className="space-y-3">
-                            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">הצעות מחיר</h3>
+                            <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">הצעות מחיר</h3>
                             {quotes.map((q) => (
                                 <div key={q.id} className="flat-card p-4 flex justify-between items-center gap-3">
                                     <div className="flex-1 min-w-0">
@@ -242,7 +242,7 @@ export function ClientDetailPage() {
 
                     {/* Activity Timeline */}
                     <div>
-                        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">פעילות אחרונה</h3>
+                        <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">פעילות אחרונה</h3>
                         <div className="flat-card p-0 overflow-hidden">
                             <ActivityTimeline
                                 key={refreshKey}
@@ -281,7 +281,14 @@ export function ClientDetailPage() {
                         setIsEmailOpen(false);
                         setSearchParams({}, { replace: true });
                     }}
+                    onClientEmailUpdated={(email) => {
+                        // Local optimistic update so the hero/contact card
+                        // reflects the new address immediately. The next full
+                        // fetch will reconcile if anything changed server-side.
+                        setClient(prev => (prev ? { ...prev, email } : prev));
+                    }}
                     clientEmail={client.email || ''}
+                    clientId={client.id}
                     clientName={client.full_name}
                     dogName={client.primary_dog_name || ''}
                     entityType="client"

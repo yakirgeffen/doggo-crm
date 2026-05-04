@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen, Inbox } from 'lucide-react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen, Inbox, HelpCircle } from 'lucide-react';
 import { useAuth } from '../context/auth-context';
+import { WIRED_INTRO_PAGES, type PageId } from '../lib/intro-content';
 
 const navItems = [
     { to: "/", label: "בית", icon: Home },
@@ -11,11 +12,38 @@ const navItems = [
     { to: "/calendar", label: "יומן", icon: Calendar },
 ];
 
+// Pathname → intro PageId, but only for pages where the intro is actually
+// wired (per WIRED_INTRO_PAGES in intro-content.ts). Non-wired routes get
+// no `?` button — clicking it would no-op since no listener is mounted.
+const PATH_TO_PAGE_ID: Record<string, PageId> = {
+    '/clients': 'clients',
+    '/settings': 'settings',
+    '/storefront': 'storefront',
+    '/calendar': 'calendar',
+    '/leads': 'leads',
+};
+
+function pageIdForPath(pathname: string): PageId | null {
+    const candidate = PATH_TO_PAGE_ID[pathname];
+    if (!candidate) return null;
+    return WIRED_INTRO_PAGES.has(candidate) ? candidate : null;
+}
+
 export function Layout() {
     const { signOut } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const closeMenu = () => setIsMobileMenuOpen(false);
+
+    const introPageId = pageIdForPath(location.pathname);
+    const openPageIntro = () => {
+        if (!introPageId) return;
+        const params = new URLSearchParams(location.search);
+        params.set('intro', introPageId);
+        navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+    };
 
     // Close mobile menu with Escape key — IS 5568
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -34,7 +62,7 @@ export function Layout() {
 
             {/* Skip Link — IS 5568 / WCAG 2.1 AA */}
             <a href="#main-content" className="skip-link">
-                דלג לתוכן הראשי
+                מעבר לתוכן הראשי
             </a>
 
             {/* ========== DESKTOP SIDEBAR (lg+) ========== */}
@@ -67,8 +95,18 @@ export function Layout() {
                     ))}
                 </nav>
 
-                {/* Footer: Settings + Blog + Sign Out + Version */}
+                {/* Footer: Help + Settings + Blog + Sign Out + Version */}
                 <div className="border-t border-border-light p-3 space-y-1">
+                    {introPageId && (
+                        <button
+                            onClick={openPageIntro}
+                            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
+                            title="הסבר על העמוד הנוכחי"
+                        >
+                            <HelpCircle size={20} />
+                            הסבר על העמוד
+                        </button>
+                    )}
                     <NavLink
                         to="/settings"
                         className={({ isActive }) =>
@@ -84,9 +122,9 @@ export function Layout() {
                     <a
                         href="/blog"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
-                        title="תכנים ומדריכים למאלפי כלבים"
+                        title="תכנים ומדריכים בנושא אילוף כלבים"
                     >
                         <BookOpen size={20} />
                         בלוג
@@ -96,7 +134,7 @@ export function Layout() {
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
                     >
                         <LogOut size={20} className="rtl:rotate-180" />
-                        התנתק
+                        יציאה
                     </button>
                     <div className="text-[11px] text-center text-text-muted/60 pt-2 pb-1 font-medium">
                         גרסה 2.0 • Doggo CRM
@@ -110,12 +148,24 @@ export function Layout() {
                     <span className="text-xl">🐾</span>
                     <span>Doggo CRM</span>
                 </h1>
-                <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="p-2 text-text-secondary hover:bg-background rounded-lg transition-colors"
-                >
-                    {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-                </button>
+                <div className="flex items-center gap-1">
+                    {introPageId && (
+                        <button
+                            onClick={openPageIntro}
+                            className="p-2 text-text-muted hover:text-primary hover:bg-background rounded-lg transition-colors"
+                            title="הסבר על העמוד"
+                            aria-label="הסבר על העמוד"
+                        >
+                            <HelpCircle size={20} />
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="p-2 text-text-secondary hover:bg-background rounded-lg transition-colors"
+                    >
+                        {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                    </button>
+                </div>
             </header>
 
             {/* ========== MOBILE SLIDE-OUT MENU ========== */}
@@ -178,7 +228,7 @@ export function Layout() {
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background transition-colors"
                     >
                         <LogOut size={20} className="rtl:rotate-180" />
-                        התנתק
+                        יציאה
                     </button>
                 </div>
             </div>

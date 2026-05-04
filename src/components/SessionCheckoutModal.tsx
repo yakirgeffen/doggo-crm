@@ -122,16 +122,16 @@ export function SessionCheckoutModal({
                     <div className="flex gap-3 pt-2">
                         <button onClick={onClose} className="btn btn-secondary flex-1 flex items-center justify-center gap-2">
                             <X size={16} />
-                            סגור
+                            סגירה
                         </button>
                         <a
                             href={`https://wa.me/?text=${whatsappMessage}`}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="btn flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-soft"
                         >
                             <MessageCircle size={16} />
-                            שתף בוואטסאפ
+                            שיתוף בוואטסאפ
                         </a>
                     </div>
                 </div>

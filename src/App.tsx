@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/auth-context';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Spinner } from './components/Spinner';
 import { ToastProvider } from './context/ToastContext';
 
 // Public routes — typically the cold-load entry point. Keep landing eager
@@ -38,8 +39,9 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage').then(m => ({ defa
 
 function RouteSpinner() {
     return (
-        <div className="flex h-screen items-center justify-center bg-bg-app">
-            <div className="text-primary">טוען...</div>
+        <div className="flex h-screen items-center justify-center bg-bg-app gap-2 text-text-muted">
+            <Spinner size="md" className="text-primary" />
+            <span className="text-sm">טוען...</span>
         </div>
     );
 }

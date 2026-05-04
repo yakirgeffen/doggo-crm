@@ -84,7 +84,7 @@ export function ServiceModal({ isOpen, onClose, onSave, initialData }: ServiceMo
                     <h2 className="text-lg font-bold text-text-primary">
                         {initialData ? 'עריכת שירות' : 'שירות חדש'}
                     </h2>
-                    <button onClick={onClose} className="p-2 text-text-secondary hover:bg-background rounded-lg transition-colors">
+                    <button onClick={onClose} className="p-2 text-text-secondary hover:bg-background rounded-lg transition-colors" aria-label="סגירה">
                         <X size={20} />
                     </button>
                 </div>
@@ -229,7 +229,7 @@ export function ServiceModal({ isOpen, onClose, onSave, initialData }: ServiceMo
                         disabled={saving}
                         className="btn btn-primary min-w-[100px]"
                     >
-                        {saving ? 'שומר...' : (initialData ? 'שמור שינויים' : 'צור שירות')}
+                        {saving ? 'שומרים...' : (initialData ? 'שמירת שינויים' : 'יצירת שירות')}
                     </button>
                 </div>
             </div>

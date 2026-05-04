@@ -4,6 +4,7 @@ export interface Client {
     email: string | null;
     phone: string | null;
     primary_dog_name: string | null;
+    primary_dog_breed: string | null;
     notes: string | null;
     is_active: boolean;
     behavioral_tags: string[];
@@ -25,7 +26,7 @@ export interface Program {
     payment_link_id: string | null;
     invoice_url: string | null;
     invoice_pdf_url: string | null;
-    greeninvoice_invoice_number: string | null;
+    morning_invoice_number: string | null;
     sumit_invoice_document_id: number | null;
     sumit_invoice_document_number: number | null;
     notes: string | null;
@@ -98,6 +99,10 @@ export interface UserSettings {
     work_hours_end: string; // "17:00"
     webhook_url: string | null;
     api_token_hash: string | null;
+    wa_template_greeting: string | null;
+    wa_template_booking: string | null;
+    wa_template_reminder: string | null;
+    intro_pages_seen: string[];
 }
 
 export interface TrainerTestimonial {

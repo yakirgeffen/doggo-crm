@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FileCheck, Loader2, MessageCircle, X } from 'lucide-react';
+import { FileCheck, MessageCircle, X } from 'lucide-react';
 import { supabase, logActivity } from '../../lib/supabase';
 import { useToast } from '../../context/toast-context';
 import { useSumit } from '../../hooks/useSumit';
+import { Spinner } from '../Spinner';
 
 interface SendInvoiceButtonProps {
     programId: string;
@@ -119,11 +120,11 @@ export function SendInvoiceButton({
                 onClick={handleSend}
                 disabled={sending || sumit.loading}
                 className="text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-                title="הפק וחתום חשבונית בסומיט"
+                title="הפקה וחתימה של חשבונית בסומיט"
             >
                 {sending ? (
                     <>
-                        <Loader2 size={14} className="animate-spin" />
+                        <Spinner size="sm" />
                         <span>שולח...</span>
                     </>
                 ) : (
@@ -155,17 +156,17 @@ export function SendInvoiceButton({
                             </div>
                             <div className="p-5 space-y-3">
                                 <p className="text-sm text-text-secondary leading-relaxed">
-                                    רוצה לעדכן את הלקוח/ה גם ב-WhatsApp?
+                                    לעדכן את הלקוח גם ב-WhatsApp?
                                 </p>
                                 <a
                                     href={waUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener noreferrer"
                                     onClick={() => setShowWhatsApp(null)}
                                     className="flex items-center justify-center gap-2 w-full bg-success/10 hover:bg-success/15 text-success font-bold py-2.5 rounded-xl transition-colors text-sm"
                                 >
                                     <MessageCircle size={16} />
-                                    {phoneDigits ? `שלח/י ל-${phoneDigits}` : 'בחר/י נמען'}
+                                    {phoneDigits ? `שליחה ל-${phoneDigits}` : 'בחירת נמען'}
                                 </a>
                                 <button
                                     onClick={() => setShowWhatsApp(null)}
