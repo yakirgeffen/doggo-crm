@@ -173,7 +173,7 @@ export function LandingPage() {
                         מוכנים להפסיק לנהל בקבצי וואטסאפ?
                     </h2>
                     <p className="text-white/80 text-lg mb-8">
-                        Doggo CRM חינם להתחלה. בלי קליטה ארוכה, בלי שיחות מכירה.
+                        Doggo CRM ללא תשלום עכשיו. בלי קליטה ארוכה, בלי שיחות מכירה.
 
                     </p>
                     <Link
