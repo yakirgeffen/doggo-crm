@@ -41,7 +41,14 @@ interface TrainerState {
     is_billing_connected: boolean
 }
 
-const APP_URL = 'https://doggocrm.app'
+// APP_URL prefers env so staging deploys link to staging origin and the
+// custom-domain cutover doesn't require a function redeploy. Fallback to
+// the production custom-domain if the env is unset (preserves the prior
+// hardcoded behavior). Matches the env-driven pattern already used in
+// `process-intake/index.ts` and `voice-intake/index.ts`. Surfaced via CPMO
+// content review 2026-05-05 PM (geffen-studio:projects/doggo-crm/cpmo-
+// reviews/2026-05-05-pm-content-review-welcomepage-lifecycle.md §Section 2).
+const APP_URL = Deno.env.get('APP_URL') ?? 'https://doggocrm.app'
 
 function emailShell(titleHe: string, bodyInnerHtml: string, iconEmoji: string, ctaUrl?: string, ctaLabel?: string): string {
     const cta = ctaUrl && ctaLabel
