@@ -62,7 +62,7 @@ const TEMPLATES: Record<string, (t: TrainerState) => { subject: string; html: st
         subject: '🐾 ברוכ/ה הבא/ה ל-Doggo CRM',
         html: emailShell(
             'נעים להכיר! 🐾',
-            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>שמחים לראותך כאן. Doggo CRM הוא הכלי שיחסוך לך שעות של ניהול אדמין כל שבוע, ויאפשר לך להתמקד במה שחשוב — האימון.</p><p style="color:#444;line-height:1.7;">כדי להפיק מהמערכת את המקסימום, יש כמה הגדרות בסיסיות שכדאי לסיים:</p><ol style="color:#444;line-height:1.7;padding-right:20px;"><li>בחר/י כתובת חנות אישית</li><li>הגדר/י שם עסק ופרופיל ציבורי</li><li>הוסף/י את השירותים שלך לקטלוג</li><li>חבר/י Sumit או חשבונית ירוקה</li></ol><p style="color:#444;line-height:1.7;">אם יש שאלות, פשוט השב/י למייל הזה.</p>`,
+            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>שמחים לראותך כאן. Doggo CRM נועד לקחת ממך את העומס האדמיניסטרטיבי — לקוחות, מפגשים, חשבוניות — כדי שתישאר/י עם הראש באימון עצמו.</p><p style="color:#444;line-height:1.7;">כדי להפיק מהמערכת את המקסימום, יש כמה הגדרות בסיסיות שכדאי לסיים:</p><ol style="color:#444;line-height:1.7;padding-right:20px;"><li>בחר/י כתובת חנות אישית</li><li>הגדר/י שם עסק ופרופיל ציבורי</li><li>הוסף/י את השירותים שלך לקטלוג</li><li>חבר/י Sumit (סאמיט) או Morning (חשבונית ירוקה)</li></ol><p style="color:#444;line-height:1.7;">אם יש שאלות, פשוט השב/י למייל הזה.</p>`,
             '🐾',
             APP_URL,
             'השלם/י את ההתקנה →'
@@ -72,7 +72,7 @@ const TEMPLATES: Record<string, (t: TrainerState) => { subject: string; html: st
         subject: '🚀 עוד צעד ואת/ה מוכנ/ה להתחיל',
         html: emailShell(
             'בואו נסיים את ההתקנה',
-            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>בדקתי את החשבון שלך — נראה שעוד לא סיימת את ההתקנה. זה לוקח 5-10 דקות סך הכל ואז המערכת ערוכה לעבודה אמיתית.</p><p style="color:#444;line-height:1.7;">${!t.business_name ? 'עוד לא הגדרת שם עסק. ' : ''}${!t.trainer_handle ? 'עוד לא בחרת כתובת חנות. ' : ''}${t.services_count === 0 ? 'עוד לא הוספת שירותים לקטלוג. ' : ''}${!t.is_billing_connected ? 'עוד לא חיברת Sumit/חשבונית ירוקה.' : ''}</p>`,
+            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>בדקתי את החשבון שלך — נראה שעוד לא סיימת את ההתקנה. כמה דקות עכשיו והמערכת ערוכה לעבודה אמיתית.</p><p style="color:#444;line-height:1.7;">${!t.business_name ? 'עוד לא הגדרת שם עסק. ' : ''}${!t.trainer_handle ? 'עוד לא בחרת כתובת חנות. ' : ''}${t.services_count === 0 ? 'עוד לא הוספת שירותים לקטלוג. ' : ''}${!t.is_billing_connected ? 'עוד לא חיברת Sumit (סאמיט) או Morning (חשבונית ירוקה).' : ''}</p>`,
             '🚀',
             APP_URL,
             'סיים/י את ההתקנה →'
@@ -89,10 +89,10 @@ const TEMPLATES: Record<string, (t: TrainerState) => { subject: string; html: st
         ),
     }),
     tip_trick: (t) => ({
-        subject: '💡 טיפ שווה: איך לחסוך 30 דקות בשבוע',
+        subject: '💡 שלושה קיצורי דרך שמאלפים מגלים בשבוע השני',
         html: emailShell(
             'שלושה פיצ׳רים שיחסכו לך זמן',
-            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>רואים שאת/ה כבר בפנים — איזה כיף!</p><p style="color:#444;line-height:1.7;">הנה שלושת הפיצ׳רים שמאלפים מגלים בשבוע השני:</p><ul style="color:#444;line-height:1.7;padding-right:20px;"><li><strong>קביעת מפגש מהיומן הראשי</strong> — לחיצה אחת על שעה ריקה, מודאל מוכן עם הלקוח/תוכנית.</li><li><strong>הצעת מחיר ב-30 שניות</strong> — מכרטיס לקוח, "הצעת מחיר", בוחר/ת שירותים מהקטלוג, שולח/ת. Sumit מטפל בכל השאר.</li><li><strong>סנכרון אוטומטי ליומן</strong> — כל מפגש יופיע ביומן Google שלך מיידית. תזכורות אוטומטיות ללקוח 24 שעות לפני.</li></ul>`,
+            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>רואים שאת/ה כבר בפנים — איזה כיף!</p><p style="color:#444;line-height:1.7;">הנה שלושת הפיצ׳רים שמאלפים מגלים בשבוע השני:</p><ul style="color:#444;line-height:1.7;padding-right:20px;"><li><strong>קביעת מפגש מהיומן הראשי</strong> — לחיצה אחת על שעה ריקה, מודאל מוכן עם הלקוח/תוכנית.</li><li><strong>הצעת מחיר במהירות</strong> — מכרטיס לקוח, "הצעת מחיר", בוחר/ת שירותים מהקטלוג, שולח/ת. Sumit מטפל בכל השאר.</li><li><strong>סנכרון אוטומטי ליומן</strong> — כל מפגש יופיע ביומן Google שלך מיידית. תזכורות אוטומטיות ללקוח 24 שעות לפני.</li></ul>`,
             '💡',
             APP_URL,
             'היכנס/י לחשבון →'
@@ -102,7 +102,7 @@ const TEMPLATES: Record<string, (t: TrainerState) => { subject: string; html: st
         subject: 'איך הולך לך עם Doggo CRM?',
         html: emailShell(
             'שבועיים אחרי — איך זה?',
-            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>שבועיים אחרי שהצטרפת לDoggo CRM — כיף לראות אותך פה.</p><p style="color:#444;line-height:1.7;">רציתי פשוט לבדוק: איך זה עובר לך עד עכשיו? מה עובד טוב, ומה היית רוצה שיעבוד אחרת?</p><p style="color:#444;line-height:1.7;">השב/י למייל הזה — אני קורא/ת כל תגובה ומגיב/ה אישית.</p><p style="color:#444;line-height:1.7;">תודה,<br/>צוות Doggo CRM 🐶</p>`,
+            `<p style="color:#444;line-height:1.7;">שלום${t.full_name ? ` ${escapeHtml(t.full_name.split(' ')[0])}` : ''},<br/><br/>שבועיים אחרי שהצטרפת ל-Doggo CRM — כיף לראות אותך פה.</p><p style="color:#444;line-height:1.7;">רציתי פשוט לבדוק: איך זה עובר לך עד עכשיו? מה זורם טוב מול הלקוחות והכלבים, ומה היית רוצה שיעבוד אחרת?</p><p style="color:#444;line-height:1.7;">השב/י למייל הזה — אני קורא/ת כל תגובה ומגיב/ה אישית. גם הערה קטנה שעולה באמצע יום אימונים על משהו שלא מסתדר עוזרת לחדד את הכלי בדיוק עבור מאלפי כלבים בישראל.</p><p style="color:#444;line-height:1.7;">תודה,<br/>Doggo CRM 🐶</p>`,
             '💌'
         ),
     }),
@@ -192,6 +192,17 @@ serve(async (req: Request) => {
                     const { subject, html } = fn(trainer)
                     await resend.emails.send({
                         from: 'Doggo CRM <notifications@resend.dev>',
+                        // CTO 2026-05-05 PM (CPMO content review §Section 3 #3 routing):
+                        // welcome + check_in templates explicitly invite replies
+                        // ("השב/י למייל הזה", "אני קורא/ת כל תגובה ומגיב/ה אישית").
+                        // Without reply_to, replies route to notifications@resend.dev
+                        // (unmonitored), making the promise false-on-delivery.
+                        // Default to the studio-brand inbox per
+                        // geffen-studio:tools/studio-accounts.md L47. Long-term:
+                        // verified-sender domain + dedicated forwarder inbox is
+                        // Yakir-actionable per studio-accounts.md L89-90.
+                        // REPLY_TO_INBOX env override lets ops swap without redeploy.
+                        replyTo: Deno.env.get('REPLY_TO_INBOX') ?? 'geffenstudio@proton.me',
                         to: trainer.email,
                         subject,
                         html,
