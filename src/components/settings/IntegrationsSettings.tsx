@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Globe, Lock, CheckCircle2, Receipt, Webhook, Send, Key, Copy, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Globe, Lock, CheckCircle2, Receipt, Webhook, Send, Key, Copy, RefreshCw, AlertTriangle, Mic, MessageCircle, Trash2 } from 'lucide-react';
 import { useIntegrations } from '../../hooks/useIntegrations';
 import { useSumit } from '../../hooks/useSumit';
 import { useSettings } from '../../hooks/useSettings';
+import { useVoiceIntake } from '../../hooks/useVoiceIntake';
 import { useToast } from '../../context/toast-context';
 
 export function IntegrationsSettings() {
     const { isConnected, vaultData, saveKeys, testConnection, loading: integrationsLoading } = useIntegrations();
     const sumit = useSumit();
     const { settings, loading: settingsLoading, updateLocalSettings, saveSettings } = useSettings();
+    const voiceIntake = useVoiceIntake();
     const { showToast } = useToast();
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
@@ -22,10 +24,53 @@ export function IntegrationsSettings() {
     const [generatedToken, setGeneratedToken] = useState<string | null>(null);
     const [tokenGenerating, setTokenGenerating] = useState(false);
     const [tokenCopied, setTokenCopied] = useState(false);
+    const [voicePhoneInput, setVoicePhoneInput] = useState('');
 
     useEffect(() => {
         if (settings?.webhook_url) setWebhookUrl(settings.webhook_url);
     }, [settings?.webhook_url]);
+
+    useEffect(() => {
+        if (voiceIntake.registration?.phone_e164) {
+            setVoicePhoneInput(voiceIntake.registration.phone_e164);
+        }
+    }, [voiceIntake.registration?.phone_e164]);
+
+    const botWhatsAppNumber = (import.meta.env.VITE_VOICE_INTAKE_BOT_WHATSAPP || '').replace(/^\+/, '');
+    const botWhatsAppLink = botWhatsAppNumber
+        ? `https://wa.me/${botWhatsAppNumber}?text=${encodeURIComponent('שלום, אני רוצה לשלוח קבלה קולית')}`
+        : null;
+
+    const handleSaveVoiceIntake = async () => {
+        const result = await voiceIntake.saveRegistration(voicePhoneInput);
+        if (result.success) {
+            showToast('מספר נרשם — אפשר לשלוח קבלות קוליות בוואטסאפ', 'success');
+        } else {
+            showToast(result.error || 'שגיאה בשמירה', 'error');
+        }
+    };
+
+    const handleDeleteVoiceIntake = async () => {
+        const ok = window.confirm('להסיר את הרישום? לא תוכלו לשלוח קבלות קוליות עד שתרשמו מחדש.');
+        if (!ok) return;
+        const result = await voiceIntake.deleteRegistration();
+        if (result.success) {
+            setVoicePhoneInput('');
+            showToast('הרישום הוסר', 'success');
+        } else {
+            showToast(result.error || 'שגיאה במחיקה', 'error');
+        }
+    };
+
+    const handleCopyBotNumber = async () => {
+        if (!botWhatsAppNumber) return;
+        try {
+            await navigator.clipboard.writeText(`+${botWhatsAppNumber}`);
+            showToast('המספר הועתק', 'success');
+        } catch {
+            showToast('לא ניתן להעתיק', 'error');
+        }
+    };
 
     const apiBaseUrl = `${(import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '')}/functions/v1/api-v1`;
     const hasActiveToken = Boolean(settings?.api_token_hash);
@@ -677,6 +722,138 @@ update_intake_submission_status  → { submission_id }
 }`}</pre>
                     <p className="text-[11px] text-text-muted mt-3">כל הקריאות מתבצעות בשם המאלפת המזוהה לפי הטוקן. גישה למידע של מאלפת אחרת חסומה ברמת הפונקציה (predicates על user_id / trainer_id) וברמת ה-RLS.</p>
                 </details>
+            </div>
+
+            <div className="border-t border-border pt-8">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
+                    <Mic className="text-primary" />
+                    קבלות קוליות בוואטסאפ
+                </h2>
+                <p className="text-sm text-text-muted">
+                    שולחים הודעה קולית בוואטסאפ לבוט של Doggo CRM, הבוט מתמלל אותה לעברית, מחלץ את פרטי הלקוח והכלב,
+                    מציג לאישור — ואחרי אישור הפנייה נכנסת אוטומטית למערכת. שימושי מהשטח, מיד אחרי שיחה עם בעל כלב חדש.
+                </p>
+            </div>
+
+            <div className="space-y-4 max-w-lg p-6 bg-surface border border-border rounded-xl shadow-soft">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${voiceIntake.registration ? 'bg-success/10 border-success/20' : 'bg-background border-border'}`}>
+                    <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${voiceIntake.registration ? 'bg-success animate-pulse' : 'bg-text-muted'}`}></div>
+                        <div>
+                            <p className={`font-bold ${voiceIntake.registration ? 'text-success' : 'text-text-secondary'}`}>
+                                {voiceIntake.loading
+                                    ? 'טוען רישום...'
+                                    : voiceIntake.registration
+                                        ? 'רשום — ניתן לשלוח קבלות קוליות'
+                                        : 'לא רשום'}
+                            </p>
+                            {voiceIntake.registration?.phone_e164 && (
+                                <p className="text-xs text-text-muted font-mono mt-0.5 ltr-nums" dir="ltr">
+                                    {voiceIntake.registration.phone_e164}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    {voiceIntake.registration && <CheckCircle2 className="text-success" />}
+                </div>
+
+                <div>
+                    <label className="block text-xs font-medium text-text-muted mb-1">מספר וואטסאפ (פורמט בינלאומי E.164)</label>
+                    <input
+                        type="tel"
+                        className="input-field dir-ltr font-mono text-sm"
+                        value={voicePhoneInput}
+                        onChange={(e) => setVoicePhoneInput(e.target.value)}
+                        placeholder="+972501234567"
+                        dir="ltr"
+                        inputMode="tel"
+                    />
+                    <p className="text-[11px] text-text-muted mt-1">
+                        דוגמה: <span className="font-mono ltr-nums" dir="ltr">+972501234567</span> —
+                        חייב להתחיל ב-<span className="font-mono">+</span> ולהיות בפורמט בינלאומי. נשתמש במספר הזה כדי לזהות אתכם כשהבוט מקבל הודעה.
+                    </p>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleSaveVoiceIntake}
+                        disabled={voiceIntake.saving || !voicePhoneInput.trim() || !voiceIntake.isValidE164(voicePhoneInput)}
+                        className="btn btn-primary text-sm flex-1 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {voiceIntake.saving
+                            ? 'שומר...'
+                            : voiceIntake.registration
+                                ? 'עדכן מספר'
+                                : 'רישום'}
+                    </button>
+                    {voiceIntake.registration && (
+                        <button
+                            onClick={handleDeleteVoiceIntake}
+                            disabled={voiceIntake.saving}
+                            className="btn btn-secondary text-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            type="button"
+                            title="הסרת הרישום"
+                        >
+                            <Trash2 size={14} />
+                            הסר
+                        </button>
+                    )}
+                </div>
+                {!voiceIntake.saving && voicePhoneInput.trim() && !voiceIntake.isValidE164(voicePhoneInput) && (
+                    <p className="text-xs text-error">
+                        המספר חייב להיות בפורמט E.164 (להתחיל ב-+ ולהמשיך ב-7 עד 15 ספרות)
+                    </p>
+                )}
+
+                {voiceIntake.registration && (
+                    <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+                        <h4 className="font-bold text-text-primary text-sm flex items-center gap-2">
+                            <MessageCircle size={16} className="text-primary" />
+                            איך משתמשים?
+                        </h4>
+                        {botWhatsAppLink ? (
+                            <>
+                                <ol className="list-decimal list-inside text-text-secondary space-y-1 text-xs marker:font-bold">
+                                    <li>שמרו את מספר הבוט באנשי הקשר.</li>
+                                    <li>שלחו הודעה קולית בעברית עם פרטי הלקוח, הכלב ומטרות האימון.</li>
+                                    <li>הבוט יציג לכם את מה שחילץ — מאשרים בדמוי 👍 או "שלח", או מתקנים בכתב.</li>
+                                    <li>אישור = פנייה חדשה במערכת + מייל לסיכום.</li>
+                                </ol>
+                                <div className="flex gap-2 items-center">
+                                    <a
+                                        href={botWhatsAppLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn btn-primary text-xs flex items-center gap-1.5 flex-1 justify-center"
+                                    >
+                                        <MessageCircle size={14} />
+                                        פתחו צ׳אט עם הבוט
+                                    </a>
+                                    <button
+                                        onClick={handleCopyBotNumber}
+                                        className="btn btn-secondary text-xs flex items-center gap-1.5 px-3"
+                                        type="button"
+                                        title="העתק את מספר הבוט"
+                                    >
+                                        <Copy size={12} />
+                                        העתק מספר
+                                    </button>
+                                </div>
+                                <p className="text-[10px] text-text-muted text-center font-mono ltr-nums" dir="ltr">
+                                    +{botWhatsAppNumber}
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-xs text-warning">
+                                ⚠️ מספר הבוט עוד לא הוגדר במערכת. לאחר שהבוט יעלה לאוויר תקבלו את המספר כאן.
+                            </p>
+                        )}
+                    </div>
+                )}
+
+                <div className="text-[10px] text-text-muted leading-relaxed bg-background p-3 rounded-lg">
+                    🔒 הרישום הזה משויך אליכם בלבד. רק מספר הוואטסאפ הזה יזוהה כמאלף ששולח את ההודעה — מספרים אחרים יקבלו תגובה אדיבה שהם לא רשומים.
+                </div>
             </div>
         </div>
     );
