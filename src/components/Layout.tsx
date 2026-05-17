@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Users, Calendar, Settings, LogOut, Menu, X, Store, BookOpen, Inbox, HelpCircle } from 'lucide-react';
 import { useAuth } from '../context/auth-context';
 import { WIRED_INTRO_PAGES, type PageId } from '../lib/intro-content';
@@ -119,16 +119,15 @@ export function Layout() {
                         <Settings size={20} />
                         הגדרות
                     </NavLink>
-                    <a
-                        href="/blog"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    {/* PP-26: blog is an internal route — use Link, not <a target="_blank"> */}
+                    <Link
+                        to="/blog"
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
                         title="תכנים ומדריכים בנושא אילוף כלבים"
                     >
                         <BookOpen size={20} />
                         בלוג
-                    </a>
+                    </Link>
                     <button
                         onClick={() => signOut()}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sm font-medium text-text-secondary hover:bg-background hover:text-text-primary transition-colors"
@@ -159,9 +158,12 @@ export function Layout() {
                             <HelpCircle size={20} />
                         </button>
                     )}
+                    {/* PP-25: aria-label on hamburger button for screen readers */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className="p-2 text-text-secondary hover:bg-background rounded-lg transition-colors"
+                        aria-label={isMobileMenuOpen ? 'סגור תפריט' : 'פתח תפריט'}
+                        aria-expanded={isMobileMenuOpen}
                     >
                         {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
                     </button>
@@ -186,7 +188,7 @@ export function Layout() {
                     <h2 className="font-bold text-text-primary flex items-center gap-2">
                         <span>🐾</span> Doggo CRM
                     </h2>
-                    <button onClick={closeMenu} className="p-2 text-text-muted hover:bg-background rounded-lg">
+                    <button onClick={closeMenu} className="p-2 text-text-muted hover:bg-background rounded-lg" aria-label="סגור תפריט">
                         <X size={20} />
                     </button>
                 </div>

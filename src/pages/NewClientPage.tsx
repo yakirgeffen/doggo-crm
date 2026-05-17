@@ -34,13 +34,18 @@ export function NewClientPage() {
         const { data, error } = await supabase.from('clients').insert([payload]).select();
 
         if (error) {
-            showToast('שגיאה ביצירת לקוח: ' + error.message, 'error');
+            // PP-33: show friendly Hebrew message; log technical details to console only
+            console.error('Error creating client:', error);
+            showToast('שגיאה ביצירת הלקוח — אנא נסו שוב.', 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {
                 await logActivity('client', data[0].id, 'created', `לקוח חדש: ${formData.full_name}`);
+                // PP-13: navigate directly to the new client's profile page, not the list
+                navigate(`/clients/${data[0].id}`);
+            } else {
+                navigate('/clients');
             }
-            navigate('/clients');
         }
     };
 

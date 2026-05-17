@@ -4,6 +4,7 @@ import { useTestimonials } from '../../hooks/useTestimonials';
 import { useToast } from '../../context/toast-context';
 import { type TrainerTestimonial } from '../../types';
 import { Spinner } from '../Spinner';
+import { ConfirmModal } from '../ConfirmModal';
 
 // Trainer-side admin section: add/edit/publish/unpublish/delete client
 // testimonials displayed on the public storefront. Lives inside
@@ -15,9 +16,17 @@ export function TestimonialsManager() {
     const { showToast } = useToast();
     const [editing, setEditing] = useState<TrainerTestimonial | null>(null);
     const [adding, setAdding] = useState(false);
+    // PP-01: replace window.confirm with ConfirmModal
+    const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm('למחוק את ההמלצה? הפעולה לא ניתנת לביטול.')) return;
+    const handleDeleteRequest = (id: string) => {
+        setPendingDeleteId(id);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!pendingDeleteId) return;
+        const id = pendingDeleteId;
+        setPendingDeleteId(null);
         try {
             await remove(id);
             showToast('ההמלצה נמחקה', 'success');
@@ -116,7 +125,7 @@ export function TestimonialsManager() {
                                         <Edit3 size={14} />
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDeleteRequest(item.id)}
                                         title="מחיקה"
                                         className="p-2 rounded-lg hover:bg-error/10 text-text-secondary hover:text-error transition-colors"
                                         type="button"
@@ -151,6 +160,15 @@ export function TestimonialsManager() {
                     }}
                 />
             )}
+
+            {/* PP-01: ConfirmModal replaces window.confirm for delete */}
+            <ConfirmModal
+                isOpen={!!pendingDeleteId}
+                message="למחוק את ההמלצה? הפעולה לא ניתנת לביטול."
+                confirmLabel="מחיקה"
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => setPendingDeleteId(null)}
+            />
         </section>
     );
 }

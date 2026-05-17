@@ -191,11 +191,11 @@ serve(async (req: Request) => {
                     if (!fn) continue
                     const { subject, html } = fn(trainer)
                     await resend.emails.send({
-                        from: 'Doggo CRM <notifications@resend.dev>',
+                        from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                         // CTO 2026-05-05 PM (CPMO content review §Section 3 #3 routing):
                         // welcome + check_in templates explicitly invite replies
                         // ("השב/י למייל הזה", "אני קורא/ת כל תגובה ומגיב/ה אישית").
-                        // Without reply_to, replies route to notifications@resend.dev
+                        // Without reply_to, replies route to the verified sender
                         // (unmonitored), making the promise false-on-delivery.
                         // Default to the studio-brand inbox per
                         // geffen-studio:tools/studio-accounts.md L47. Long-term:

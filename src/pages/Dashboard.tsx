@@ -83,12 +83,16 @@ export function Dashboard() {
                         </div>
                         <span className="text-xs font-medium text-text-primary">תוכנית חדשה</span>
                     </Link>
-                    <Link to="/calendar" className="flex flex-col items-center justify-center p-4 bg-primary text-white rounded-xl shadow-card hover:bg-primary-dark transition-all">
+                    {/* PP-04: open BookSessionModal directly — not navigate to /calendar */}
+                    <button
+                        onClick={() => setIsBookOpen(true)}
+                        className="flex flex-col items-center justify-center p-4 bg-primary text-white rounded-xl shadow-card hover:bg-primary/90 transition-all"
+                    >
                         <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-2">
                             <Plus size={24} />
                         </div>
                         <span className="text-xs font-medium">תיעוד מפגש</span>
-                    </Link>
+                    </button>
                 </div>
 
                 {/* INCOMING LEADS (only renders if there are new leads) */}
@@ -130,9 +134,12 @@ export function Dashboard() {
                                         title="אין מפגשים מתוכננים להיום"
                                         description="היומן פנוי להיום. אפשר ליהנות מהחופש או לקבוע מפגש חדש."
                                         action={
-                                            <Link to="/calendar" className="btn btn-sm btn-outline mt-2">
+                                            <button
+                                                onClick={() => setIsBookOpen(true)}
+                                                className="btn btn-sm btn-outline mt-2"
+                                            >
                                                 קביעת מפגש חדש
-                                            </Link>
+                                            </button>
                                         }
                                     />
                                 )}

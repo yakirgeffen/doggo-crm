@@ -14,10 +14,12 @@ import { applyTemplate } from '../lib/whatsapp-template';
 import { useIntro } from '../hooks/useIntro';
 import { IntroModal } from '../components/IntroModal';
 import { PAGE_INTROS } from '../lib/intro-content';
+import { useToast } from '../context/toast-context';
 
 export function ClientsPage() {
     const navigate = useNavigate();
     const { settings } = useSettings();
+    const { showToast } = useToast();
     const [clients, setClients] = useState<Client[]>([]);
     const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('active');
     const [search, setSearch] = useState('');
@@ -35,12 +37,14 @@ export function ClientsPage() {
             .order('full_name');
 
         if (error) {
+            // PP-ERR-01: show friendly Hebrew error toast instead of silent console.error
             console.error('Error fetching clients:', error);
+            showToast('שגיאה בטעינת רשימת הלקוחות — אנא רעננו את הדף.', 'error');
         } else {
             setClients(data || []);
         }
         setLoading(false);
-    }, []);
+    }, [showToast]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch, setState resolves after I/O
@@ -89,11 +93,14 @@ export function ClientsPage() {
                     : !client.is_active;
 
         const searchLower = search.toLowerCase();
+        // PP-05: fixed boolean expression — removed erroneous `|| ''` that coerced to falsy string
+        // when email is undefined/null. All four conditions are now explicitly boolean.
         const matchesSearch =
             client.full_name.toLowerCase().includes(searchLower) ||
-            client.primary_dog_name?.toLowerCase().includes(searchLower) ||
-            client.primary_dog_breed?.toLowerCase().includes(searchLower) ||
-            client.email?.toLowerCase().includes(searchLower) || '';
+            (client.primary_dog_name?.toLowerCase().includes(searchLower) ?? false) ||
+            (client.primary_dog_breed?.toLowerCase().includes(searchLower) ?? false) ||
+            (client.email?.toLowerCase().includes(searchLower) ?? false) ||
+            (client.phone?.replace(/\D/g, '').includes(searchLower.replace(/\D/g, '')) ?? false);
 
         return matchesStatus && matchesSearch;
     }).sort((a, b) => {
@@ -221,7 +228,7 @@ export function ClientsPage() {
                     <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                     <input
                         type="text"
-                        placeholder="חיפוש לפי שם, כלב או אימייל..."
+                        placeholder="חיפוש לפי שם, כלב, אימייל או טלפון..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="input-field w-full pe-12 ps-4"

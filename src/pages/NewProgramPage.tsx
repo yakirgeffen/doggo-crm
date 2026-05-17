@@ -65,14 +65,24 @@ export function NewProgramPage() {
         const { data, error } = await supabase.from('programs').insert([payload]).select();
 
         if (error) {
-            showToast('שגיאה ביצירת תוכנית: ' + error.message, 'error');
+            // PP-33: show friendly Hebrew message; log technical details to console only
+            console.error('Error creating program:', error);
+            showToast('שגיאה ביצירת התוכנית — אנא נסו שוב.', 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {
                 await logActivity('program', data[0].id, 'created', `תוכנית חדשה: "${formData.program_name}"`);
                 await logActivity('client', formData.client_id, 'updated', `התחלת תוכנית: ${formData.program_name}`);
+                // PP-07: navigate back to the client detail page (with the new program selected),
+                // not to the orphaned /programs list
+                if (formData.client_id) {
+                    navigate(`/clients/${formData.client_id}?program=${data[0].id}`);
+                } else {
+                    navigate('/programs');
+                }
+            } else {
+                navigate('/programs');
             }
-            navigate('/programs');
         }
     };
 

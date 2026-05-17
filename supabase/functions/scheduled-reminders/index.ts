@@ -159,7 +159,7 @@ serve(async (req: Request) => {
                 const html = `<div dir="rtl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px;background:#f7f4ed;max-width:560px;margin:0 auto;"><div style="background:white;padding:24px;border-radius:16px;box-shadow:0 2px 6px rgba(0,0,0,0.05);"><div style="font-size:32px;margin-bottom:8px;">⏰</div><h2 style="color:#4A6741;margin:0 0 16px;">תזכורת לפגישה</h2><p style="color:#444;line-height:1.7;">שלום ${escapeHtml(client.full_name)},<br/><br/>רק תזכורת קצרה — מחר יש לנו פגישה.</p><div style="background:#f3f4f0;padding:16px;border-radius:12px;margin:20px 0;"><p style="margin:0 0 6px;color:#666;font-size:13px;">תאריך</p><p style="margin:0;font-weight:bold;font-size:16px;">${escapeHtml(dateLabel)}</p></div><p style="color:#444;line-height:1.7;">נתראה מחר!</p><p style="color:#444;line-height:1.7;margin-top:24px;"><strong>${escapeHtml(businessName)}</strong></p></div></div>`
 
                 await resend.emails.send({
-                    from: 'Doggo CRM <notifications@resend.dev>',
+                    from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                     replyTo: trainerEmail || undefined,
                     to: client.email,
                     subject,

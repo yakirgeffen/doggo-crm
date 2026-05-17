@@ -5,6 +5,14 @@ import { useSumit } from '../../hooks/useSumit';
 import { useSettings } from '../../hooks/useSettings';
 import { useVoiceIntake } from '../../hooks/useVoiceIntake';
 import { useToast } from '../../context/toast-context';
+import { ConfirmModal } from '../ConfirmModal';
+
+// PP-01: ConfirmModal state type
+type ConfirmState = {
+    message: string;
+    confirmLabel?: string;
+    onConfirm: () => void;
+};
 
 export function IntegrationsSettings() {
     const { isConnected, vaultData, saveKeys, testConnection, loading: integrationsLoading } = useIntegrations();
@@ -25,6 +33,8 @@ export function IntegrationsSettings() {
     const [tokenGenerating, setTokenGenerating] = useState(false);
     const [tokenCopied, setTokenCopied] = useState(false);
     const [voicePhoneInput, setVoicePhoneInput] = useState('');
+    // PP-01: replace window.confirm() with ConfirmModal
+    const [confirmState, setConfirmState] = useState<ConfirmState | null>(null);
 
     useEffect(() => {
         if (settings?.webhook_url) setWebhookUrl(settings.webhook_url);
@@ -50,16 +60,21 @@ export function IntegrationsSettings() {
         }
     };
 
-    const handleDeleteVoiceIntake = async () => {
-        const ok = window.confirm('להסיר את הרישום? לא תוכלו לשלוח קבלות קוליות עד שתרשמו מחדש.');
-        if (!ok) return;
-        const result = await voiceIntake.deleteRegistration();
-        if (result.success) {
-            setVoicePhoneInput('');
-            showToast('הרישום הוסר', 'success');
-        } else {
-            showToast(result.error || 'שגיאה במחיקה', 'error');
-        }
+    const handleDeleteVoiceIntake = () => {
+        // PP-01: was window.confirm — now uses ConfirmModal
+        setConfirmState({
+            message: 'להסיר את הרישום? לא תוכלו לשלוח קבלות קוליות עד שתרשמו מחדש.',
+            confirmLabel: 'הסרה',
+            onConfirm: async () => {
+                const result = await voiceIntake.deleteRegistration();
+                if (result.success) {
+                    setVoicePhoneInput('');
+                    showToast('הרישום הוסר', 'success');
+                } else {
+                    showToast(result.error || 'שגיאה במחיקה', 'error');
+                }
+            },
+        });
     };
 
     const handleCopyBotNumber = async () => {
@@ -81,11 +96,20 @@ export function IntegrationsSettings() {
         return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
     };
 
-    const handleGenerateToken = async () => {
+    const handleGenerateToken = () => {
         if (hasActiveToken) {
-            const ok = window.confirm('יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שיעודכנו. להמשיך?');
-            if (!ok) return;
+            // PP-01: was window.confirm — now uses ConfirmModal
+            setConfirmState({
+                message: 'יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שיעודכנו. להמשיך?',
+                confirmLabel: 'יצירת טוקן חדש',
+                onConfirm: () => doGenerateToken(),
+            });
+        } else {
+            doGenerateToken();
         }
+    };
+
+    const doGenerateToken = async () => {
         setTokenGenerating(true);
         setTokenCopied(false);
         try {
@@ -117,17 +141,22 @@ export function IntegrationsSettings() {
         }
     };
 
-    const handleRevokeToken = async () => {
-        const ok = window.confirm('ביטול הטוקן יפסיק מיד את כל האינטגרציות שמשתמשות בו. להמשיך?');
-        if (!ok) return;
-        try {
-            await saveSettings({ api_token_hash: null });
-            updateLocalSettings({ api_token_hash: null });
-            setGeneratedToken(null);
-            showToast('הטוקן בוטל', 'success');
-        } catch {
-            showToast('שגיאה בביטול הטוקן', 'error');
-        }
+    const handleRevokeToken = () => {
+        // PP-01: was window.confirm — now uses ConfirmModal
+        setConfirmState({
+            message: 'ביטול הטוקן יפסיק מיד את כל האינטגרציות שמשתמשות בו. להמשיך?',
+            confirmLabel: 'ביטול טוקן',
+            onConfirm: async () => {
+                try {
+                    await saveSettings({ api_token_hash: null });
+                    updateLocalSettings({ api_token_hash: null });
+                    setGeneratedToken(null);
+                    showToast('הטוקן בוטל', 'success');
+                } catch {
+                    showToast('שגיאה בביטול הטוקן', 'error');
+                }
+            },
+        });
     };
 
     const handleCopyEndpoint = async () => {
@@ -234,6 +263,15 @@ export function IntegrationsSettings() {
 
     return (
         <div className="flat-card p-6 md:p-8 animate-fade-in space-y-8">
+            {/* PP-01: single ConfirmModal instance for all confirm-gated actions in this component */}
+            <ConfirmModal
+                isOpen={!!confirmState}
+                message={confirmState?.message ?? ''}
+                confirmLabel={confirmState?.confirmLabel}
+                onConfirm={() => { const fn = confirmState?.onConfirm; setConfirmState(null); fn?.(); }}
+                onCancel={() => setConfirmState(null)}
+            />
+
             <div>
                 <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
                     <Globe className="text-primary" />

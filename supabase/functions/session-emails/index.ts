@@ -163,7 +163,7 @@ serve(async (req: Request) => {
             `
 
             await resend.emails.send({
-                from: 'Doggo CRM <notifications@resend.dev>', // Verified-domain pending P1-3
+                from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                 replyTo: trainerEmail || undefined,
                 to: client.email,
                 subject,
@@ -199,7 +199,7 @@ serve(async (req: Request) => {
             `
 
             await resend.emails.send({
-                from: 'Doggo CRM <notifications@resend.dev>',
+                from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                 replyTo: trainerEmail || undefined,
                 to: client.email,
                 subject,
@@ -241,7 +241,7 @@ serve(async (req: Request) => {
             `
 
             await resend.emails.send({
-                from: 'Doggo CRM <notifications@resend.dev>',
+                from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                 replyTo: trainerEmail || undefined,
                 to: client.email,
                 subject,

@@ -95,7 +95,7 @@ serve(async (req: Request) => {
 
                 if (!userError && trainer?.user?.email) {
                     await resend.emails.send({
-                        from: 'Doggo CRM <notifications@resend.dev>', // Should be a verified domain in prod
+                        from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                         to: trainer.user.email,
                         subject: `🐶 ליד חדש: ${full_name}`,
                         html: `
