@@ -9,7 +9,7 @@ export function PrivacyPolicyPage() {
     }, []);
 
     const lastUpdated = '2 במאי 2026';
-    const contactEmail = 'yakirgeffen@gmail.com';
+    const contactEmail = 'hello@doggocrm.app';
     const appName = 'Doggo CRM';
     const companyName = 'Doggo CRM';
     const websiteUrl = 'https://doggocrm.app';
