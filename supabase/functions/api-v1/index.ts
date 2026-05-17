@@ -32,10 +32,29 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 //   Body: { "action": "create_client", "payload": { ... } }
 // ============================================================
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-doggo-token',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+// P1-2 (2026-05-17): restrict CORS to doggocrm.app + Vercel preview URLs.
+// api-v1 is auth-gated (requires X-Doggo-Token). Wildcard CORS on an
+// auth-gated function is unnecessary attack surface.
+// Note: Make/Zapier are server-to-server callers — they send no Origin
+// header, so the fallback to doggocrm.app in the response is harmless
+// (non-browser callers ignore CORS headers).
+function getAllowedOrigin(req: Request): string {
+    const origin = req.headers.get('Origin') || ''
+    if (
+        origin === 'https://doggocrm.app' ||
+        origin.endsWith('.vercel.app')
+    ) {
+        return origin
+    }
+    return 'https://doggocrm.app'
+}
+
+function getCorsHeaders(req: Request) {
+    return {
+        'Access-Control-Allow-Origin': getAllowedOrigin(req),
+        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-doggo-token',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    }
 }
 
 async function sha256Hex(input: string): Promise<string> {
@@ -47,8 +66,11 @@ async function sha256Hex(input: string): Promise<string> {
 // @ts-expect-error Deno std import
 serve(async (req: Request) => {
     if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
+        return new Response('ok', { headers: getCorsHeaders(req) })
     }
+
+    const corsHeaders = getCorsHeaders(req)
+
     if (req.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'POST only' }), { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
@@ -272,6 +294,6 @@ serve(async (req: Request) => {
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
-        return new Response(JSON.stringify({ error: message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        return new Response(JSON.stringify({ error: message }), { status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } })
     }
 })

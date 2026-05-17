@@ -38,12 +38,13 @@ import { Resend } from "https://esm.sh/resend@3.2.0"
 // trainers coordinate the time-of-day out-of-band (WhatsApp etc.)
 // until a `start_time` column is added system-wide (tracked in QA
 // follow-up — sessions store time-of-day inconsistently elsewhere).
+//
+// P1-2 (2026-05-17): CORS headers removed. This function is
+// invoked exclusively by pg_cron (server-to-server). No browser
+// ever calls it. CORS headers on a cron function are dead weight
+// and signal to auditors that the function may be browser-facing
+// when it is not. Removing them is the correct shape.
 // ============================================================
-
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
 
 const escapeHtml = (s: unknown) => {
     if (s === null || s === undefined) return ''
@@ -83,9 +84,7 @@ interface SessionRow {
 
 // @ts-expect-error Deno std import
 serve(async (req: Request) => {
-    if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
-    }
+    // No OPTIONS/CORS handling — this function is cron-only, never browser-called.
 
     try {
         const supabaseAdmin = createClient(
@@ -122,7 +121,7 @@ serve(async (req: Request) => {
         const resendKey = Deno.env.get('RESEND_API_KEY')
         if (!resendKey) {
             return new Response(JSON.stringify({ success: false, error: 'Resend not configured', candidates: candidates.length, due: due.length }), {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' },
                 status: 500,
             })
         }
@@ -189,12 +188,12 @@ serve(async (req: Request) => {
             skipped: skippedCount,
             errors,
         }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
         return new Response(JSON.stringify({ success: false, error: message }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
             status: 500,
         })
     }

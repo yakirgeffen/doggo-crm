@@ -2,7 +2,19 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 import { Resend } from "https://esm.sh/resend@3.2.0"
 
+// P1-1 (2026-05-17): hard-fail at module init if Turnstile secret is absent.
+// Silent-skip was the previous behaviour (`if (turnstileSecret) { ... }`),
+// which meant the test-mode frontend key let every submission through when
+// the env var was missing in production. A missing secret is a deployment
+// error, not a runtime condition to silently tolerate.
+const TURNSTILE_SECRET = Deno.env.get('TURNSTILE_SECRET_KEY')
+if (!TURNSTILE_SECRET) {
+    throw new Error('Turnstile secret not configured — set TURNSTILE_SECRET_KEY in Supabase secrets before deploying')
+}
+
 const corsHeaders = {
+    // process-intake is legitimately public (called from any trainer's
+    // embedded intake page on arbitrary domains). Wildcard is correct here.
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
@@ -25,8 +37,14 @@ serve(async (req: Request) => {
     }
 
     try {
+        // P0-2 (2026-05-17): `trainer_id` is no longer accepted from the
+        // request body. A caller supplying an arbitrary UUID as `trainer_id`
+        // previously caused the lead to land in that UUID's tenant, enabling
+        // cross-tenant lead theft. The fix: accept `trainerHandle` (the URL
+        // slug), resolve the real user_id server-side via service-role query,
+        // and use only the server-resolved id for the insert.
         const {
-            trainer_id,
+            trainerHandle,
             full_name,
             phone,
             dog_name,
@@ -38,35 +56,62 @@ serve(async (req: Request) => {
             lead_source
         } = await req.json()
 
-        // 1. Verify Captcha
-        const turnstileSecret = Deno.env.get('TURNSTILE_SECRET_KEY')
-        if (turnstileSecret) {
-            const ip = req.headers.get('cf-connecting-ip')
-            const formData = new FormData()
-            formData.append('secret', turnstileSecret)
-            formData.append('response', captcha_token)
-            formData.append('remoteip', ip || '')
-
-            const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-                method: 'POST',
-                body: formData,
-            })
-            const outcome = await result.json()
-            if (!outcome.success) {
-                throw new Error('Captcha validation failed')
-            }
-        }
-
-        // 2. Insert into DB via Service Role (Bypassing RLS)
-        const supabaseClient = createClient(
+        // P0-2: resolve trainerHandle → user_id server-side.
+        // Use service-role so the query is not subject to RLS, and query
+        // user_settings directly (the anon-safe RPC exists for the browser
+        // but we want the raw user_id without relying on the RPC's column
+        // filter for this server-side path).
+        const supabaseAdmin = createClient(
             Deno.env.get('SUPABASE_URL') ?? '',
             Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
         )
 
-        const { error: insertError } = await supabaseClient
+        if (!trainerHandle || typeof trainerHandle !== 'string') {
+            // Return 404 — no information leak about whether handle exists.
+            return new Response(JSON.stringify({ error: 'Trainer not found' }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                status: 404,
+            })
+        }
+
+        const { data: trainerRow, error: trainerLookupError } = await supabaseAdmin
+            .from('user_settings')
+            .select('user_id')
+            .eq('trainer_handle', trainerHandle.trim().toLowerCase())
+            .maybeSingle()
+
+        if (trainerLookupError || !trainerRow) {
+            // Return 404 regardless of the error shape — no leak about slug existence.
+            return new Response(JSON.stringify({ error: 'Trainer not found' }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                status: 404,
+            })
+        }
+
+        const resolvedTrainerId = trainerRow.user_id
+
+        // 1. Verify Captcha — hard-required (P1-1: secret is guaranteed non-null at init)
+        const ip = req.headers.get('cf-connecting-ip')
+        const formData = new FormData()
+        formData.append('secret', TURNSTILE_SECRET)
+        formData.append('response', captcha_token)
+        formData.append('remoteip', ip || '')
+
+        const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            body: formData,
+        })
+        const outcome = await result.json()
+        if (!outcome.success) {
+            throw new Error('Captcha validation failed')
+        }
+
+        // 2. Insert into DB via Service Role (Bypassing RLS)
+        // trainer_id is the server-resolved value — never the caller-supplied one.
+        const { error: insertError } = await supabaseAdmin
             .from('intake_submissions')
             .insert({
-                trainer_id,
+                trainer_id: resolvedTrainerId,
                 full_name,
                 phone,
                 dog_name,
@@ -84,14 +129,29 @@ serve(async (req: Request) => {
             throw new Error('Failed to save submission')
         }
 
+        // P0-2 audit log: every successful intake submission is recorded in
+        // activity_logs so cross-tenant probing attempts are detectable.
+        await supabaseAdmin
+            .from('activity_logs')
+            .insert({
+                entity_type: 'intake_submission',
+                entity_id: resolvedTrainerId,
+                action: 'created',
+                details: `intake received for trainer_handle=${trainerHandle}`,
+                user_id: resolvedTrainerId,
+            })
+            .then(({ error }) => {
+                if (error) console.error('Audit log insert failed (non-fatal):', error)
+            })
+
         // 3. Send Email Notification
         const resendKey = Deno.env.get('RESEND_API_KEY')
         if (resendKey) {
             try {
                 const resend = new Resend(resendKey)
 
-                // Fetch trainer email
-                const { data: trainer, error: userError } = await supabaseClient.auth.admin.getUserById(trainer_id)
+                // Fetch trainer email using the server-resolved trainer_id
+                const { data: trainer, error: userError } = await supabaseAdmin.auth.admin.getUserById(resolvedTrainerId)
 
                 if (!userError && trainer?.user?.email) {
                     await resend.emails.send({

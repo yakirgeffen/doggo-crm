@@ -1,16 +1,38 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// P1-2 (2026-05-17): restrict CORS to doggocrm.app + Vercel preview URLs.
+// morning-api is auth-gated (requires valid Supabase JWT). Wildcard CORS on
+// an auth-gated function adds unnecessary attack surface — any origin could
+// attempt cross-site requests using a logged-in trainer's session cookie.
+// Vercel preview pattern (.vercel.app) is included for staging/QA access.
+function getAllowedOrigin(req: Request): string {
+    const origin = req.headers.get('Origin') || ''
+    if (
+        origin === 'https://doggocrm.app' ||
+        origin.endsWith('.vercel.app')
+    ) {
+        return origin
+    }
+    // Fall back to production origin for non-browser callers (no Origin header)
+    // and for disallowed origins (effectively blocks the preflight).
+    return 'https://doggocrm.app'
+}
+
+function getCorsHeaders(req: Request) {
+    return {
+        'Access-Control-Allow-Origin': getAllowedOrigin(req),
+        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    }
 }
 
 serve(async (req) => {
     // Handle CORS
     if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
+        return new Response('ok', { headers: getCorsHeaders(req) })
     }
+
+    const corsHeaders = getCorsHeaders(req)
 
     try {
         const supabaseClient = createClient(
@@ -131,7 +153,7 @@ serve(async (req) => {
 
     } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' },
             status: 400,
         })
     }

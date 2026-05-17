@@ -35,6 +35,10 @@ export function PublicIntakePage() {
     const serviceId = searchParams.get('service');
     const { showToast } = useToast();
 
+    // trainerId is resolved client-side solely to confirm the trainer exists
+    // before showing/submitting the form. It is NOT sent to process-intake —
+    // the edge function resolves the real user_id server-side from trainerHandle
+    // (P0-2 cross-tenant fix 2026-05-17).
     const [trainerId, setTrainerId] = useState<string | null>(null);
     const [trainerNotFound, setTrainerNotFound] = useState(false);
     const [step, setStep] = useState(1);
@@ -128,7 +132,12 @@ export function PublicIntakePage() {
         try {
             const { error } = await supabase.functions.invoke('process-intake', {
                 body: {
-                    trainer_id: trainerId,
+                    // P0-2 (2026-05-17): trainer_id removed from request body.
+                    // The edge function resolves user_id server-side from trainerHandle.
+                    // Sending a client-controlled trainer_id was the cross-tenant
+                    // lead-theft vector; trainerHandle is URL-derived and validated
+                    // server-side against user_settings.
+                    trainerHandle: trainerHandle,
                     full_name: fullName.trim(),
                     phone: phone.trim() || null,
                     dog_name: dogName.trim() || null,
