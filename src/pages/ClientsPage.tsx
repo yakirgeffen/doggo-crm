@@ -39,7 +39,8 @@ export function ClientsPage() {
         if (error) {
             // PP-ERR-01: show friendly Hebrew error toast instead of silent console.error
             console.error('Error fetching clients:', error);
-            showToast('שגיאה בטעינת רשימת הלקוחות — אנא רעננו את הדף.', 'error');
+            // no em dash per anti-bot rules
+            showToast('שגיאה בטעינת רשימת הלקוחות. אנא רעננו את הדף.', 'error');
         } else {
             setClients(data || []);
         }
@@ -329,7 +330,7 @@ export function ClientsPage() {
                                         const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
                                         const firstName = client.full_name.split(' ')[0];
                                         const dogName = client.primary_dog_name || '';
-                                        // Match ClientHero fallback shape — drop the dog clause when missing.
+                                        // Match ClientHero fallback shape - drop the dog clause when missing.
                                         const greetingFallback = dogName
                                             ? `היי ${firstName} 🐾 מה שלומכם ושלום ${dogName}?`
                                             : `היי ${firstName} 🐾`;

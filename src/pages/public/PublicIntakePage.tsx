@@ -4,6 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, Dog, User, BookOpen
 import { Turnstile } from '@marsidev/react-turnstile';
 import { supabase } from '../../lib/supabase';
 import { useToast } from '../../context/toast-context';
+import { trackEvent } from '../../lib/analytics';
 
 const TOTAL_STEPS = 3;
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key fallback
@@ -83,6 +84,26 @@ export function PublicIntakePage() {
         resolveTrainer();
     }, [resolveTrainer]);
 
+    // Analytics: intake_form_view fires once when the trainer is resolved.
+    // Authored 2026-05-17 by Neta (Data IC) — taxonomy entry: Acquisition §intake_form_view.
+    useEffect(() => {
+        if (!trainerId) return;
+        void trackEvent('intake_form_view', {
+            trainer_handle: trainerHandle || null,
+            service_id: serviceId || null,
+        });
+    }, [trainerId, trainerHandle, serviceId]);
+
+    // Track first form interaction once per mount (intake_form_start).
+    const [hasStarted, setHasStarted] = useState(false);
+    useEffect(() => {
+        if (hasStarted) return;
+        if (fullName.length > 0 || phone.length > 0 || dogName.length > 0) {
+            setHasStarted(true);
+            void trackEvent('intake_form_start', { trainer_handle: trainerHandle || null });
+        }
+    }, [fullName, phone, dogName, hasStarted, trainerHandle]);
+
     const handleSubmit = async () => {
         if (!trainerId) return;
 
@@ -122,6 +143,16 @@ export function PublicIntakePage() {
 
             if (error) throw error;
             setSubmitted(true);
+
+            // Analytics: intake_form_complete — high-priority conversion event.
+            // Fires to GA4 + Meta Pixel (Lead) + Meta CAPI + PostHog.
+            void trackEvent('intake_form_complete', {
+                trainer_handle: trainerHandle || null,
+                service_id: serviceId || null,
+                lead_source: buildLeadSource(searchParams),
+                user_email: null, // public intake form does not collect email
+                user_phone: phone.trim() || null,
+            });
 
         } catch (err) {
             console.error('Intake submission error:', err);
@@ -163,9 +194,9 @@ export function PublicIntakePage() {
 
                     <div className="border-t border-border pt-6 space-y-3">
                         <p className="text-xs font-medium text-text-muted text-center mb-3">בינתיים, כמה דברים שעשויים לעניין:</p>
+                        {/* PP-27: removed target="_blank" — /blog and /calculator are internal SPA routes */}
                         <Link
                             to="/blog"
-                            target="_blank"
                             className="flat-card p-3 flex items-center gap-3 hover:border-primary transition-colors group"
                         >
                             <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
@@ -173,13 +204,12 @@ export function PublicIntakePage() {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">טיפים לאילוף הכלב</p>
-                                <p className="text-xs text-text-muted truncate">בלוג Doggo CRM — 10 פוסטים</p>
+                                <p className="text-xs text-text-muted truncate">בלוג Doggo CRM, 10 פוסטים</p>
                             </div>
                             <ChevronLeft size={16} className="text-text-muted shrink-0" />
                         </Link>
                         <Link
                             to="/calculator"
-                            target="_blank"
                             className="flat-card p-3 flex items-center gap-3 hover:border-primary transition-colors group"
                         >
                             <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
@@ -338,12 +368,22 @@ export function PublicIntakePage() {
                     {/* Step 3: Confirmation */}
                     {step === 3 && (
                         <div className="animate-fade-in space-y-6">
-                            <div className="text-center mb-8">
+                            <div className="text-center mb-6">
                                 <div className="w-14 h-14 bg-success/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                                     <CheckCircle size={24} className="text-success" />
                                 </div>
                                 <h2 className="text-xl font-bold text-text-primary">אישור פרטים</h2>
                                 <p className="text-sm text-text-muted mt-1">בדקו שהכל נכון ושלחו</p>
+                            </div>
+
+                            {/* PP-18: edit-back affordance so dog owners can fix typos without blind back-navigation */}
+                            <div className="flex justify-end mb-2">
+                                <button
+                                    onClick={() => setStep(1)}
+                                    className="text-xs text-primary hover:underline"
+                                >
+                                    עריכת פרטים
+                                </button>
                             </div>
 
                             <div className="flat-card p-5 space-y-4 divide-y divide-border-light">
@@ -410,7 +450,7 @@ export function PublicIntakePage() {
                                     <p className="text-xs text-error">שגיאה בטעינת אימות הזהות. רעננו את הדף ונסו שוב.</p>
                                 )}
                                 {captchaStatus === 'expired' && (
-                                    <p className="text-xs text-warning">האימות פג תוקף — אנא אשרו שוב מעלה.</p>
+                                    <p className="text-xs text-warning">האימות פג תוקף. אנא אשרו שוב.</p>
                                 )}
                             </div>
                         </div>
@@ -452,9 +492,9 @@ export function PublicIntakePage() {
                                         ? 'שולח טופס'
                                         : !captchaToken
                                             ? captchaStatus === 'error'
-                                                ? 'שגיאה באימות זהות — רעננו את הדף'
+                                                ? 'שגיאה באימות זהות. רעננו את הדף'
                                                 : captchaStatus === 'expired'
-                                                    ? 'אימות פג תוקף — אשרו שוב'
+                                                    ? 'אימות פג תוקף. אשרו שוב'
                                                     : 'ממתין לאימות זהות...'
                                             : 'שלח טופס'
                                 }

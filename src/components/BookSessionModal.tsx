@@ -97,7 +97,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         if (isOpen) fetchClients();
     }, [isOpen, fetchClients]);
 
-    // Esc-key close — keyboard parity with backdrop click.
+    // Esc-key close - keyboard parity with backdrop click.
     useEffect(() => {
         if (!isOpen) return;
         const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -120,9 +120,9 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         }]).select('id');
 
         if (error) {
-            // PP-33: friendly Hebrew error, technical details to console only
+            // PP-33: friendly Hebrew error, technical details to console only. No em dash per anti-bot rules.
             console.error('Error booking session:', error);
-            showToast('שגיאה בקביעת המפגש — אנא נסו שוב.', 'error');
+            showToast('שגיאה בקביעת המפגש. אנא נסו שוב.', 'error');
         } else {
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `מפגש חדש נקבע (${date} ${time})`);
@@ -154,7 +154,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                 }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
             }
             onBooked();
-            // Show WhatsApp prompt instead of immediate close — trainers in IL
+            // Show WhatsApp prompt instead of immediate close - trainers in IL
             // often want to send a WhatsApp confirmation in addition to the email.
             if (selectedClient) {
                 setBookedSuccess({ client: selectedClient, sessionDate });
@@ -303,7 +303,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                 <div className="h-3 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
                             </div>
                         ) : clients.length === 0 ? (
-                            /* PP-02: helpful empty state — trainer sees why no clients appear */
+                            /* PP-02: helpful empty state - trainer sees why no clients appear */
                             <div className="input-field py-4 text-center text-sm text-text-muted bg-surface-warm">
                                 <p className="font-medium text-text-secondary mb-1">אין לקוחות עם תוכנית פעילה</p>
                                 <p className="text-xs">יש ליצור תוכנית ללקוח לפני קביעת מפגש.</p>

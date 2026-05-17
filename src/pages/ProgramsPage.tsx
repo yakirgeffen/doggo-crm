@@ -130,9 +130,13 @@ export function ProgramsPage() {
                                 <h3 className="text-xl font-bold text-text-primary mb-1 group-hover:text-primary transition-colors">
                                     {program.program_name}
                                 </h3>
-                                <div className="text-sm font-medium text-text-muted mb-6 flex items-center gap-2">
+                                {/* PP-06: client name promoted to text-primary so trainers can quickly scan which program belongs to which client */}
+                                <div className="text-sm font-semibold text-text-primary mb-6 flex items-center gap-2">
                                     <span className="text-base">🐕</span>
-                                    {program.clients?.full_name}
+                                    <span>{program.clients?.full_name}</span>
+                                    {program.clients?.primary_dog_name && (
+                                        <span className="text-text-muted font-normal">({program.clients.primary_dog_name})</span>
+                                    )}
                                 </div>
                             </div>
 

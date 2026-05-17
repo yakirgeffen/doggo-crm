@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Inbox, Phone, Dog, Clock, MessageCircle, AlertCircle } from 'lucide-react';
+import { Inbox, Phone, Dog, Clock, MessageCircle, AlertCircle, UserPlus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/auth-context';
 import { useToast } from '../context/toast-context';
 import { PageHeader } from '../components/PageHeader';
 import { EmptyState } from '../components/EmptyState';
 import { SkeletonRow } from '../components/Skeleton';
+import { useNavigate } from 'react-router-dom';
 import type { IntakeSubmission } from '../types';
 
 function timeAgo(dateStr: string): string {
@@ -31,6 +32,7 @@ const STATUS_FILTERS: { value: 'all' | 'new' | 'approved' | 'archived'; label: s
 export function LeadsPage() {
     const { user } = useAuth();
     const { showToast } = useToast();
+    const navigate = useNavigate();
     const [leads, setLeads] = useState<IntakeSubmission[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'new' | 'approved' | 'archived'>('new');
@@ -67,6 +69,18 @@ export function LeadsPage() {
             showToast('שגיאה בעדכון', 'error');
         }
         setActioning(null);
+    };
+
+    // PP-12: Navigate to NewClientPage with lead data pre-filled via query params
+    const convertToClient = (lead: IntakeSubmission) => {
+        const params = new URLSearchParams();
+        params.set('name', lead.full_name);
+        if (lead.phone) params.set('phone', lead.phone);
+        if (lead.dog_name) params.set('dog_name', lead.dog_name);
+        if (lead.dog_breed) params.set('dog_breed', lead.dog_breed);
+        if (lead.notes) params.set('notes', lead.notes);
+        if (lead.lead_source) params.set('lead_source', lead.lead_source);
+        navigate(`/clients/new?${params.toString()}`);
     };
 
     return (
@@ -159,6 +173,18 @@ export function LeadsPage() {
                                             <MessageCircle size={12} />
                                             WhatsApp
                                         </a>
+                                    )}
+                                    {/* PP-12: "צור לקוח" CTA on approved leads — pre-fills NewClientPage */}
+                                    {lead.status === 'approved' && (
+                                        <button
+                                            onClick={() => convertToClient(lead)}
+                                            disabled={actioning === lead.id}
+                                            className="text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 px-2.5 py-1 rounded-lg flex items-center gap-1"
+                                            title="יצירת לקוח מהפנייה"
+                                        >
+                                            <UserPlus size={12} />
+                                            צור לקוח
+                                        </button>
                                     )}
                                     {lead.status !== 'archived' && (
                                         <button

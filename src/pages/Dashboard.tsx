@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Calendar, AlertCircle, DollarSign, CheckCircle, Plus, ChevronRight, MessageCircle, PartyPopper } from 'lucide-react';
+import { Users, Calendar, AlertCircle, DollarSign, CheckCircle, Plus, ChevronRight, MessageCircle, PartyPopper, FileText } from 'lucide-react';
 import { SkeletonKPIGrid } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
 import { IncomingLeads } from '../components/dashboard/IncomingLeads';
@@ -173,6 +173,18 @@ export function Dashboard() {
                                                 </div>
                                             </Link>
                                             <div className="flex items-center gap-2 shrink-0">
+                                                {/* PP-11: quick "תיעוד" link — goes directly to log-session flow */}
+                                                {!past && (
+                                                    <Link
+                                                        to={`/programs/${session.programs.id}/sessions/new`}
+                                                        className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
+                                                        title="תיעוד מפגש"
+                                                        aria-label={`תיעוד מפגש עם ${session.programs.clients.full_name}`}
+                                                        onClick={e => e.stopPropagation()}
+                                                    >
+                                                        <FileText size={14} />
+                                                    </Link>
+                                                )}
                                                 {phone && !past && (() => {
                                                     const phoneDigits = phone.replace(/\D/g, '');
                                                     const intl = phoneDigits.startsWith('0') ? '972' + phoneDigits.slice(1) : phoneDigits;
@@ -301,11 +313,12 @@ export function Dashboard() {
             </div>
 
             {/* Mobile FAB — quick-book session from anywhere on Dashboard */}
+            {/* PP-19: aria-label aligned to "תיעוד מפגש" to match the desktop quick-action label */}
             <button
                 onClick={() => setIsBookOpen(true)}
                 className="md:hidden fixed bottom-24 end-5 z-40 w-14 h-14 rounded-2xl bg-primary text-white shadow-card flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
-                title="קבע מפגש חדש"
-                aria-label="קבע מפגש חדש"
+                title="תיעוד מפגש"
+                aria-label="תיעוד מפגש"
             >
                 <Plus size={24} />
             </button>

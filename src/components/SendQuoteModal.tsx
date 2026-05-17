@@ -49,10 +49,11 @@ export function SendQuoteModal({ isOpen, onClose, onSent, clientId, clientName, 
     if (!isOpen) return null;
 
     if (sentSuccess) {
+        /* anti-bot: em dash removed from WhatsApp message template */
         const whatsappMessage = encodeURIComponent(
             `שלום ${clientName}!\n` +
             `הרגע שלחתי לך במייל הצעת מחיר${sentSuccess.documentNumber ? ` (#${sentSuccess.documentNumber})` : ''} בסך ₪${sentSuccess.total.toLocaleString()}.\n` +
-            `אם יש שאלות — אני כאן 🐾`
+            `יש שאלות? אני כאן 🐾`
         );
         const phoneDigits = (clientPhone || '').replace(/[^\d]/g, '');
         const waUrl = phoneDigits

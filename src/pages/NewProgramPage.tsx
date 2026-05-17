@@ -67,7 +67,8 @@ export function NewProgramPage() {
         if (error) {
             // PP-33: show friendly Hebrew message; log technical details to console only
             console.error('Error creating program:', error);
-            showToast('שגיאה ביצירת התוכנית — אנא נסו שוב.', 'error');
+            /* anti-bot: em dash removed from toast */
+            showToast('שגיאה ביצירת התוכנית. אנא נסו שוב.', 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {

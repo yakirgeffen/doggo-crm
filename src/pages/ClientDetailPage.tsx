@@ -222,7 +222,8 @@ export function ClientDetailPage() {
                                             הצעת מחיר {q.sumit_document_number ? `#${q.sumit_document_number}` : ''}
                                         </p>
                                         <p className="text-xs text-text-muted">
-                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                                            {/* anti-bot: em dash null-placeholder replaced with Hebrew label */}
+                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'לא נשלח'}
                                             {q.total_amount && ` · ₪${Number(q.total_amount).toLocaleString()}`}
                                         </p>
                                     </div>
@@ -245,7 +246,8 @@ export function ClientDetailPage() {
                                                 showToast('סטטוס הצעת המחיר עודכן', 'success');
                                             } else {
                                                 console.error('Error updating quote status:', error);
-                                                showToast('שגיאה בעדכון הסטטוס — אנא נסו שוב.', 'error');
+                                                /* anti-bot: em dash removed from toast */
+                                                showToast('שגיאה בעדכון הסטטוס. אנא נסו שוב.', 'error');
                                             }
                                         }}
                                     >

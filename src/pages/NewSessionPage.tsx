@@ -71,7 +71,8 @@ export function NewSessionPage() {
         if (error) {
             // PP-33: friendly Hebrew message; technical details to console only
             console.error('Error logging session:', error);
-            showToast('שגיאה בתיעוד המפגש — אנא נסו שוב.', 'error');
+            /* anti-bot: em dash removed from toast */
+            showToast('שגיאה בתיעוד המפגש. אנא נסו שוב.', 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {

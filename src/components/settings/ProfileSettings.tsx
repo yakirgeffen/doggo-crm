@@ -1,4 +1,5 @@
-import { Building2 } from 'lucide-react';
+import { Building2, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { type UserSettings } from '../../types';
 
 interface ProfileSettingsProps {
@@ -27,7 +28,31 @@ export function ProfileSettings({ settings, onChange }: ProfileSettingsProps) {
                     />
                     <p className="text-xs text-text-muted mt-1">שם זה יופיע בחשבוניות ובמיילים ללקוחות</p>
                 </div>
-                {/* Future: Add more fields here like Logo, Address, etc. */}
+
+                {/* PP-17: cross-link to storefront where handle and public profile live */}
+                <div className="pt-2">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-text-muted mb-0.5">כתובת החנות הציבורית</p>
+                            {settings.trainer_handle ? (
+                                <p className="text-sm text-text-primary font-mono ltr-nums" dir="ltr">
+                                    doggocrm.app/t/{settings.trainer_handle}
+                                </p>
+                            ) : (
+                                <p className="text-sm text-text-muted">לא הוגדרה כתובת</p>
+                            )}
+                        </div>
+                        <Link
+                            to="/storefront"
+                            className="text-xs font-medium text-primary hover:text-primary/80 flex items-center gap-1 bg-primary/10 hover:bg-primary/15 px-2.5 py-1.5 rounded-lg transition-colors"
+                        >
+                            <ExternalLink size={12} />
+                            ניהול החנות
+                        </Link>
+                    </div>
+                    {/* anti-bot: em dash removed from trainer-facing description */}
+                    <p className="text-xs text-text-muted mt-1">ניהול הקישור, הביוגרפיה והשירותים הציבוריים נמצא בדף החנות</p>
+                </div>
             </div>
         </div>
     );

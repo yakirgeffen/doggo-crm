@@ -187,8 +187,9 @@ export function PublicStorefrontPage() {
                     <div className="flat-card p-8 md:p-10 text-center">
                         <div className="text-4xl mb-3">🐾</div>
                         <p className="font-bold text-text-primary mb-2">השירותים בעדכון</p>
+                        {/* PP anti-bot: em dash removed, replaced with period */}
                         <p className="text-sm text-text-secondary mb-5 max-w-md mx-auto leading-relaxed">
-                            הקטלוג עדיין בעדכון{profile?.business_name ? ` אצל ${profile.business_name}` : ''}. אפשר לפנות ישירות בטופס פנייה — מענה מהיר.
+                            הקטלוג עדיין בעדכון{profile?.business_name ? ` אצל ${profile.business_name}` : ''}. אפשר לפנות ישירות בטופס פנייה. מענה מהיר.
                         </p>
                         <Link
                             to={`/t/${trainerHandle}/intake${forwardQuery ? `?${forwardQuery}` : ''}`}
@@ -242,7 +243,7 @@ export function PublicStorefrontPage() {
                 )}
             </main>
 
-            {/* Testimonials — public social proof, only published rows */}
+            {/* Testimonials - public social proof, only published rows */}
             {testimonials.length > 0 && (
                 <section className="bg-surface-warm/40 border-t border-border py-12">
                     <div className="max-w-3xl mx-auto px-4">
@@ -281,7 +282,7 @@ export function PublicStorefrontPage() {
                 </section>
             )}
 
-            {/* Footer — link to Doggo CRM landing for trainer acquisition */}
+            {/* Footer - link to Doggo CRM landing for trainer acquisition */}
             <footer className="text-center pb-8 text-xs text-text-muted">
                 פועל באמצעות{' '}
                 <a
