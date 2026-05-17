@@ -41,8 +41,8 @@ const TIERS: Tier[] = [
     {
         name: 'Working Trainer',
         tagline: 'למאלפים פעילים — ההגדרה הסטנדרטית',
-        price: '₪119',
-        priceSubtitle: 'לחודש · ₪1,190 לשנה (חודשיים מתנה)',
+        price: '₪149',
+        priceSubtitle: 'לחודש · ₪1,490 לשנה (חודשיים מתנה)',
         cta: 'להתחלת ניסיון 30 יום',
         highlight: true,
         features: [
@@ -78,9 +78,9 @@ const TIERS: Tier[] = [
 
 export function PricingPage() {
     useEffect(() => {
-        document.title = 'מחירים · Doggo CRM — חינם להתחיל, 119 ש״ח/חודש לתוכנית מלאה';
+        document.title = 'מחירים · Doggo CRM — חינם להתחיל, 149 ש״ח/חודש לתוכנית מלאה';
         const meta = document.querySelector('meta[name="description"]');
-        if (meta) meta.setAttribute('content', 'תמחור פשוט: חינם להתחלה (עד 10 לקוחות), Working Trainer 119 ש״ח/חודש לתוכנית בלתי מוגבלת, Growing Studio 249 ש״ח/חודש למרובי-מאלפים. ניסיון 30 יום חינם.');
+        if (meta) meta.setAttribute('content', 'תמחור פשוט: חינם להתחלה (עד 10 לקוחות), Working Trainer 149 ש״ח/חודש לתוכנית בלתי מוגבלת, Growing Studio 249 ש״ח/חודש למרובי-מאלפים. ניסיון 30 יום חינם.');
         return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
     }, []);
 
