@@ -44,7 +44,7 @@
   <!-- Price -->
   <text x="240" y="510" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="48" font-weight="900" fill="#FFFFFF" text-anchor="middle">₪149</text>
   <!-- Price subtext -->
-  <text x="240" y="540" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" font-weight="400" fill="rgba(255,255,255,0.85)" text-anchor="middle">לחודש · ניסיון 30 יום חינם</text>
+  <text x="240" y="540" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" font-weight="400" fill="rgba(255,255,255,0.85)" text-anchor="middle">לחודש · ללא התחייבות</text>
   <!-- Badge on price box -->
   <rect x="100" y="558" width="240" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
   <text x="220" y="576" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">ללא כרטיס אשראי</text>
