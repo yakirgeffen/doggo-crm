@@ -4,10 +4,14 @@ import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 
 // G-CMO direction (2026-05-02 loop iteration) — public trainer-acquisition
 // landing page. Surfaces Doggo CRM's value prop to dog-trainer visitors
-// landing on the root domain. Single primary CTA (להתחיל בחינם -> /login),
-// Hebrew RTL, mobile-first per Israeli market research. Built for trainers
-// who arrive via Google search ("CRM למאלפי כלבים").
-// anti-bot: em dashes removed from all user-facing copy (heading, hero, value props, storefront pitch).
+// landing on the root domain. Single primary CTA (/login), Hebrew RTL,
+// mobile-first per Israeli market research. Built for trainers who arrive
+// via Google search ("CRM למאלפי כלבים").
+// TW-001 fix (2026-05-17): hero CTA updated to founding-cohort frame.
+// "להתחיל בחינם" removed; replaced with "להצטרף לקבוצת הייסוד".
+// "ללא כרטיס אשראי · כניסה עם Google" sub-line removed (implied free).
+// Final CTA section "ללא תשלום עכשיו" removed; aligned to founding-cohort frame.
+// anti-bot: em dashes removed from all user-facing copy.
 
 export function LandingPage() {
     return (
@@ -52,12 +56,12 @@ export function LandingPage() {
                                 to="/login"
                                 className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated hover:shadow-card transition-shadow"
                             >
-                                להתחיל בחינם
+                                להצטרף לקבוצת הייסוד
                                 <ChevronLeft size={18} />
                             </Link>
-                            <span className="text-sm text-text-muted">
-                                ללא כרטיס אשראי · כניסה עם Google
-                            </span>
+                            <Link to="/pricing" className="text-sm text-text-muted hover:text-primary transition-colors">
+                                ₪149 לחודש. פרטים בדף המחירים.
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -175,14 +179,13 @@ export function LandingPage() {
                         מוכנים להפסיק לנהל בקבצי וואטסאפ?
                     </h2>
                     <p className="text-white/80 text-lg mb-8">
-                        Doggo CRM ללא תשלום עכשיו. בלי קליטה ארוכה, בלי שיחות מכירה.
-
+                        קבוצת הייסוד פתוחה עכשיו. ₪149 לחודש, תעריף מקובע לכל חיי החשבון.
                     </p>
                     <Link
                         to="/login"
                         className="inline-flex items-center gap-2 bg-white text-primary font-bold px-8 py-3.5 rounded-xl shadow-elevated hover:shadow-card transition-shadow"
                     >
-                        להתחלה
+                        להצטרף לקבוצת הייסוד
                         <ChevronLeft size={18} />
                     </Link>
                 </div>
@@ -205,6 +208,8 @@ export function LandingPage() {
                         <span>נבנה למאלפים בישראל</span>
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-muted">
+                        <Link to="/pricing" className="hover:text-primary transition-colors">מחירים</Link>
+                        <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
                         <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/blog" className="hover:text-primary transition-colors">בלוג</Link>
