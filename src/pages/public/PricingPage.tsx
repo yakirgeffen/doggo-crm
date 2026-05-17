@@ -1,92 +1,36 @@
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Check, X, Sparkles, ChevronLeft } from 'lucide-react';
+import { Check, ChevronLeft, MessageCircle } from 'lucide-react';
 
-// CCO + CMO loop iteration 2 — pricing surface for trainer-acquisition.
-// Hebrew RTL. Three tiers: Free / Pro / Business per the strategic
-// synthesis at meetings/active/2026-05-02-doggo-crm-strategic-synthesis.md.
-// Tier prices and promos are recommendations pending Yakir's business-
-// model ratification; until ratified, the buttons all route to /login
-// (signup is free anyway — paid-tier billing wires in when ratified).
-
-interface Tier {
-    name: string;
-    tagline: string;
-    price: string;
-    priceSubtitle: string;
-    cta: string;
-    highlight?: boolean;
-    features: { label: string; included: boolean }[];
-}
-
-const TIERS: Tier[] = [
-    {
-        name: 'Solo Starter',
-        tagline: 'התחלה חינם — לבחון ולהרגיש את המערכת',
-        price: 'חינם',
-        priceSubtitle: 'לעולם',
-        cta: 'להתחיל בחינם',
-        features: [
-            { label: 'עד 10 לקוחות פעילים', included: true },
-            { label: 'מאלף יחיד', included: true },
-            { label: 'ניהול לקוחות, תוכניות, ומפגשים', included: true },
-            { label: 'דף חנות פומבי + טופס פניות', included: true },
-            { label: 'סנכרון יומן Google', included: true },
-            { label: 'תוכנית שירותים בלתי מוגבלת', included: false },
-            { label: 'חיבור Sumit / חשבונית ירוקה', included: false },
-            { label: 'הצעות מחיר אוטומטיות', included: false },
-            { label: 'הסרת לוגו Doggo CRM מהחנות', included: false },
-        ],
-    },
-    {
-        name: 'Working Trainer',
-        tagline: 'למאלפים פעילים — ההגדרה הסטנדרטית',
-        price: '₪149',
-        priceSubtitle: 'לחודש · ₪1,490 לשנה (חודשיים מתנה)',
-        cta: 'להתחלת ניסיון 30 יום',
-        highlight: true,
-        features: [
-            { label: 'לקוחות, תוכניות, ומפגשים בלתי מוגבלים', included: true },
-            { label: 'מאלף יחיד', included: true },
-            { label: 'כל האינטגרציות: Google Calendar, Sumit, חשבונית ירוקה, Gmail', included: true },
-            { label: 'הצעות מחיר אוטומטיות דרך Sumit', included: true },
-            { label: 'דף חנות פומבי ללא לוגו Doggo CRM', included: true },
-            { label: 'מעקב מקור פנייה (UTM) ודוחות', included: true },
-            { label: 'תוכנית שירותים בלתי מוגבלת', included: true },
-            { label: 'תמיכה במייל', included: true },
-            { label: 'דומיין מותאם אישית', included: false },
-        ],
-    },
-    {
-        name: 'Growing Studio',
-        tagline: 'לסטודיו עם מספר מאלפים',
-        price: '₪249',
-        priceSubtitle: 'לחודש · ₪2,490 לשנה',
-        cta: 'אנחנו במרחק שיחה',
-        features: [
-            { label: 'הכל מ-Working Trainer', included: true },
-            { label: 'מאלפים מרובים בארגון אחד', included: true },
-            { label: 'דומיין מותאם אישית לחנות', included: true },
-            { label: 'תמיכה בעדיפות גבוהה', included: true },
-            { label: 'דוחות מתקדמים', included: true },
-            { label: 'הדרכת התקנה ייחודית', included: true },
-            { label: 'מנהל הצלחת לקוח ייעודי', included: false },
-            { label: 'SLA חוזה מותאם', included: false },
-        ],
-    },
-];
+// CCO founding-cohort pricing — cycle 6 alignment (TW-003).
+// Commercial terms: ₪149/month, ILS bank transfer or Wise, no minimum term,
+// no free trial, no card billing. Founding-cohort framing throughout.
+// Three-tier structure replaced: only the Working Trainer tier is live.
+// Growing Studio tier deferred until multi-trainer architecture is built.
+// Promos section removed: "5 founders get Pro free for life" contradicted CCO terms.
+// Anti-bot: no em dashes, no banned phrases, varied sentence lengths.
 
 export function PricingPage() {
     useEffect(() => {
-        document.title = 'מחירים · Doggo CRM — חינם להתחיל, 149 ש״ח/חודש לתוכנית מלאה';
+        document.title = 'מחירים · Doggo CRM — קבוצת ייסוד, ₪149 לחודש';
         const meta = document.querySelector('meta[name="description"]');
-        if (meta) meta.setAttribute('content', 'תמחור פשוט: חינם להתחלה (עד 10 לקוחות), Working Trainer 149 ש״ח/חודש לתוכנית בלתי מוגבלת, Growing Studio 249 ש״ח/חודש למרובי-מאלפים. ניסיון 30 יום חינם.');
+        if (meta) meta.setAttribute('content', 'Doggo CRM לקבוצת הייסוד: ₪149 לחודש, העברה בנקאית, ללא התחייבות. כלי ניהול ייעודי למאלפי כלבים בישראל.');
         return () => { document.title = 'Doggo CRM — ניהול עסק האילוף שלך, בלי גיליונות אקסל'; };
     }, []);
 
+    const features = [
+        'לקוחות, תוכניות, ומפגשים בלתי מוגבלים',
+        'כל האינטגרציות: Google Calendar, Sumit, חשבונית ירוקה, Gmail',
+        'הצעות מחיר אוטומטיות דרך Sumit',
+        'דף חנות פומבי ללא לוגו Doggo CRM',
+        'טופס קבלה פומבי לאתר שלך',
+        'מעקב מקור פנייה ודוחות',
+        'תמיכה במייל',
+    ];
+
     return (
         <div dir="rtl" className="min-h-screen bg-background text-text-primary">
-            <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+            <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
                 <nav className="flex items-center justify-between mb-12">
                     <Link to="/" className="flex items-center gap-2">
                         <div className="text-3xl">🐾</div>
@@ -100,149 +44,142 @@ export function PricingPage() {
                     </Link>
                 </nav>
 
-                <div className="text-center max-w-2xl mx-auto mb-16">
-                    <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-bold py-1.5 px-3 rounded-full mb-4">
-                        <Sparkles size={12} />
-                        <span>תמחור פשוט · בלי אותיות קטנות</span>
+                {/* Hero */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-bold py-1.5 px-3 rounded-full mb-5">
+                        <span>קבוצת ייסוד פתוחה עכשיו</span>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black mb-4 leading-tight">
-                        מחיר שמתאים לכל שלב בעסק
+                    <h1 className="text-3xl md:text-4xl font-black mb-4 leading-tight">
+                        מחיר ישיר. בלי הפתעות.
                     </h1>
-                    <p className="text-lg text-text-secondary">
-                        להתחיל בחינם. לשדרג רק כשהעסק גדל.
+                    <p className="text-lg text-text-secondary max-w-xl mx-auto">
+                        אנחנו בשלב ייסוד. המאלפים שנכנסים עכשיו מקבלים את המחיר הנמוך ביותר שיהיה אי פעם, ונשארים איתו לאורך זמן.
                     </p>
                 </div>
 
-                {/* Tier grid */}
-                <div className="grid md:grid-cols-3 gap-8 md:gap-6 mb-12 pt-3">
-                    {TIERS.map(tier => (
-                        <div
-                            key={tier.name}
-                            className={`relative flat-card p-6 flex flex-col ${tier.highlight ? 'border-primary border-2 shadow-elevated' : ''}`}
+                {/* Pricing card */}
+                <div className="flat-card border-primary border-2 shadow-elevated p-8 md:p-10 mb-10 relative">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold py-1 px-4 rounded-full whitespace-nowrap">
+                        מחיר ייסוד, מובטח לנצח
+                    </div>
+
+                    {/* Price display */}
+                    <div className="text-center mb-8 pb-8 border-b border-border">
+                        <div className="text-6xl font-black ltr-nums mb-2">₪149</div>
+                        <p className="text-text-muted text-sm">לחודש, ללא התחייבות</p>
+                        <p className="text-text-secondary text-sm mt-1">תשלום בהעברה בנקאית או Wise. לא נדרש כרטיס אשראי.</p>
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-3 mb-8">
+                        {features.map((f, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm">
+                                <Check size={16} className="text-primary mt-0.5 shrink-0" />
+                                <span className="text-text-secondary">{f}</span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* CTA */}
+                    <div className="text-center">
+                        <Link
+                            to="/login"
+                            className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated"
                         >
-                            {tier.highlight && (
-                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold py-1 px-3 rounded-full whitespace-nowrap">
-                                    הכי פופולרי
-                                </div>
-                            )}
-                            <div className="mb-6">
-                                <h3 className="text-xl font-bold mb-1">{tier.name}</h3>
-                                <p className="text-xs text-text-muted">{tier.tagline}</p>
-                            </div>
-                            <div className="mb-6 pb-6 border-b border-border">
-                                <div className={`text-4xl font-black mb-1 ${/^[\d₪]/.test(tier.price) ? 'ltr-nums' : ''}`}>{tier.price}</div>
-                                <p className="text-xs text-text-muted leading-relaxed">{tier.priceSubtitle}</p>
-                            </div>
-                            <ul className="space-y-2.5 mb-8 flex-1">
-                                {tier.features.map((f, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm">
-                                        {f.included ? (
-                                            <Check size={16} className="text-primary mt-0.5 shrink-0" />
-                                        ) : (
-                                            <X size={16} className="text-text-muted/40 mt-0.5 shrink-0" />
-                                        )}
-                                        <span className={f.included ? 'text-text-secondary' : 'text-text-muted/60 line-through'}>
-                                            {f.label}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                            <Link
-                                to="/login"
-                                className={`btn ${tier.highlight ? 'btn-primary' : 'btn-secondary'} w-full text-center flex items-center justify-center gap-2`}
-                            >
-                                {tier.cta}
-                                <ChevronLeft size={16} />
-                            </Link>
-                        </div>
-                    ))}
+                            להצטרף לקבוצת הייסוד
+                            <ChevronLeft size={18} />
+                        </Link>
+                        <p className="text-xs text-text-muted mt-3">
+                            לאחר ההרשמה תקבלו פרטי תשלום לביצוע העברה בנקאית.
+                        </p>
+                    </div>
                 </div>
 
-                {/* Promos */}
-                <section className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-2xl p-8 md:p-10">
-                    <h2 className="text-2xl font-bold text-center mb-8">מבצעים פעילים</h2>
-                    <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                        <PromoCard
-                            title="ניסיון חינם 30 יום"
-                            description="כל המאלפים מקבלים גישה מלאה לתוכנית Working Trainer ל-30 יום. בלי כרטיס אשראי בהרשמה."
-                        />
-                        <PromoCard
-                            title="הנחה שנתית"
-                            description="תשלום שנתי מקדמי = שני חודשים חינם. לפי החיוב היומי, נחסכים לך עשרות שקלים בחודש."
-                        />
-                        <PromoCard
-                            title="הפניית חבר"
-                            description="לכל מאלף שמצטרף בעקבותיכם — חודש Pro חינם נוסף. אין הגבלה."
-                        />
-                        <PromoCard
-                            title="חברי-יסוד"
-                            description="חמשת המאלפים הראשונים שיצטרפו ויספקו פידבק ייעודי — Pro חינם לכל החיים."
-                        />
+                {/* Founding cohort context */}
+                <section className="bg-surface border border-border rounded-2xl p-7 mb-10">
+                    <h2 className="text-lg font-bold mb-4">מה זה קבוצת ייסוד?</h2>
+                    <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
+                        <p>
+                            Doggo CRM נבנה עם מאלפים, לא בשבילם. המאלפות שנכנסות עכשיו הן שותפות עיצוב, לא לקוחות בתשלום גבוה.
+                        </p>
+                        <p>
+                            בתמורה לפידבק אמיתי שעוזר לנו לשפר את המוצר, המחיר של ₪149 לחודש הוא המחיר שנשאר איתך. כשהמוצר יגדל והמחיר יעלה לשאר העולם, חברי הייסוד ממשיכים לשלם את אותו הסכום.
+                        </p>
+                        <p>
+                            אין התחייבות. אם זה לא מתאים, עוצרים. פשוט כך.
+                        </p>
                     </div>
                 </section>
 
                 {/* FAQ */}
-                <section className="mt-16 max-w-3xl mx-auto">
-                    <h2 className="text-2xl font-bold text-center mb-8">שאלות נפוצות</h2>
+                <section className="mb-16 max-w-2xl mx-auto">
+                    <h2 className="text-xl font-bold text-center mb-6">שאלות נפוצות</h2>
                     <div className="space-y-4">
                         <FaqItem
-                            q="האם נדרש כרטיס אשראי כדי להתחיל?"
-                            a="לא. ההרשמה והתוכנית החינמית לא דורשות כרטיס אשראי. שדרוג ל-Pro דורש פרטי תשלום רק בשלב השדרוג עצמו."
+                            q="איך משלמים?"
+                            a="העברה בנקאית רגילה לחשבון ישראלי, או Wise למי שמעדיף. פרטי התשלום מגיעים לאחר ההרשמה. אין כרטיס אשראי, אין חיוב אוטומטי."
                         />
                         <FaqItem
-                            q="מה קורה אחרי 30 יום של הניסיון?"
-                            a="ללא שדרוג, החשבון יחזור לתוכנית Solo Starter (חינם, עד 10 לקוחות פעילים). הנתונים נשמרים תמיד."
+                            q="מה קורה אם אני רוצה להפסיק?"
+                            a="עוצרים. אין חוזה, אין קנס יציאה, אין תקופת מינימום. כשמחליטים לעצור, מפסיקים להעביר."
+                        />
+                        <FaqItem
+                            q="האם יהיו תכנונות נוספות בעתיד?"
+                            a="כן. בעתיד נוסיף תמיכה בסטודיו עם מספר מאלפים ועוד. חברי הייסוד ימשיכו לשלם את המחיר שנרשמו אליו, ולא יושפעו משינויים."
+                        />
+                        <FaqItem
+                            q="האם יש גרסה בחינם?"
+                            a="בשלב הייסוד אין גרסה חינמית. המוצר נמצא עדיין בפיתוח פעיל, ואנחנו רוצים להגביל את הגישה לקבוצה קטנה שנותנת פידבק."
                         />
                         <FaqItem
                             q="איך עובד החיבור ל-Sumit וחשבונית ירוקה?"
-                            a="במסך ההגדרות יש להזין את מפתחות ה-API מהשירות. המערכת יוצרת הצעות מחיר וחשבוניות ישירות דרך החשבון של המאלף — בלי עמלה מצידנו."
+                            a="במסך ההגדרות מזינים את מפתחות ה-API מהשירות. המערכת יוצרת הצעות מחיר וחשבוניות ישירות דרך החשבון של המאלף, בלי עמלה מצידנו."
                         />
                         <FaqItem
                             q="מה לגבי פרטיות הלקוחות שלי?"
-                            a="כל הנתונים מוגנים ב-RLS (Row Level Security) ברמת בסיס הנתונים. אף מאלף אחר לא יכול לראות את הלקוחות שלך, גם לא בטעות. אנחנו עומדים בדרישות הגנת הפרטיות הישראליות."
-                        />
-                        <FaqItem
-                            q="האם המערכת מתאימה לאקדמיות אילוף עם מספר מאלפים?"
-                            a="תוכנית Growing Studio נבנתה במיוחד לכך. כל מאלף יקבל כניסה משלו, וניהול ההרשאות מרוכז. אם זה מתאים — אנחנו במרחק הודעה."
+                            a="כל הנתונים מוגנים ב-RLS ברמת בסיס הנתונים. אף מאלף אחר לא יכול לראות את הלקוחות שלך, גם לא בטעות. אנחנו עומדים בדרישות הגנת הפרטיות הישראליות."
                         />
                     </div>
                 </section>
 
                 {/* Final CTA */}
-                <section className="mt-20 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                        אפשר להתחיל?
+                <section className="text-center mb-16">
+                    <h2 className="text-2xl font-bold mb-3">
+                        מעניין אותך להצטרף?
                     </h2>
-                    <p className="text-text-secondary mb-6">
-                        הרשמה חינם · שדרוג רק לפי החלטה
+                    <p className="text-text-secondary mb-3 text-sm">
+                        שני צעדים: נרשמים, ואז מקבלים פרטי תשלום.
                     </p>
                     <Link
                         to="/login"
                         className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated"
                     >
-                        להתחיל בחינם
+                        להצטרף לקבוצת הייסוד
                         <ChevronLeft size={18} />
                     </Link>
+                    <div className="mt-6 flex items-center justify-center gap-2 text-sm text-text-muted">
+                        <MessageCircle size={14} />
+                        <span>שאלות? כתבו לנו ב-</span>
+                        <a
+                            href="mailto:hello@doggocrm.app"
+                            className="text-primary hover:underline"
+                        >
+                            hello@doggocrm.app
+                        </a>
+                    </div>
                 </section>
 
-                <footer className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-text-muted">
-                    <Link to="/" className="hover:text-primary transition-colors">← חזרה לעמוד הבית</Link>
+                <footer className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-text-muted">
+                    <Link to="/" className="hover:text-primary transition-colors">חזרה לעמוד הבית</Link>
                     <div className="flex items-center gap-4">
                         <Link to="/privacy" className="hover:text-primary transition-colors">מדיניות פרטיות</Link>
                         <span>·</span>
                         <Link to="/terms" className="hover:text-primary transition-colors">תנאי שימוש</Link>
+                        <span>·</span>
+                        <Link to="/pricing" className="hover:text-primary transition-colors">מחירים</Link>
                     </div>
                 </footer>
             </div>
-        </div>
-    );
-}
-
-function PromoCard({ title, description }: { title: string; description: string }) {
-    return (
-        <div className="bg-surface border border-border rounded-xl p-5 shadow-soft">
-            <h3 className="font-bold text-base mb-2 text-primary">{title}</h3>
-            <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
         </div>
     );
 }
