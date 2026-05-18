@@ -34,7 +34,6 @@ import { supabase } from './supabase';
 const GA4_MEASUREMENT_ID = import.meta.env.VITE_GA4_MEASUREMENT_ID || '';
 const META_PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID || '';
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY || '';
-const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
 
 const CAPI_ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL || ''}/functions/v1/meta-capi`;
 const RELAY_ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL || ''}/functions/v1/analytics-relay`;
