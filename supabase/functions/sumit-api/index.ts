@@ -19,9 +19,26 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 // 2026-05-02. Document the verified vs. assumed parts inline.
 // ============================================================
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// P1-2 (2026-05-17): restrict CORS to doggocrm.app + Vercel preview URLs.
+// sumit-api is auth-gated (requires valid Supabase JWT). Same rationale
+// as morning-api — wildcard on an auth-gated function adds unnecessary
+// cross-site request surface.
+function getAllowedOrigin(req: Request): string {
+    const origin = req.headers.get('Origin') || ''
+    if (
+        origin === 'https://doggocrm.app' ||
+        origin.endsWith('.vercel.app')
+    ) {
+        return origin
+    }
+    return 'https://doggocrm.app'
+}
+
+function getCorsHeaders(req: Request) {
+    return {
+        'Access-Control-Allow-Origin': getAllowedOrigin(req),
+        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    }
 }
 
 const SUMIT_BASE = 'https://api.sumit.co.il'
@@ -49,8 +66,10 @@ async function callSumit(path: string, credentials: SumitCredentials, payload: R
 
 serve(async (req) => {
     if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
+        return new Response('ok', { headers: getCorsHeaders(req) })
     }
+
+    const corsHeaders = getCorsHeaders(req)
 
     try {
         const supabaseClient = createClient(
@@ -185,7 +204,7 @@ serve(async (req) => {
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
         return new Response(JSON.stringify({ success: false, error: message }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' },
             status: 400,
         })
     }

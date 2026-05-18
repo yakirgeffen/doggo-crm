@@ -237,7 +237,10 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                         ?? programState.morning_invoice_number;
                                     const invoiceRef = invoiceNumber ? ` (חשבונית #${invoiceNumber})` : '';
                                     const text = `היי ${clientFirstName}, תזכורת ידידותית לגבי הסדרת התשלום בסך ₪${programState.price} עבור ${programState.program_name}${invoiceRef}. תודה! 🙏`;
-                                    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+                                    // PP-C2-01: pre-fill recipient from clientPhone so trainer doesn't have to find the contact manually
+                                    const pmPhone = clientPhone ? clientPhone.replace(/\D/g, '') : '';
+                                    const pmIntl = pmPhone.startsWith('0') ? '972' + pmPhone.slice(1) : pmPhone;
+                                    return `https://wa.me/${pmIntl}?text=${encodeURIComponent(text)}`;
                                 })()}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -452,6 +455,7 @@ export function ProgramWorkspace({ program, clientName, clientFirstName, clientE
                                 session={session}
                                 clientFirstName={clientFirstName}
                                 programName={programState.program_name}
+                                clientPhone={clientPhone}
                                 onChanged={fetchSessions}
                             />
                         ))}

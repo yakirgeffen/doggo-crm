@@ -4,9 +4,14 @@ import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 
 // G-CMO direction (2026-05-02 loop iteration) — public trainer-acquisition
 // landing page. Surfaces Doggo CRM's value prop to dog-trainer visitors
-// landing on the root domain. Single primary CTA (להתחיל בחינם → /login),
-// Hebrew RTL, mobile-first per Israeli market research. Built for trainers
-// who arrive via Google search ("CRM למאלפי כלבים").
+// landing on the root domain. Single primary CTA (/login), Hebrew RTL,
+// mobile-first per Israeli market research. Built for trainers who arrive
+// via Google search ("CRM למאלפי כלבים").
+// TW-001 fix (2026-05-17): hero CTA updated to founding-cohort frame.
+// "להתחיל בחינם" removed; replaced with "להצטרף לקבוצת הייסוד".
+// "ללא כרטיס אשראי · כניסה עם Google" sub-line removed (implied free).
+// Final CTA section "ללא תשלום עכשיו" removed; aligned to founding-cohort frame.
+// anti-bot: em dashes removed from all user-facing copy.
 
 export function LandingPage() {
     return (
@@ -39,33 +44,33 @@ export function LandingPage() {
                             <span>נבנה במיוחד למאלפי כלבים</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black leading-tight mb-6">
-                            ניהול עסק האילוף שלך —
+                            ניהול עסק האילוף שלך.
                             <br />
                             <span className="text-primary">בלי גיליונות אקסל.</span>
                         </h1>
                         <p className="text-lg md:text-xl text-text-secondary mb-8 max-w-2xl leading-relaxed">
-                            לקוחות, תוכניות אילוף, חשבוניות, יומן Google, הצעות מחיר, וטופס פניות פומבי — הכל במקום אחד, בעברית, ומותאם לסמארטפון.
+                            לקוחות, תוכניות אילוף, חשבוניות, יומן Google, הצעות מחיר, וטופס פניות פומבי. הכל במקום אחד, בעברית, ומותאם לסמארטפון.
                         </p>
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <Link
                                 to="/login"
                                 className="btn btn-primary text-base px-8 py-3.5 inline-flex items-center gap-2 shadow-elevated hover:shadow-card transition-shadow"
                             >
-                                להתחיל בחינם
+                                להצטרף לקבוצת הייסוד
                                 <ChevronLeft size={18} />
                             </Link>
-                            <span className="text-sm text-text-muted">
-                                ללא כרטיס אשראי · כניסה עם Google
-                            </span>
+                            <Link to="/pricing" className="text-sm text-text-muted hover:text-primary transition-colors">
+                                ₪149 לחודש. פרטים בדף המחירים.
+                            </Link>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Value props — three cards */}
+            {/* Value props */}
             <section className="max-w-5xl mx-auto px-6 py-16">
                 <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-                    כל מה שצריך לעסק אילוף עצמאי — ושום דבר מיותר
+                    כל מה שצריך לעסק אילוף עצמאי. שום דבר מיותר.
                 </h2>
                 <div className="grid md:grid-cols-3 gap-6">
                     <ValueCard
@@ -76,17 +81,17 @@ export function LandingPage() {
                     <ValueCard
                         icon={<Calendar size={28} />}
                         title="יומן מסונכרן עם Google"
-                        description="כשקובעים מפגש במערכת — האירוע נוצר אוטומטית ביומן Google שלך. בלי כפילויות."
+                        description="כשקובעים מפגש במערכת, האירוע נוצר אוטומטית ביומן Google שלך. בלי כפילויות."
                     />
                     <ValueCard
                         icon={<Receipt size={28} />}
                         title="חשבוניות והצעות מחיר"
-                        description="חיבור ישיר ל-Sumit וחשבונית ירוקה (Morning). הפקת הצעות מחיר ללקוחות בלחיצה אחת — בעברית."
+                        description="חיבור ישיר ל-Sumit וחשבונית ירוקה (Morning). הפקת הצעות מחיר ללקוחות בלחיצה אחת, בעברית."
                     />
                 </div>
             </section>
 
-            {/* How it works — three steps */}
+            {/* How it works */}
             <section className="bg-surface-warm py-16">
                 <div className="max-w-5xl mx-auto px-6">
                     <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
@@ -121,15 +126,15 @@ export function LandingPage() {
                             <span>חדש</span>
                         </div>
                         <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                            דף חנות פומבי — שיעזור לך להשיג לקוחות חדשים
+                            דף חנות פומבי שיעזור לך להשיג לקוחות חדשים
                         </h2>
                         <p className="text-text-secondary mb-4 leading-relaxed">
-                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.app/t/your-name</code>. שיתוף הקישור ב-WhatsApp, ברשתות, ובמודעות — מביא פניות ישירות למערכת.
+                            כל מאלף מקבל כתובת אישית: <code dir="ltr" className="bg-background px-2 py-0.5 rounded text-sm font-mono">doggocrm.app/t/your-name</code>. שיתוף הקישור ב-WhatsApp, ברשתות, ובמודעות מביא פניות ישירות למערכת.
                         </p>
                         <ul className="space-y-2 text-sm text-text-secondary">
                             <li className="flex items-start gap-2">
                                 <span className="text-primary mt-0.5">✓</span>
-                                <span>מעקב אחרי מקור הפנייה (UTM) — לראות מאיפה כל ליד הגיע.</span>
+                                <span>מעקב אחרי מקור הפנייה (UTM). לראות מאיפה כל ליד הגיע.</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-primary mt-0.5">✓</span>
@@ -153,7 +158,8 @@ export function LandingPage() {
                                 </div>
                             </div>
                             <p className="text-sm text-text-secondary mb-4">
-                                "תרגול זנב וכפיים, אילוף ביות, וטיפול בחרדות — אצלך בבית או אצלי."
+                                {/* anti-bot: em dash removed from mock storefront quote */}
+                                "תרגול זנב וכפיים, אילוף ביות, וטיפול בחרדות. אצלך בבית או אצלי."
                             </p>
                             <button className="w-full bg-primary text-white font-bold py-2.5 rounded-lg text-sm">
                                 קביעת פגישת היכרות
@@ -173,14 +179,13 @@ export function LandingPage() {
                         מוכנים להפסיק לנהל בקבצי וואטסאפ?
                     </h2>
                     <p className="text-white/80 text-lg mb-8">
-                        Doggo CRM ללא תשלום עכשיו. בלי קליטה ארוכה, בלי שיחות מכירה.
-
+                        קבוצת הייסוד פתוחה עכשיו. ₪149 לחודש, תעריף מקובע לכל חיי החשבון.
                     </p>
                     <Link
                         to="/login"
                         className="inline-flex items-center gap-2 bg-white text-primary font-bold px-8 py-3.5 rounded-xl shadow-elevated hover:shadow-card transition-shadow"
                     >
-                        להתחלה
+                        להצטרף לקבוצת הייסוד
                         <ChevronLeft size={18} />
                     </Link>
                 </div>
@@ -203,6 +208,8 @@ export function LandingPage() {
                         <span>נבנה למאלפים בישראל</span>
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-muted">
+                        <Link to="/pricing" className="hover:text-primary transition-colors">מחירים</Link>
+                        <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/calculator" className="hover:text-primary transition-colors">מחשבון מחירון</Link>
                         <span className="text-text-muted/40" aria-hidden="true">·</span>
                         <Link to="/blog" className="hover:text-primary transition-colors">בלוג</Link>

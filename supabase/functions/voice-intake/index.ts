@@ -197,7 +197,7 @@ serve(async (req: Request) => {
 
             if (!userError && trainer?.user?.email) {
                 await resend.emails.send({
-                    from: 'Doggo CRM <notifications@resend.dev>', // verified-domain swap is Yakir-actionable per CPMO P1 list
+                    from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                     to: trainer.user.email,
                     subject: `🎙️ קבלה קולית חדשה ל-Doggo CRM — ${ownerName}`,
                     html: `

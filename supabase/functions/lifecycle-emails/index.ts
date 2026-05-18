@@ -17,12 +17,13 @@ import { Resend } from "https://esm.sh/resend@3.2.0"
 //
 // Auth: verify_jwt=false. Idempotent via email_send_log
 // unique index (user_id, email_template) where session_id is null.
+//
+// P1-2 (2026-05-17): CORS headers removed. This function is
+// invoked exclusively by pg_cron (server-to-server). No browser
+// ever calls it. CORS headers on a cron function are dead weight
+// and signal to auditors that the function may be browser-facing
+// when it is not. Removing them is the correct shape.
 // ============================================================
-
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
 
 const escapeHtml = (s: unknown) => {
     if (s === null || s === undefined) return ''
@@ -110,9 +111,7 @@ const TEMPLATES: Record<string, (t: TrainerState) => { subject: string; html: st
 
 // @ts-expect-error Deno std import
 serve(async (req: Request) => {
-    if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
-    }
+    // No OPTIONS/CORS handling — this function is cron-only, never browser-called.
 
     try {
         const supabaseAdmin = createClient(
@@ -123,7 +122,7 @@ serve(async (req: Request) => {
         const resendKey = Deno.env.get('RESEND_API_KEY')
         if (!resendKey) {
             return new Response(JSON.stringify({ success: false, error: 'Resend not configured' }), {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500,
+                headers: { 'Content-Type': 'application/json' }, status: 500,
             })
         }
         const resend = new Resend(resendKey)
@@ -191,11 +190,11 @@ serve(async (req: Request) => {
                     if (!fn) continue
                     const { subject, html } = fn(trainer)
                     await resend.emails.send({
-                        from: 'Doggo CRM <notifications@resend.dev>',
+                        from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                         // CTO 2026-05-05 PM (CPMO content review §Section 3 #3 routing):
                         // welcome + check_in templates explicitly invite replies
                         // ("השב/י למייל הזה", "אני קורא/ת כל תגובה ומגיב/ה אישית").
-                        // Without reply_to, replies route to notifications@resend.dev
+                        // Without reply_to, replies route to the verified sender
                         // (unmonitored), making the promise false-on-delivery.
                         // Default to the studio-brand inbox per
                         // geffen-studio:tools/studio-accounts.md L47. Long-term:
@@ -221,12 +220,12 @@ serve(async (req: Request) => {
         }
 
         return new Response(JSON.stringify({ success: true, ...stats, users_scanned: users.length }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
         return new Response(JSON.stringify({ success: false, error: message }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500,
+            headers: { 'Content-Type': 'application/json' }, status: 500,
         })
     }
 })

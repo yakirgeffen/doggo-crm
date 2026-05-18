@@ -10,6 +10,14 @@ interface Toast {
 
 let nextId = 0;
 
+// PP-24: differentiate toast duration by type so error messages stay readable
+// success = 3000ms, info = 3500ms, error = 5500ms (Hebrew error strings are often longer)
+const TOAST_DURATION: Record<ToastType, number> = {
+    success: 3000,
+    info: 3500,
+    error: 5500,
+};
+
 export function ToastProvider({ children }: { children: ReactNode }) {
     const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -18,7 +26,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         setToasts(prev => [...prev, { id, message, type }]);
         setTimeout(() => {
             setToasts(prev => prev.filter(t => t.id !== id));
-        }, 3500);
+        }, TOAST_DURATION[type]);
     }, []);
 
     const dismiss = (id: number) => {

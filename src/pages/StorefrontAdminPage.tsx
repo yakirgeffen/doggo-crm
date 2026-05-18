@@ -4,8 +4,15 @@ import { useServices, type Service } from '../hooks/useServices';
 import { Save, ExternalLink, Copy, Check, Plus, Edit2, Trash2, X, Send, Facebook } from 'lucide-react';
 import { ServiceModal } from '../components/admin/ServiceModal';
 import { TestimonialsManager } from '../components/admin/TestimonialsManager';
+import { ConfirmModal } from '../components/ConfirmModal';
 import { Spinner } from '../components/Spinner';
 import { useToast } from '../context/toast-context';
+
+interface ConfirmState {
+    message: string;
+    confirmLabel?: string;
+    onConfirm: () => void;
+}
 
 export function StorefrontAdminPage() {
     const { settings, loading: settingsLoading, saveSettings: updateSettings } = useSettings();
@@ -24,7 +31,10 @@ export function StorefrontAdminPage() {
     const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
     const [editingService, setEditingService] = useState<Service | null>(null);
 
-    // Sync settings → local form fields whenever the hook returns a new object.
+    // PP-23: ConfirmModal state for destructive service actions
+    const [confirm, setConfirm] = useState<ConfirmState | null>(null);
+
+    // Sync settings -> local form fields whenever the hook returns a new object.
     const [prevSettings, setPrevSettings] = useState(settings);
     if (settings && settings !== prevSettings) {
         setPrevSettings(settings);
@@ -65,13 +75,20 @@ export function StorefrontAdminPage() {
         }
     };
 
-    const handleDeleteService = async (id: string) => {
-        try {
-            await deleteService(id);
-            showToast('השירות נמחק', 'info');
-        } catch {
-            showToast('שגיאה במחיקת השירות', 'error');
-        }
+    // PP-23: show ConfirmModal before deleting a service
+    const handleDeleteService = (id: string, serviceName: string) => {
+        setConfirm({
+            message: `האם למחוק את השירות "${serviceName}"? פעולה זו לא ניתנת לביטול.`,
+            confirmLabel: 'מחיקה',
+            onConfirm: async () => {
+                try {
+                    await deleteService(id);
+                    showToast('השירות נמחק', 'info');
+                } catch {
+                    showToast('שגיאה במחיקת השירות', 'error');
+                }
+            },
+        });
     };
 
     const handleAddSpecialty = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -153,6 +170,21 @@ export function StorefrontAdminPage() {
                                 />
                             </div>
                         </div>
+
+                        {/* PP-08: show live sanitized URL preview so trainer sees what will actually be saved */}
+                        {handle && sanitizedHandle !== handle.trim().toLowerCase() && (
+                            <p className="text-xs text-warning mt-1.5 flex items-center gap-1">
+                                <span>הכתובת שתישמר:</span>
+                                {/* anti-bot: em dash null-placeholder replaced with underscore */}
+                                <span className="font-mono ltr-nums" dir="ltr">doggocrm.app/t/{sanitizedHandle || '_'}</span>
+                                <span className="text-text-muted">(תווים שלא מותרים הוסרו)</span>
+                            </p>
+                        )}
+                        {handle && sanitizedHandle === handle.trim().toLowerCase() && sanitizedHandle && (
+                            <p className="text-xs text-text-muted mt-1.5 font-mono" dir="ltr">
+                                doggocrm.app/t/{sanitizedHandle}
+                            </p>
+                        )}
                     </div>
 
                     {publicUrl && settings?.trainer_handle && (
@@ -175,7 +207,7 @@ export function StorefrontAdminPage() {
                                 </a>
                             </div>
 
-                            {/* Share buttons — share storefront URL via WhatsApp / Facebook / native share */}
+                            {/* Share buttons for storefront URL via WhatsApp / Facebook / native share */}
                             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
                                 <span className="text-xs text-text-muted">שיתוף:</span>
                                 <a
@@ -204,7 +236,8 @@ export function StorefrontAdminPage() {
                                             try {
                                                 await navigator.share({
                                                     title: businessName || 'דף החנות שלי ב-Doggo CRM',
-                                                    text: `${businessName ? `${businessName} — ` : ''}לקבלת הצעת מחיר לאילוף`,
+                                                    /* anti-bot: em dash removed from native share text */
+                                                    text: `${businessName ? `${businessName}: ` : ''}לקבלת הצעת מחיר לאילוף`,
                                                     url: publicUrl,
                                                 });
                                             } catch { /* user cancelled */ }
@@ -354,8 +387,9 @@ export function StorefrontAdminPage() {
                                     >
                                         <Edit2 size={16} />
                                     </button>
+                                    {/* PP-23: ConfirmModal before delete — prevents accidental service deletion */}
                                     <button
-                                        onClick={() => handleDeleteService(service.id)}
+                                        onClick={() => handleDeleteService(service.id, service.name)}
                                         className="p-2 text-text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors"
                                         title="מחיקה"
                                     >
@@ -375,6 +409,19 @@ export function StorefrontAdminPage() {
                 onClose={() => setIsServiceModalOpen(false)}
                 onSave={handleSaveService}
                 initialData={editingService}
+            />
+
+            {/* PP-23: ConfirmModal for destructive service actions */}
+            <ConfirmModal
+                isOpen={!!confirm}
+                message={confirm?.message ?? ''}
+                confirmLabel={confirm?.confirmLabel}
+                onConfirm={() => {
+                    const action = confirm?.onConfirm;
+                    setConfirm(null);
+                    action?.();
+                }}
+                onCancel={() => setConfirm(null)}
             />
 
             {/*

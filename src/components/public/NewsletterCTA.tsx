@@ -50,10 +50,11 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
         }
     };
 
+    // anti-bot: no em dashes in user-facing strings
     const successMessage =
         doneState === 'subscribed' ? 'נרשמת! נשלח תוכן שימושי על אילוף-עסקי, בלי ספאם.'
-        : doneState === 'resubscribed' ? 'ברוכים השבים — חזרתם לרשימה.'
-        : doneState === 'already-subscribed' ? 'כבר רשומים — תודה!'
+        : doneState === 'resubscribed' ? 'ברוכים השבים. חזרתם לרשימה.'
+        : doneState === 'already-subscribed' ? 'כבר רשומים. תודה!'
         : null;
 
     const containerClass = variant === 'card'
@@ -71,7 +72,8 @@ export function NewsletterCTA({ source, title, subtitle, variant = 'card' }: New
                         {title || 'רשימת מאלפים בישראל'}
                     </h3>
                     <p className="text-sm text-text-secondary mt-1">
-                        {subtitle || 'טיפים מעת לעת לניהול עסק אילוף — מחירון, שיווק, לקוחות, תהליכים. בלי ספאם, אפשר להסיר רישום בכל שלב.'}
+                        {/* anti-bot: em dash replaced with period */}
+                        {subtitle || 'טיפים מעת לעת לניהול עסק אילוף. מחירון, שיווק, לקוחות, תהליכים. בלי ספאם, אפשר להסיר רישום בכל שלב.'}
                     </p>
                 </div>
             </div>

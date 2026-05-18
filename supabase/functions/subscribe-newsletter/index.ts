@@ -119,7 +119,7 @@ serve(async (req: Request) => {
                 const resend = new Resend(resendKey)
                 const html = renderWelcomeEmail()
                 await resend.emails.send({
-                    from: 'Doggo CRM <notifications@resend.dev>',
+                    from: 'Doggo CRM <notifications@doggocrm.app>', // P0-2 fix 2026-05-17 — verified sender, deploy gated on Yakir DNS verify
                     to: rawEmail,
                     subject: 'ברוכים הבאים ל-Doggo CRM 🐾',
                     html,

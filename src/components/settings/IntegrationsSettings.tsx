@@ -5,6 +5,14 @@ import { useSumit } from '../../hooks/useSumit';
 import { useSettings } from '../../hooks/useSettings';
 import { useVoiceIntake } from '../../hooks/useVoiceIntake';
 import { useToast } from '../../context/toast-context';
+import { ConfirmModal } from '../ConfirmModal';
+
+// PP-01: ConfirmModal state type
+type ConfirmState = {
+    message: string;
+    confirmLabel?: string;
+    onConfirm: () => void;
+};
 
 export function IntegrationsSettings() {
     const { isConnected, vaultData, saveKeys, testConnection, loading: integrationsLoading } = useIntegrations();
@@ -25,6 +33,8 @@ export function IntegrationsSettings() {
     const [tokenGenerating, setTokenGenerating] = useState(false);
     const [tokenCopied, setTokenCopied] = useState(false);
     const [voicePhoneInput, setVoicePhoneInput] = useState('');
+    // PP-01: replace window.confirm() with ConfirmModal
+    const [confirmState, setConfirmState] = useState<ConfirmState | null>(null);
 
     useEffect(() => {
         if (settings?.webhook_url) setWebhookUrl(settings.webhook_url);
@@ -44,22 +54,28 @@ export function IntegrationsSettings() {
     const handleSaveVoiceIntake = async () => {
         const result = await voiceIntake.saveRegistration(voicePhoneInput);
         if (result.success) {
-            showToast('מספר נרשם — אפשר לשלוח קבלות קוליות בוואטסאפ', 'success');
+            // anti-bot: em dash removed
+            showToast('מספר נרשם. אפשר לשלוח קבלות קוליות בוואטסאפ', 'success');
         } else {
             showToast(result.error || 'שגיאה בשמירה', 'error');
         }
     };
 
-    const handleDeleteVoiceIntake = async () => {
-        const ok = window.confirm('להסיר את הרישום? לא תוכלו לשלוח קבלות קוליות עד שתרשמו מחדש.');
-        if (!ok) return;
-        const result = await voiceIntake.deleteRegistration();
-        if (result.success) {
-            setVoicePhoneInput('');
-            showToast('הרישום הוסר', 'success');
-        } else {
-            showToast(result.error || 'שגיאה במחיקה', 'error');
-        }
+    const handleDeleteVoiceIntake = () => {
+        // PP-01: was window.confirm - now uses ConfirmModal
+        setConfirmState({
+            message: 'להסיר את הרישום? לא תוכלו לשלוח קבלות קוליות עד שתרשמו מחדש.',
+            confirmLabel: 'הסרה',
+            onConfirm: async () => {
+                const result = await voiceIntake.deleteRegistration();
+                if (result.success) {
+                    setVoicePhoneInput('');
+                    showToast('הרישום הוסר', 'success');
+                } else {
+                    showToast(result.error || 'שגיאה במחיקה', 'error');
+                }
+            },
+        });
     };
 
     const handleCopyBotNumber = async () => {
@@ -81,11 +97,20 @@ export function IntegrationsSettings() {
         return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
     };
 
-    const handleGenerateToken = async () => {
+    const handleGenerateToken = () => {
         if (hasActiveToken) {
-            const ok = window.confirm('יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שיעודכנו. להמשיך?');
-            if (!ok) return;
+            // PP-01: was window.confirm - now uses ConfirmModal
+            setConfirmState({
+                message: 'יצירת טוקן חדש תבטל את הטוקן הקיים. אינטגרציות פעילות יפסיקו לעבוד עד שיעודכנו. להמשיך?',
+                confirmLabel: 'יצירת טוקן חדש',
+                onConfirm: () => doGenerateToken(),
+            });
+        } else {
+            doGenerateToken();
         }
+    };
+
+    const doGenerateToken = async () => {
         setTokenGenerating(true);
         setTokenCopied(false);
         try {
@@ -113,21 +138,27 @@ export function IntegrationsSettings() {
             showToast('הטוקן הועתק', 'success');
             setTimeout(() => setTokenCopied(false), 2500);
         } catch {
-            showToast('לא ניתן להעתיק אוטומטית — סימון ידני נדרש.', 'error');
+            // anti-bot: em dash removed
+            showToast('לא ניתן להעתיק אוטומטית. סימון ידני נדרש.', 'error');
         }
     };
 
-    const handleRevokeToken = async () => {
-        const ok = window.confirm('ביטול הטוקן יפסיק מיד את כל האינטגרציות שמשתמשות בו. להמשיך?');
-        if (!ok) return;
-        try {
-            await saveSettings({ api_token_hash: null });
-            updateLocalSettings({ api_token_hash: null });
-            setGeneratedToken(null);
-            showToast('הטוקן בוטל', 'success');
-        } catch {
-            showToast('שגיאה בביטול הטוקן', 'error');
-        }
+    const handleRevokeToken = () => {
+        // PP-01: was window.confirm - now uses ConfirmModal
+        setConfirmState({
+            message: 'ביטול הטוקן יפסיק מיד את כל האינטגרציות שמשתמשות בו. להמשיך?',
+            confirmLabel: 'ביטול טוקן',
+            onConfirm: async () => {
+                try {
+                    await saveSettings({ api_token_hash: null });
+                    updateLocalSettings({ api_token_hash: null });
+                    setGeneratedToken(null);
+                    showToast('הטוקן בוטל', 'success');
+                } catch {
+                    showToast('שגיאה בביטול הטוקן', 'error');
+                }
+            },
+        });
     };
 
     const handleCopyEndpoint = async () => {
@@ -182,7 +213,8 @@ export function IntegrationsSettings() {
                 showToast(`כתובת ה-Webhook החזירה ${res.status}`, 'error');
             }
         } catch (err) {
-            showToast('Webhook לא הגיב — כדאי לבדוק שהכתובת זמינה', 'error');
+            // anti-bot: em dash removed
+            showToast('Webhook לא הגיב. כדאי לבדוק שהכתובת זמינה.', 'error');
             console.error('Webhook test error:', err);
         } finally {
             setWebhookTestSending(false);
@@ -234,6 +266,15 @@ export function IntegrationsSettings() {
 
     return (
         <div className="flat-card p-6 md:p-8 animate-fade-in space-y-8">
+            {/* PP-01: single ConfirmModal instance for all confirm-gated actions in this component */}
+            <ConfirmModal
+                isOpen={!!confirmState}
+                message={confirmState?.message ?? ''}
+                confirmLabel={confirmState?.confirmLabel}
+                onConfirm={() => { const fn = confirmState?.onConfirm; setConfirmState(null); fn?.(); }}
+                onCancel={() => setConfirmState(null)}
+            />
+
             <div>
                 <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
                     <Globe className="text-primary" />
@@ -470,8 +511,9 @@ export function IntegrationsSettings() {
                     <Webhook className="text-primary" />
                     Webhook לאוטומציות (G4)
                 </h2>
+                {/* anti-bot: em dash removed from trainer-facing description */}
                 <p className="text-sm text-text-muted">
-                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך — כדי לחבר את Doggo CRM ל-Make / Zapier / WhatsApp / כל אוטומציה אחרת.
+                    כל פנייה חדשה מטופס הפניות תישלח גם לכתובת ה-Webhook שלך. כך תוכלו לחבר את Doggo CRM ל-Make, Zapier, WhatsApp, וכל אוטומציה אחרת.
                 </p>
             </div>
 
@@ -516,10 +558,11 @@ export function IntegrationsSettings() {
                 <details className="text-xs text-text-muted bg-background p-3 rounded-lg">
                     <summary className="cursor-pointer font-medium text-text-secondary mb-2">סוגי אירועים שנשלחים</summary>
                     <ul className="text-[11px] mt-2 space-y-1">
-                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">intake_submission.created</code> — פנייה חדשה מטופס הפניות</li>
-                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.created</code> — מפגש חדש נקבע</li>
-                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.cancelled</code> — מפגש בוטל</li>
-                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">program.paid</code> — תוכנית סומנה כשולמה</li>
+                        {/* anti-bot: em dashes in description lists replaced with periods */}
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">intake_submission.created</code>: פנייה חדשה מטופס הפניות</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.created</code>: מפגש חדש נקבע</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">session.cancelled</code>: מפגש בוטל</li>
+                        <li><code className="font-mono bg-surface px-1 rounded ltr-nums" dir="ltr">program.paid</code>: תוכנית סומנה כשולמה</li>
                     </ul>
                     <p className="text-[11px] text-text-muted mt-3">לכל אירוע, payload בפורמט JSON עם <code dir="ltr" className="font-mono bg-surface px-1 rounded">"event"</code> וכותרת <code dir="ltr" className="font-mono bg-surface px-1 rounded">X-Doggo-Event</code>.</p>
                     <details className="mt-3">
@@ -545,7 +588,7 @@ export function IntegrationsSettings() {
             <div className="border-t border-border pt-8">
                 <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-text-primary">
                     <Key className="text-primary" />
-                    טוקן API נכנס (G5 — Make/Zapier inbound)
+                    טוקן API נכנס (G5 - Make/Zapier inbound)
                 </h2>
                 <p className="text-sm text-text-muted">
                     טוקן זה מאפשר למערכות חיצוניות (Make, Zapier, טפסים מותאמים) ליצור לקוחות ופניות חדשות ב-Doggo CRM. שילוב דו-כיווני: Webhook (יציאה) + API נכנס.
@@ -642,9 +685,9 @@ Headers:
   Content-Type: application/json
   X-Doggo-Token: <your-token>
 
-═══ CREATE ═══
+=== CREATE ===
 
-create_client                    → { client_id }
+create_client                    -> { client_id }
 {
   "action": "create_client",
   "payload": {
@@ -656,7 +699,7 @@ create_client                    → { client_id }
   }
 }
 
-create_intake_submission         → { submission_id }
+create_intake_submission         -> { submission_id }
 {
   "action": "create_intake_submission",
   "payload": {
@@ -669,9 +712,9 @@ create_intake_submission         → { submission_id }
   }
 }
 
-═══ READ ═══
+=== READ ===
 
-list_clients                     → { clients[], total, limit, offset }
+list_clients                     -> { clients[], total, limit, offset }
 {
   "action": "list_clients",
   "payload": {
@@ -682,10 +725,10 @@ list_clients                     → { clients[], total, limit, offset }
   }
 }
 
-get_client                       → { client }
+get_client                       -> { client }
 { "action": "get_client", "payload": { "client_id": "<uuid>" } }
 
-list_intake_submissions          → { submissions[], total, limit, offset }
+list_intake_submissions          -> { submissions[], total, limit, offset }
 {
   "action": "list_intake_submissions",
   "payload": {
@@ -695,9 +738,9 @@ list_intake_submissions          → { submissions[], total, limit, offset }
   }
 }
 
-═══ UPDATE ═══
+=== UPDATE ===
 
-update_client                    → { client_id }
+update_client                    -> { client_id }
 {
   "action": "update_client",
   "payload": {
@@ -712,7 +755,7 @@ update_client                    → { client_id }
 // Allowed: full_name, email, phone, primary_dog_name, notes,
 //          lead_source, is_active
 
-update_intake_submission_status  → { submission_id }
+update_intake_submission_status  -> { submission_id }
 {
   "action": "update_intake_submission_status",
   "payload": {
@@ -729,9 +772,10 @@ update_intake_submission_status  → { submission_id }
                     <Mic className="text-primary" />
                     קבלות קוליות בוואטסאפ
                 </h2>
+                {/* anti-bot: em dash removed from trainer-facing description */}
                 <p className="text-sm text-text-muted">
                     שולחים הודעה קולית בוואטסאפ לבוט של Doggo CRM, הבוט מתמלל אותה לעברית, מחלץ את פרטי הלקוח והכלב,
-                    מציג לאישור — ואחרי אישור הפנייה נכנסת אוטומטית למערכת. שימושי מהשטח, מיד אחרי שיחה עם בעל כלב חדש.
+                    מציג לאישור. אחרי אישור הפנייה נכנסת אוטומטית למערכת. שימושי מהשטח, מיד אחרי שיחה עם בעל כלב חדש.
                 </p>
             </div>
 
@@ -744,7 +788,7 @@ update_intake_submission_status  → { submission_id }
                                 {voiceIntake.loading
                                     ? 'טוען רישום...'
                                     : voiceIntake.registration
-                                        ? 'רשום — ניתן לשלוח קבלות קוליות'
+                                        ? 'רשום. ניתן לשלוח קבלות קוליות'
                                         : 'לא רשום'}
                             </p>
                             {voiceIntake.registration?.phone_e164 && (
@@ -768,8 +812,9 @@ update_intake_submission_status  → { submission_id }
                         dir="ltr"
                         inputMode="tel"
                     />
+                    {/* anti-bot: em dash removed from trainer-facing instruction */}
                     <p className="text-[11px] text-text-muted mt-1">
-                        דוגמה: <span className="font-mono ltr-nums" dir="ltr">+972501234567</span> —
+                        דוגמה: <span className="font-mono ltr-nums" dir="ltr">+972501234567</span>.
                         חייב להתחיל ב-<span className="font-mono">+</span> ולהיות בפורמט בינלאומי. נשתמש במספר הזה כדי לזהות אתכם כשהבוט מקבל הודעה.
                     </p>
                 </div>
@@ -816,7 +861,8 @@ update_intake_submission_status  → { submission_id }
                                 <ol className="list-decimal list-inside text-text-secondary space-y-1 text-xs marker:font-bold">
                                     <li>שמרו את מספר הבוט באנשי הקשר.</li>
                                     <li>שלחו הודעה קולית בעברית עם פרטי הלקוח, הכלב ומטרות האימון.</li>
-                                    <li>הבוט יציג לכם את מה שחילץ — מאשרים בדמוי 👍 או "שלח", או מתקנים בכתב.</li>
+                                    {/* anti-bot: em dash removed */}
+                                    <li>הבוט יציג לכם את מה שחילץ. מאשרים בדמוי 👍 או "שלח", או מתקנים בכתב.</li>
                                     <li>אישור = פנייה חדשה במערכת + מייל לסיכום.</li>
                                 </ol>
                                 <div className="flex gap-2 items-center">
@@ -851,8 +897,9 @@ update_intake_submission_status  → { submission_id }
                     </div>
                 )}
 
+                {/* anti-bot: em dash removed from trainer-facing disclaimer */}
                 <div className="text-[10px] text-text-muted leading-relaxed bg-background p-3 rounded-lg">
-                    🔒 הרישום הזה משויך אליכם בלבד. רק מספר הוואטסאפ הזה יזוהה כמאלף ששולח את ההודעה — מספרים אחרים יקבלו תגובה אדיבה שהם לא רשומים.
+                    🔒 הרישום הזה משויך אליכם בלבד. רק מספר הוואטסאפ הזה יזוהה כמאלף ששולח את ההודעה. מספרים אחרים יקבלו תגובה אדיבה שהם לא רשומים.
                 </div>
             </div>
         </div>

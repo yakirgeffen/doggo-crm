@@ -7,10 +7,12 @@ interface SessionCardProps {
     session: Session;
     clientFirstName: string;
     programName?: string;
+    /** PP-20: pass client phone so WhatsApp share links directly to the recipient */
+    clientPhone?: string | null;
     onChanged?: () => void;
 }
 
-export function SessionCard({ session, clientFirstName, programName, onChanged }: SessionCardProps) {
+export function SessionCard({ session, clientFirstName, programName, clientPhone, onChanged }: SessionCardProps) {
     const [isEditing, setIsEditing] = useState(false);
     const whatsappSummary = encodeURIComponent(
         `היי ${clientFirstName}! 👋\n` +
@@ -21,6 +23,16 @@ export function SessionCard({ session, clientFirstName, programName, onChanged }
             ? `נתראה במפגש הבא ב-${new Date(session.next_session_date).toLocaleDateString('he-IL')}! 🐕`
             : 'נתראה!')
     );
+
+    // PP-20: build WhatsApp href with phone number when available
+    const whatsappHref = (() => {
+        if (clientPhone) {
+            const digits = clientPhone.replace(/\D/g, '');
+            const intl = digits.startsWith('0') ? '972' + digits.slice(1) : digits;
+            return `https://wa.me/${intl}?text=${whatsappSummary}`;
+        }
+        return `https://wa.me/?text=${whatsappSummary}`;
+    })();
 
     return (
         <div className="flat-card p-5 hover:border-primary transition-colors group">
@@ -80,8 +92,9 @@ export function SessionCard({ session, clientFirstName, programName, onChanged }
                         עריכה
                     </button>
                 )}
+                {/* PP-20: WhatsApp href now includes client phone when available */}
                 <a
-                    href={`https://wa.me/?text=${whatsappSummary}`}
+                    href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs font-medium text-success hover:text-success flex items-center gap-1.5 bg-success/10 hover:bg-success/15 px-3 py-1.5 rounded-lg transition-colors"

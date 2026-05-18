@@ -64,7 +64,8 @@ export function QuickAddClientModal({ isOpen, onClose }: QuickAddClientModalProp
                 <div className="flex justify-between items-center mb-5">
                     <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                         <Dog size={20} className="text-primary" />
-                        לקוח חדש — מהיר
+                        {/* anti-bot: em dash removed */}
+                        לקוח חדש (מהיר)
                     </h2>
                     <button
                         onClick={onClose}

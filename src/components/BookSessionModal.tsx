@@ -52,11 +52,12 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
     const fetchClients = useCallback(async () => {
         if (!user) return;
         setLoadingClients(true);
+        // PP-02: use is_active (boolean) not status (wrong field) on clients table
         const { data, error } = await supabase
             .from('clients')
             .select('id, full_name, primary_dog_name, phone, programs(id, program_name, status)')
             .eq('user_id', user.id)
-            .eq('status', 'active')
+            .eq('is_active', true)
             .order('full_name');
 
         if (!error && data) {
@@ -96,7 +97,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         if (isOpen) fetchClients();
     }, [isOpen, fetchClients]);
 
-    // Esc-key close — keyboard parity with backdrop click.
+    // Esc-key close - keyboard parity with backdrop click.
     useEffect(() => {
         if (!isOpen) return;
         const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -119,7 +120,9 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
         }]).select('id');
 
         if (error) {
-            showToast('שגיאה בקביעת מפגש: ' + error.message, 'error');
+            // PP-33: friendly Hebrew error, technical details to console only. No em dash per anti-bot rules.
+            console.error('Error booking session:', error);
+            showToast('שגיאה בקביעת המפגש. אנא נסו שוב.', 'error');
         } else {
             if (data && data[0]) {
                 await logActivity('session', data[0].id, 'created', `מפגש חדש נקבע (${date} ${time})`);
@@ -151,7 +154,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                 }).catch(emailErr => console.error('Booking confirmation email failed:', emailErr));
             }
             onBooked();
-            // Show WhatsApp prompt instead of immediate close — trainers in IL
+            // Show WhatsApp prompt instead of immediate close - trainers in IL
             // often want to send a WhatsApp confirmation in addition to the email.
             if (selectedClient) {
                 setBookedSuccess({ client: selectedClient, sessionDate });
@@ -299,6 +302,12 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                 <div className="h-3 w-1/2 bg-border/30 rounded-md skeleton-shimmer" />
                                 <div className="h-3 w-2/3 bg-border/30 rounded-md skeleton-shimmer" />
                             </div>
+                        ) : clients.length === 0 ? (
+                            /* PP-02: helpful empty state - trainer sees why no clients appear */
+                            <div className="input-field py-4 text-center text-sm text-text-muted bg-surface-warm">
+                                <p className="font-medium text-text-secondary mb-1">אין לקוחות עם תוכנית פעילה</p>
+                                <p className="text-xs">יש ליצור תוכנית ללקוח לפני קביעת מפגש.</p>
+                            </div>
                         ) : (
                             <select
                                 required
@@ -348,7 +357,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                             </button>
                             <button
                                 type="submit"
-                                disabled={saving || !selectedProgramId}
+                                disabled={saving || !selectedProgramId || clients.length === 0}
                                 className="btn btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {saving ? (
@@ -359,7 +368,7 @@ export function BookSessionModal({ isOpen, onClose, onBooked, prefillDate, prefi
                                 ) : '🐾 קביעת מפגש'}
                             </button>
                         </div>
-                        {!saving && !selectedProgramId && (
+                        {!saving && !selectedProgramId && clients.length > 0 && (
                             <p className="text-xs text-text-muted text-center">
                                 {!selectedClientId ? 'יש לבחור לקוח כדי להמשיך' : 'יש לבחור תוכנית פעילה'}
                             </p>

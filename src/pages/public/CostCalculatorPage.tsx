@@ -8,6 +8,7 @@ import { NewsletterCTA } from '../../components/public/NewsletterCTA';
 // take-home target after fixed costs, working hours, and tax. The math
 // is intentionally simple (back-of-the-envelope) — the lead-gen value is
 // not the calculator's accuracy but its existence as a thought trigger.
+// anti-bot: em dashes removed from all user-facing labels and disclaimer text.
 
 const fmtIls = (n: number) => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -112,7 +113,7 @@ export function CostCalculatorPage() {
 
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">שעות עבודה בתשלום בשבוע</label>
-                        <p className="text-xs text-text-muted mb-2">רק שעות שמחויבות ללקוח — בלי שיווק, נסיעות או זמינות בהמתנה.</p>
+                        <p className="text-xs text-text-muted mb-2">רק שעות שמחויבות ללקוח, בלי שיווק, נסיעות או זמינות בהמתנה.</p>
                         <input
                             type="number"
                             inputMode="numeric"
@@ -127,7 +128,7 @@ export function CostCalculatorPage() {
 
                     <div>
                         <label className="block text-sm font-medium text-text-primary mb-1">שיעור מס משוער</label>
-                        <p className="text-xs text-text-muted mb-2">לעצמאים בישראל — ברירת מחדל 25% (משלב הכנסה ומע״מ אפקטיבי). לחישוב מדויק כדאי להתייעץ עם רו״ח.</p>
+                        <p className="text-xs text-text-muted mb-2">לעצמאים בישראל, ברירת מחדל 25% (משלב הכנסה ומע״מ אפקטיבי). לחישוב מדויק כדאי להתייעץ עם רו״ח.</p>
                         <div className="relative">
                             <span className="absolute end-3 top-3 text-text-muted text-sm">%</span>
                             <input
@@ -157,28 +158,24 @@ export function CostCalculatorPage() {
                         <div className="flat-card p-6 md:p-8 bg-primary/5 border-primary/20">
                             <div className="flex items-center gap-2 mb-3 text-primary">
                                 <TrendingUp size={20} />
-                                <span className="text-sm font-bold">התוצאה שלך</span>
+                                <span className="font-bold text-sm">תוצאות החישוב</span>
                             </div>
-                            <p className="text-xs text-text-muted mb-1">מחיר מינימום לשעת אילוף בתשלום</p>
-                            <p className="text-5xl md:text-6xl font-black text-primary mb-4 ltr-nums" dir="ltr" style={{ direction: 'ltr', textAlign: 'right' }}>
-                                {fmtIls(calc.minHourlyRate)}
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-text-secondary">
-                                <div className="bg-surface rounded-lg p-3">
-                                    <div className="text-text-muted text-xs">הכנסה ברוטו חודשית מינימלית</div>
-                                    <div className="font-bold text-text-primary mt-1">{fmtIls(calc.requiredMonthlyRevenue)}</div>
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                                    <span className="text-sm text-text-secondary">הכנסה ברוטו נדרשת לחודש</span>
+                                    <span className="font-bold text-text-primary ltr-nums">{fmtIls(calc.requiredMonthlyRevenue)}</span>
                                 </div>
-                                <div className="bg-surface rounded-lg p-3">
-                                    <div className="text-text-muted text-xs">הכנסה ברוטו שנתית</div>
-                                    <div className="font-bold text-text-primary mt-1">{fmtIls(calc.annualGross)}</div>
+                                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                                    <span className="text-sm text-text-secondary">שעות מחויבות בחודש</span>
+                                    <span className="font-bold text-text-primary ltr-nums">{Math.round(calc.billableHoursPerMonth)} שעות</span>
                                 </div>
-                                <div className="bg-surface rounded-lg p-3">
-                                    <div className="text-text-muted text-xs">שעות בתשלום בחודש (4.33 שבועות)</div>
-                                    <div className="font-bold text-text-primary mt-1">{Math.round(calc.billableHoursPerMonth)}</div>
+                                <div className="flex justify-between items-center py-3 bg-primary/10 rounded-xl px-3 -mx-3">
+                                    <span className="font-bold text-text-primary">מחיר שעה מינימלי</span>
+                                    <span className="text-2xl font-black text-primary ltr-nums">{fmtIls(calc.minHourlyRate)}</span>
                                 </div>
-                                <div className="bg-surface rounded-lg p-3">
-                                    <div className="text-text-muted text-xs">משכורת יעד ברוטו</div>
-                                    <div className="font-bold text-text-primary mt-1">{fmtIls(calc.targetGrossMonthly)}</div>
+                                <div className="flex justify-between items-center py-2 text-xs text-text-muted">
+                                    <span>היקף שנתי משוער</span>
+                                    <span className="ltr-nums">{fmtIls(calc.annualGross)}</span>
                                 </div>
                             </div>
                         </div>
@@ -186,14 +183,14 @@ export function CostCalculatorPage() {
                         <div className="flex items-start gap-2 p-4 rounded-xl bg-warning/5 border border-warning/20 text-xs text-text-secondary">
                             <AlertTriangle className="text-warning shrink-0 mt-0.5" size={14} />
                             <p>
-                                המחשבון מציג רף מינימלי בלבד — הוא לא לוקח בחשבון תחרות מקומית, ניסיון, התמחויות, או ערך נוסף שאתם מציעים (חבילות, מעקב WhatsApp, סדנאות). המחיר בפועל אמור להיות גבוה יותר. לחישוב מסים וביטוח לאומי מדויקים — כדאי להתייעץ עם רואה חשבון.
+                                המחשבון מציג רף מינימלי בלבד. הוא לא לוקח בחשבון תחרות מקומית, ניסיון, התמחויות, או ערך נוסף שאתם מציעים (חבילות, מעקב WhatsApp, סדנאות). המחיר בפועל אמור להיות גבוה יותר. לחישוב מסים וביטוח לאומי מדויקים כדאי להתייעץ עם רואה חשבון.
                             </p>
                         </div>
 
                         <NewsletterCTA
                             source="cost-calculator"
                             title="רוצים עוד כלים כאלה?"
-                            subtitle="טיפים מעת לעת על מחירון, שיווק וניהול עסק אילוף. בלי ספאם — אפשר להסיר רישום בכל שלב."
+                            subtitle="טיפים מעת לעת על מחירון, שיווק וניהול עסק אילוף. בלי ספאם. אפשר להסיר רישום בכל שלב."
                         />
                     </section>
                 )}

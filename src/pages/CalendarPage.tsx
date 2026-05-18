@@ -19,12 +19,24 @@ interface AgendaItem {
 
 export function CalendarPage() {
     const { providerToken } = useAuth();
-    // Default to list view on mobile for better usability
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const [viewMode, setViewMode] = useState<'week' | 'list'>(isMobile ? 'list' : 'week');
+    // PP-10/PP-22: use ResizeObserver / matchMedia to stay reactive to orientation changes.
+    // Remove the vestigial SSR guard (window check) - this is a CSR-only Vite app.
+    const [viewMode, setViewMode] = useState<'week' | 'list'>(() =>
+        window.innerWidth < 768 ? 'list' : 'week'
+    );
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showInternal, setShowInternal] = useState(true);
     const [showExternal, setShowExternal] = useState(true);
+
+    // PP-10: keep viewMode in sync with actual viewport width on resize / orientation change
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 767px)');
+        const handler = (e: MediaQueryListEvent) => {
+            setViewMode(e.matches ? 'list' : 'week');
+        };
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+    }, []);
 
     const [items, setItems] = useState<AgendaItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -51,8 +63,8 @@ export function CalendarPage() {
             const { data: sessions, error: dbError } = await supabase
                 .from('sessions')
                 .select(`
-                    id, 
-                    session_date, 
+                    id,
+                    session_date,
                     programs:program_id (
                         id,
                         program_name,
@@ -63,7 +75,13 @@ export function CalendarPage() {
                 .order('session_date', { ascending: true })
                 .limit(100);
 
-            if (dbError) throw dbError;
+            // PP-29: catch Supabase error and show Hebrew-friendly message (no em dash per anti-bot rules)
+            if (dbError) {
+                console.error('CalendarPage db error:', dbError);
+                setError('שגיאה בטעינת היומן. אנא רעננו את הדף.');
+                setLoading(false);
+                return;
+            }
 
             if (sessions) {
                 type SessionQuery = {
@@ -323,7 +341,7 @@ export function CalendarPage() {
 
                             return (
                                 <div key={dateKey}>
-                                    <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 sticky top-0 bg-background py-2 z-10 
+                                    <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 sticky top-0 bg-background py-2 z-10
                                         ${isToday ? 'text-primary' : 'text-text-primary'}`
                                     }>
                                         {label}
@@ -403,7 +421,7 @@ export function CalendarPage() {
                 prefillTime={bookPrefillTime}
             />
 
-            {/* Mobile FAB — quick book button */}
+            {/* Mobile FAB - quick book button */}
             <button
                 onClick={() => {
                     const now = new Date();

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { Plus, Receipt, ClipboardList, History as HistoryIcon } from 'lucide-react';
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { Plus, Receipt, ClipboardList, History as HistoryIcon, ArrowRight } from 'lucide-react';
 import { SkeletonClientDetail } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
 import { type Client, type Program } from '../types';
@@ -13,9 +13,12 @@ import { StickyNote } from '../components/client/StickyNote';
 import { ProgramTabs, type TabId } from '../components/client/ProgramTabs';
 import { ProgramWorkspace } from '../components/client/ProgramWorkspace';
 import { AttachmentsList } from '../components/client/AttachmentsList';
+import { useToast } from '../context/toast-context';
 
 export function ClientDetailPage() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const { showToast } = useToast();
     const [searchParams, setSearchParams] = useSearchParams();
     const [client, setClient] = useState<Client | null>(null);
     const [programs, setPrograms] = useState<Program[]>([]);
@@ -73,7 +76,20 @@ export function ClientDetailPage() {
     }, [searchParams, fetchClientData]);
 
     if (loading) return <SkeletonClientDetail />;
-    if (!client) return <div className="p-8 text-center text-text-muted">הלקוח לא נמצא.</div>;
+
+    // PP-32: not-found state has a back link instead of a dead-end message
+    if (!client) return (
+        <div className="p-8 text-center space-y-4 animate-fade-in">
+            <p className="text-text-muted">הלקוח לא נמצא.</p>
+            <button
+                onClick={() => navigate('/clients')}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            >
+                <ArrowRight size={14} />
+                חזרה לרשימת הלקוחות
+            </button>
+        </div>
+    );
 
     const activePrograms = programs.filter(p => p.status === 'active');
     const historyPrograms = programs.filter(p => p.status !== 'active');
@@ -206,10 +222,12 @@ export function ClientDetailPage() {
                                             הצעת מחיר {q.sumit_document_number ? `#${q.sumit_document_number}` : ''}
                                         </p>
                                         <p className="text-xs text-text-muted">
-                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                                            {/* anti-bot: em dash null-placeholder replaced with Hebrew label */}
+                                            {q.sent_at ? new Date(q.sent_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'לא נשלח'}
                                             {q.total_amount && ` · ₪${Number(q.total_amount).toLocaleString()}`}
                                         </p>
                                     </div>
+                                    {/* PP-16: quote status update now has error handling and toast feedback */}
                                     <select
                                         className={`text-xs font-medium px-2 py-1 rounded-lg border bg-surface ${
                                             q.status === 'accepted' ? 'text-success border-success/30' :
@@ -225,6 +243,11 @@ export function ClientDetailPage() {
                                                 .eq('id', q.id);
                                             if (!error) {
                                                 setQuotes(prev => prev.map(x => x.id === q.id ? { ...x, status: newStatus } : x));
+                                                showToast('סטטוס הצעת המחיר עודכן', 'success');
+                                            } else {
+                                                console.error('Error updating quote status:', error);
+                                                /* anti-bot: em dash removed from toast */
+                                                showToast('שגיאה בעדכון הסטטוס. אנא נסו שוב.', 'error');
                                             }
                                         }}
                                     >

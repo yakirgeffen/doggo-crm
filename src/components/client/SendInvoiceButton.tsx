@@ -81,7 +81,8 @@ export function SendInvoiceButton({
                     UnitPrice: price,
                     Currency: currency || 'ILS',
                 }],
-                subject: `חשבונית — ${programName}`,
+                /* anti-bot: em dash removed from email subject */
+                subject: `חשבונית: ${programName}`,
                 personalMessage: 'תודה על העסק! מצורפת החשבונית.',
             });
 

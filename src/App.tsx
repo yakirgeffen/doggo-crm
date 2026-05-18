@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 
@@ -7,6 +7,8 @@ import { useAuth } from './context/auth-context';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Spinner } from './components/Spinner';
 import { ToastProvider } from './context/ToastContext';
+import { bootstrapAnalytics, trackEvent, markDailyActive } from './lib/analytics';
+import { ConsentBanner } from './components/ConsentBanner';
 
 // Public routes — typically the cold-load entry point. Keep landing eager
 // (visited first; affects LCP), lazy-load the rest.
@@ -46,6 +48,38 @@ function RouteSpinner() {
     );
 }
 
+// Analytics page-view tracker. Mounted inside the Router so it can observe
+// route changes. Fires `page_view` on every location change after the first
+// (the bootstrap effect fires the initial page_view directly).
+function AnalyticsRouteListener() {
+    const location = useLocation();
+    const firstRender = useRef(true);
+    useEffect(() => {
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+        void trackEvent('page_view', {
+            page_title: typeof document !== 'undefined' ? document.title : '',
+        });
+        markDailyActive();
+    }, [location.pathname, location.search]);
+    return null;
+}
+
+function AnalyticsBootstrap() {
+    useEffect(() => {
+        bootstrapAnalytics();
+        // Initial page_view fires from here so the analytics module
+        // controls timing (consent gating, attribution capture, etc.).
+        void trackEvent('page_view', {
+            page_title: typeof document !== 'undefined' ? document.title : '',
+        });
+        markDailyActive();
+    }, []);
+    return null;
+}
+
 function RootEntry() {
     const { session, loading } = useAuth();
     const location = useLocation();
@@ -68,6 +102,9 @@ function App() {
       <AuthProvider>
         <ToastProvider>
           <BrowserRouter>
+          <AnalyticsBootstrap />
+          <AnalyticsRouteListener />
+          <ConsentBanner />
           <Suspense fallback={<RouteSpinner />}>
           <Routes>
             {/* ========== Public Routes ========== */}

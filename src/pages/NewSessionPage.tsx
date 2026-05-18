@@ -21,6 +21,8 @@ export function NewSessionPage() {
 
     const [formData, setFormData] = useState({
         session_date: new Date().toISOString().split('T')[0],
+        // PP-03 / PP-14: track session time so calendar events use the real hour
+        session_time: '10:00',
         session_notes: '',
         homework: '',
         next_session_date: '',
@@ -50,9 +52,12 @@ export function NewSessionPage() {
         if (!programId) return;
         setLoading(true);
 
+        // PP-03: combine date + time for a full datetime (stored as timestamptz)
+        const sessionDateTime = `${formData.session_date}T${formData.session_time}:00`;
+
         const payload = {
             program_id: programId,
-            session_date: formData.session_date,
+            session_date: sessionDateTime,
             session_notes: formData.session_notes,
             homework: formData.homework,
             next_session_date: formData.next_session_date || null,
@@ -64,7 +69,10 @@ export function NewSessionPage() {
         const { data, error } = await supabase.from('sessions').insert([payload]).select();
 
         if (error) {
-            showToast('שגיאה בתיעוד המפגש: ' + error.message, 'error');
+            // PP-33: friendly Hebrew message; technical details to console only
+            console.error('Error logging session:', error);
+            /* anti-bot: em dash removed from toast */
+            showToast('שגיאה בתיעוד המפגש. אנא נסו שוב.', 'error');
             setLoading(false);
         } else {
             if (data && data[0]) {
@@ -73,7 +81,8 @@ export function NewSessionPage() {
 
                 if (providerToken) {
                     try {
-                        const startDate = new Date(`${formData.session_date}T10:00:00`);
+                        // PP-03: use the actual session time, not hardcoded T10:00:00
+                        const startDate = new Date(sessionDateTime);
                         const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
                         const event = await createCalendarEvent(providerToken, {
                             summary: `אימון: ${programName}`,
@@ -125,18 +134,33 @@ export function NewSessionPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                    <div>
-                        <label htmlFor="ns-date" className="block text-sm font-medium text-text-primary mb-1">
-                            תאריך המפגש *
-                        </label>
-                        <input
-                            id="ns-date"
-                            type="date"
-                            required
-                            className="input-field"
-                            value={formData.session_date}
-                            onChange={(e) => setFormData({ ...formData, session_date: e.target.value })}
-                        />
+                    {/* PP-03 / PP-14: date + time side by side */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="ns-date" className="block text-sm font-medium text-text-primary mb-1">
+                                תאריך המפגש *
+                            </label>
+                            <input
+                                id="ns-date"
+                                type="date"
+                                required
+                                className="input-field"
+                                value={formData.session_date}
+                                onChange={(e) => setFormData({ ...formData, session_date: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="ns-time" className="block text-sm font-medium text-text-primary mb-1">
+                                שעת המפגש
+                            </label>
+                            <input
+                                id="ns-time"
+                                type="time"
+                                className="input-field"
+                                value={formData.session_time}
+                                onChange={(e) => setFormData({ ...formData, session_time: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     {/* Service Selector (Only for Open Ended) */}
