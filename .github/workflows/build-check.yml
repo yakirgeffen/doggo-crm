@@ -1,0 +1,47 @@
+name: build-check
+
+# Runs on every PR against master and on every push to a PR branch.
+# Catches TypeScript compile errors, vite build failures, and prebuild
+# script failures (check-routes, check-rls-defaults) before merge.
+# This is the canonical correctness gate — no automated tests exist;
+# `npm run build` is the source of truth per doggo-crm CLAUDE.md.
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches-ignore:
+      - master
+
+concurrency:
+  group: build-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build-check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Vite requires these to be defined at build time.
+          # Placeholder values are sufficient — the build only checks types
+          # and module resolution, not live API connectivity.
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder-anon-key
+          VITE_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
